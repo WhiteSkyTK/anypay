@@ -8,10 +8,12 @@
     "build": "tsc --noEmit && node scripts/build.mjs",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "demo:pay": "tsx src/cli/demo-pay.ts"
   },
   "dependencies": {
     "@anypay/shared": "*",
+    "@interledger/open-payments": "^7.4.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "helmet": "^8.3.0",

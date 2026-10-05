@@ -26,7 +26,7 @@ describe('parseEnv', () => {
       PORT: 3000,
       WEB_ORIGIN: ['http://localhost:5173'],
       DEMO_MODE: false,
-      ALLOWED_WALLET_HOSTS: ['ilp.interledger-test.dev'],
+      ALLOWED_WALLET_HOSTS: ['interledger-test.dev'],
     })
   })
 

@@ -35,21 +35,26 @@ Scope: no payment logic yet.
 
 ## Phase 1 — Prove Open Payments works (no UI) · target 11 Oct · Status: In progress
 - [x] Read the SDK types and openpayments.dev first (SDK 7.4.0 types, interaction hash spec, Rafiki outgoing-payment errors)
-- [ ] OpenPaymentsGateway, WalletAddressResolver, GrantService, PaymentOrchestrator (CLAUDE.md steps 1–5)
-- [ ] Private key from env (base64) or a gitignored file; never logged
-- [ ] `npm run demo:pay -- --from <wallet> --to <wallet> --amount 25.00`: logs each step, waits while I approve consent in the browser
-- [ ] Clear errors for declined consent, expired quote and insufficient funds
-- [ ] Orchestrator unit tests with a mocked gateway
-- [ ] WalletAddressResolver SSRF tests: http, IP literals, localhost, private ranges, hosts off the allowlist
-- [ ] Allowlist matches subdomains: the test wallet's auth server is `auth.interledger-test.dev`, not `ilp.`; also check the auth/resource server URLs a wallet address returns
-- [ ] Interaction `hash` verification (SHA-256 base64 of client nonce, AS nonce, interact_ref, grant URL; padding-tolerant, constant-time) with tests
-- [ ] Insufficient funds surfaces after creation (payment `failed`, nothing sent), so poll the outgoing payment; confirm against the test wallet
+- [x] OpenPaymentsGateway, WalletAddressResolver, GrantService, PaymentOrchestrator (CLAUDE.md steps 1–5)
+- [x] Private key from env (base64) or a gitignored file; never logged
+- [x] `npm run demo:pay -- --from <wallet> --to <wallet> --amount 25.00`: logs each step, waits while I approve consent in the browser
+- [x] Clear errors for declined consent, expired quote and insufficient funds
+- [x] Orchestrator unit tests with a mocked gateway
+- [x] WalletAddressResolver SSRF tests: http, IP literals, localhost, private ranges, hosts off the allowlist
+- [x] Allowlist matches subdomains: the test wallet's auth server is `auth.interledger-test.dev`, not `ilp.`; also check the auth/resource server URLs a wallet address returns
+- [x] Interaction `hash` verification (SHA-256 base64 of client nonce, AS nonce, interact_ref, grant URL; padding-tolerant, constant-time) with tests
+- [x] Insufficient funds surfaces after creation (payment `failed`, nothing sent), so the watcher polls the outgoing payment
+- [ ] Confirm the insufficient-funds behaviour live: run demo:pay for more than the customer holds
+- [x] Live check up to consent against the test wallet: payment request, ZAR→COP quote and consent grant (with the 127.0.0.1 callback) all accepted
+- [x] Fix: uuid advisory via override; lockfile regenerated cleanly after a half-edited one broke request signing
 
 **Done when**
 - [ ] A real test-wallet payment completes and both balances change
-- [ ] Each error case has a test and a clear message
+- [x] Each error case has a test and a clear message
 
-**Team:** test wallet with 3 addresses (merchant, customer, app client), developer keys, play money. Join the Interledger Community Slack support channel for technical questions.
+**Team:** test wallet with 3 addresses (done: merchanttest = shop, southtest = customer, 889920ca = AnyPay app), developer key for the app wallet (done, in local .env), play money (done). Approve one real payment with `npm run demo:pay -- --amount 25.00` to tick the first Done-when box. Join the Interledger Community Slack support channel for technical questions.
+
+**Note:** the shop wallet is in COP and the customer in ZAR, so the demo shows a cross-currency quote. For a South African spaza story, consider a ZAR shop wallet for the main demo and keep COP to show FX.
 
 ## Phase 2 — Features 1–3 · target 18 Oct · Status: Not started
 - [ ] Merchant onboarding + printable A5 QR poster
@@ -124,3 +129,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 <!-- One entry per session: YYYY-MM-DD · done · next · blockers -->
 - 2026-10-05 · Phase 0 scaffold built on `phase-0-scaffold`: shared money utils + zod schemas, Express 5 API (env validation, /health, security middleware, service skeletons), React PWA shell (tokens, light/dark toggle, floating tab bar, 5 lazy routes, i18n, offline banner, update prompt), CI + Sonar config, docs. 155 tests; lint, typecheck and build pass; first load 138.8 KB gz of 200 KB. · Next: push, confirm CI is green on Ubuntu + Windows, mark Phase 0 Done, then Phase 1 (Open Payments, no UI). · Blockers: SonarCloud needs Automatic Analysis turned off and a `SONAR_TOKEN` repo secret (the CI job skips until then); second language still to choose.
 - 2026-10-05 · PR #1 merged; CI green on Ubuntu + Windows, Phase 0 Done. Follow-ups on `phase-0-polish`: GitGuardian false positive removed, 91 SonarCloud findings fixed or scoped out, Sepedi/isiXhosa/isiZulu drafts + language picker, landing layout reworked, roadmap extended (key dates, research track, submission checklist), docs/challenge.md. · Next: merge `phase-0-polish`, then Phase 1 plan. · Blockers: Phase 1 needs the test wallet addresses and developer key in a local `.env`; translations need a native-speaker review.
+- 2026-10-06 · Language now starts in English and remembers the choice. Pasted keys moved out of the committed .env.example into gitignored .env/.secrets (never committed or pushed). Phase 1 built: Open Payments gateway (only SDK importer), SSRF-safe wallet resolver, grant service with callback-hash verification, payment state machine, watcher, demo:pay CLI; 132 API tests (298 total). Live run reached consent against the real test wallet. · Next: approve one real payment (demo:pay), test insufficient funds live, then mark Phase 1 Done. · Blockers: needs a person to approve consent in the customer test wallet.

@@ -1,19 +1,8 @@
-import { fileURLToPath } from 'node:url'
 import { createApp } from './app'
 import { EnvError, parseEnv } from './config/env'
+import { PrivateKeyError } from './config/private-key'
+import { loadDotEnv } from './config/repo-root'
 import { createContainer } from './container'
-
-/**
- * One .env at the repo root serves both apps. Hosting platforms set real environment variables
- * instead, so a missing file is fine. Same relative path from src/ (dev) and dist/ (build).
- */
-function loadDotEnv(): void {
-  try {
-    process.loadEnvFile(fileURLToPath(new URL('../../../.env', import.meta.url)))
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
-  }
-}
 
 function main(): void {
   loadDotEnv()
@@ -34,7 +23,7 @@ function main(): void {
 try {
   main()
 } catch (error) {
-  if (!(error instanceof EnvError)) throw error
+  if (!(error instanceof EnvError || error instanceof PrivateKeyError)) throw error
   console.error(error.message)
   process.exit(1)
 }

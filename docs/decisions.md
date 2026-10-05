@@ -58,3 +58,33 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **SonarCloud scope.** Vendored shadcn CSS is excluded: its Tailwind-only syntax produced 72 false
   "bugs". Automatic Analysis reads `.sonarcloud.properties`; the CI scanner reads
   `sonar-project.properties`. Both are kept in sync.
+
+## Phase 1: Open Payments works end to end (2026-10-06)
+
+- **Only the gateway imports the SDK.** The rest of the API uses AnyPay's own types and a small
+  port interface, so tests swap in a fake wallet and an SDK upgrade touches one file.
+- **The payment is an explicit state machine:** created → incoming payment → quoted → awaiting
+  consent → sending → completed or failed. Expected failures (declined, expired quote, limit,
+  insufficient funds) end in `failed` with one reason the UI can show; anything unexpected is
+  thrown, so real bugs are never mistaken for a declined payment.
+- **The consent grant is capped at exactly the quote's debit amount**, so an approved grant can't
+  be reused to take more.
+- **The callback hash is verified before continuing the grant**, in constant time, with a fresh
+  24-byte nonce per payment. It tolerates padded or unpadded base64 and a `+` that arrives as a
+  space, because the spec and its own example disagree on padding.
+- **SSRF allowlist includes subdomains.** The test wallet's auth server is on
+  `auth.interledger-test.dev` with a tenant path, not on the wallet's host. The auth and resource
+  servers a wallet returns are checked too, and IP literals and local names are refused even if
+  the allowlist is misconfigured.
+- **Insufficient funds is detected by polling.** The wallet funds a payment after it is created,
+  so a customer without enough money shows up as a failed payment that sent nothing.
+- **The SDK client is created lazily.** The API boots and serves `/health` without credentials
+  (CI, fresh clones); payment calls then fail with a clear "not configured" error.
+- **The demo CLI uses a real callback on 127.0.0.1.** That exercises the same hash check the web
+  app needs in Phase 2, against the real test wallet, with `--no-callback` as a fallback.
+- **Only AnyPay's own wallet needs a key.** Customers and shops approve in their own wallets, so
+  their keys never enter AnyPay. Keys live only in `.env` (or `.secrets/`), both gitignored.
+- **`uuid` is overridden to 11.1.1** to clear a moderate advisory in the SDK's dependency. npm
+  only applies overrides when it resolves from scratch, so the lockfile was regenerated from the
+  manifests. If `npm ls` ever shows the signing library's `structured-headers` as invalid,
+  regenerate the lockfile the same way (a half-edited lockfile broke request signing once).

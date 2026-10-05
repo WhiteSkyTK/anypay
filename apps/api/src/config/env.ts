@@ -21,17 +21,19 @@ const EnvSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
   DEMO_MODE: z.stringbool().default(false),
 
-  // Open Payments client identity. Optional until Phase 1 wires up the gateway.
+  // AnyPay's own Open Payments client identity. Optional, so the API still starts (and /health
+  // works) without it; payment calls then fail with 'open_payments_not_configured'.
   CLIENT_WALLET_ADDRESS: z.url({ protocol: /^https$/ }).optional(),
   KEY_ID: z.string().optional(),
   /** Base64 of the private key PEM. Alternative: PRIVATE_KEY_PATH to a gitignored .key file. */
   PRIVATE_KEY: z.base64().optional(),
   PRIVATE_KEY_PATH: z.string().optional(),
 
-  /** SSRF allowlist: the only wallet hosts the API will ever call. */
-  ALLOWED_WALLET_HOSTS: csv
-    .pipe(z.array(z.hostname()).min(1))
-    .default(['ilp.interledger-test.dev']),
+  /**
+   * SSRF allowlist: the only wallet hosts the API will ever call. Subdomains are included, because
+   * a wallet's auth server lives next to it (ilp.interledger-test.dev → auth.interledger-test.dev).
+   */
+  ALLOWED_WALLET_HOSTS: csv.pipe(z.array(z.hostname()).min(1)).default(['interledger-test.dev']),
   /** AES-256-GCM key for grant tokens at rest: 32 random bytes, base64. */
   TOKEN_ENCRYPTION_KEY: z
     .base64()
@@ -40,6 +42,10 @@ const EnvSchema = z.object({
     })
     .optional(),
   DATABASE_URL: z.url().optional(),
+
+  /** Default wallets for `npm run demo:pay` (public addresses, like email addresses). */
+  DEMO_CUSTOMER_WALLET: z.string().optional(),
+  DEMO_MERCHANT_WALLET: z.string().optional(),
 })
 
 export type Env = z.infer<typeof EnvSchema>
