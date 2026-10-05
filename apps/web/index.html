@@ -2,12 +2,37 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>AnyPay</title>
+    <meta name="description" content="Pay any spaza from any wallet, even offline." />
+    <meta name="theme-color" content="#f5f2ea" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="AnyPay" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script>
+      // Applies the saved theme before first paint, so the page never flashes the wrong colours.
+      // Mirrors src/lib/theme.ts (storage key and colours); tokens.test.ts checks they match.
+      ;(function () {
+        var mode = 'system'
+        try {
+          mode = localStorage.getItem('anypay.theme') || 'system'
+        } catch (e) {}
+        var dark =
+          mode === 'dark' ||
+          (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.toggle('dark', dark)
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute('content', dark ? '#0f1211' : '#f5f2ea')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>AnyPay needs JavaScript turned on.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

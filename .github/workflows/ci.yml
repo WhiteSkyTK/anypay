@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, test, build (${{ matrix.os }})
+    # Windows too, because the team develops on Windows: catches path and npm-script issues.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      # Also writes the bundle-size table to the job summary and fails over the 200 KB budget.
+      - run: npm run build
+
+      - name: Keep coverage for SonarCloud
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          retention-days: 7
+
+  sonar:
+    name: SonarCloud
+    needs: verify
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Skip when SonarCloud is not set up yet
+        if: env.SONAR_TOKEN == ''
+        run: echo "::notice::SONAR_TOKEN secret not set, so SonarCloud analysis was skipped."
+
+      - uses: actions/checkout@v7
+        if: env.SONAR_TOKEN != ''
+        with:
+          fetch-depth: 0 # full history, so Sonar can attribute new code correctly
+
+      - uses: actions/download-artifact@v8
+        if: env.SONAR_TOKEN != ''
+        with:
+          name: coverage
+          path: coverage
+
+      - uses: SonarSource/sonarqube-scan-action@v8
+        if: env.SONAR_TOKEN != ''

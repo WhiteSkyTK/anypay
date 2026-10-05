@@ -83,10 +83,10 @@ Every failure gets a clear UI state: consent declined, quote expired, insufficie
 
 ## Design system: calm, Apple-like
 Look at docs/design/refs/ before building UI:
-- ledger-green.png: base look (warm off-white, deep green, huge amounts, ledger cards)
-- wallet-blue.png: floating pill tab bar, round quick actions
-- onboarding-mono.png: bold monochrome onboarding
-- dark-mode.png: dark theme mood
+- ledger-green.webp: base look (warm off-white, deep green, huge amounts, ledger cards)
+- wallet-blue.webp: floating pill tab bar, round quick actions
+- onboarding-mono.webp: bold monochrome onboarding
+- dark-mode.webp: dark theme mood
 Tokens as CSS variables → Tailwind v4 `@theme` (all text pairs pre-checked ≥ 4.5:1):
 - light: bg #F5F2EA, surface #FFFFFF, ink #1C1F1A, muted #5F6358, brand #1F4D3A (on-brand #FFFFFF), danger #B42318, warn #8A5A00
 - dark: bg #0F1211, surface #181C1A, ink #F2F0EA, muted #A3A89E, brand #5BD19A (on-brand #0F1211), danger #FF8A7A, warn #F5B544
