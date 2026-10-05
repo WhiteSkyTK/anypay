@@ -1,4 +1,4 @@
-import { NotImplementedError } from '../lib/errors'
+import { notImplemented } from '../lib/errors'
 
 /**
  * The only module that imports `@interledger/open-payments`. It holds the authenticated client
@@ -10,7 +10,7 @@ import { NotImplementedError } from '../lib/errors'
  */
 export class OpenPaymentsGateway {
   /** CLAUDE.md step 1: auth server, resource server, asset code and scale of a wallet address. */
-  async getWalletAddress(): Promise<never> {
-    throw new NotImplementedError('OpenPaymentsGateway.getWalletAddress')
+  getWalletAddress(): Promise<never> {
+    return notImplemented('OpenPaymentsGateway.getWalletAddress')
   }
 }

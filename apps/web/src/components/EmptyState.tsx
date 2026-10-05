@@ -7,7 +7,7 @@ interface EmptyStateProps {
 }
 
 /** Calm placeholder for lists with nothing in them yet; says what will appear and why. */
-export function EmptyState({ icon: Icon, title, description }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description }: Readonly<EmptyStateProps>) {
   return (
     <div className="flex flex-col items-center rounded-card bg-card px-6 py-10 text-center text-card-foreground">
       <span className="mb-4 grid size-14 place-items-center rounded-full bg-accent text-accent-foreground">

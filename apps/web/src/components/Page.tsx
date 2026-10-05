@@ -6,7 +6,7 @@ interface DocumentTitleProps {
 }
 
 /** Sets the browser tab title (React 19 hoists <title> into <head>). */
-export function DocumentTitle({ title }: DocumentTitleProps) {
+export function DocumentTitle({ title }: Readonly<DocumentTitleProps>) {
   const { t } = useTranslation()
   return <title>{`${title} · ${t('app.name')}`}</title>
 }
@@ -20,7 +20,7 @@ interface PageProps {
  * Standard page frame: Apple-style large title, safe-area aware, one readable column.
  * The h1 takes focus after navigation (see useRouteFocus), so it needs tabIndex -1.
  */
-export function Page({ title, children }: PageProps) {
+export function Page({ title, children }: Readonly<PageProps>) {
   return (
     <div className="mx-auto w-full max-w-xl px-4 pt-[max(2rem,env(safe-area-inset-top))]">
       <DocumentTitle title={title} />

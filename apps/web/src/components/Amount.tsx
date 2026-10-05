@@ -10,7 +10,7 @@ interface AmountProps {
  * The biggest thing on screen: whole units large, cents at half size, tabular digits so
  * amounts don't jitter as they change. Screen readers get the plain formatted amount.
  */
-export function Amount({ money, className }: AmountProps) {
+export function Amount({ money, className }: Readonly<AmountProps>) {
   const { whole, fraction } = splitMoneyForDisplay(money)
   return (
     <span className={cn('font-bold tracking-title tabular-nums', className)}>

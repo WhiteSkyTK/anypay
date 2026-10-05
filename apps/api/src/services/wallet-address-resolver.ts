@@ -1,4 +1,4 @@
-import { NotImplementedError } from '../lib/errors'
+import { notImplemented } from '../lib/errors'
 
 /**
  * Turns user input (`$host/name` or `https://host/name`) into a URL that is safe to fetch.
@@ -11,7 +11,7 @@ import { NotImplementedError } from '../lib/errors'
  */
 export class WalletAddressResolver {
   /** Normalises and validates a wallet address entered by a merchant or carried in a QR code. */
-  async resolve(): Promise<never> {
-    throw new NotImplementedError('WalletAddressResolver.resolve')
+  resolve(): Promise<never> {
+    return notImplemented('WalletAddressResolver.resolve')
   }
 }

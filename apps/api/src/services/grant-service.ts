@@ -1,4 +1,4 @@
-import { NotImplementedError } from '../lib/errors'
+import { notImplemented } from '../lib/errors'
 
 /**
  * Requests, continues and rotates Open Payments grants via the OpenPaymentsGateway.
@@ -9,17 +9,17 @@ import { NotImplementedError } from '../lib/errors'
  */
 export class GrantService {
   /** Non-interactive (incoming-payment, quote) or interactive (outgoing-payment) grant request. */
-  async requestGrant(): Promise<never> {
-    throw new NotImplementedError('GrantService.requestGrant')
+  requestGrant(): Promise<never> {
+    return notImplemented('GrantService.requestGrant')
   }
 
   /** Finishes an interactive grant after the customer approves it in their own wallet. */
-  async continueGrant(): Promise<never> {
-    throw new NotImplementedError('GrantService.continueGrant')
+  continueGrant(): Promise<never> {
+    return notImplemented('GrantService.continueGrant')
   }
 
   /** Swaps an expired access token for a new one (`token.rotate`), e.g. for a long-lived tab. */
-  async rotateToken(): Promise<never> {
-    throw new NotImplementedError('GrantService.rotateToken')
+  rotateToken(): Promise<never> {
+    return notImplemented('GrantService.rotateToken')
   }
 }

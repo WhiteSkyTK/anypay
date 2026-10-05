@@ -1,0 +1,93 @@
+{
+  "app": {
+    "name": "AnyPay",
+    "skipToContent": "Tsibela kumxholo"
+  },
+  "nav": {
+    "label": "Okuphambili",
+    "shop": "Ivenkile",
+    "tab": "Ithebhu",
+    "settings": "Iisetingi"
+  },
+  "onboarding": {
+    "documentTitle": "Hlawula nayiphi na ispaza ngayo nayiphi na iwalethi",
+    "headlineLine1": "Hlawula nayiphi na ispaza.",
+    "headlineLine2": "Ngayo nayiphi na iwalethi.",
+    "body": "Yamkela iintlawulo nge-QR code kuphela. Akukho matshini wamakhadi, isebenzisa idatha encinci kakhulu, kwaye iyaqhubeka isebenza nokuba inethiwekhi iyaphela.",
+    "setUpShop": "Lungiselela ivenkile yam",
+    "imCustomer": "Ndingumthengi",
+    "features": {
+      "qr": "Yi-QR code kuphela",
+      "anyWallet": "Nayiphi na iwalethi",
+      "offline": "Isebenza ngaphandle kwe-intanethi"
+    }
+  },
+  "language": {
+    "label": "Ulwimi"
+  },
+  "pay": {
+    "title": "Hlawula le venkile",
+    "shopCode": "Ikhowudi yevenkile {{shopId}}",
+    "amountLabel": "Isixa",
+    "empty": {
+      "title": "Iintlawulo ziza kuvulwa kungekudala",
+      "description": "Le venkile isalungiselela. Zama kwakhona emva kwexeshana."
+    }
+  },
+  "merchant": {
+    "title": "Ivenkile yakho",
+    "totalLabel": "Ezingenileyo namhlanje",
+    "payments": "Iintlawulo",
+    "empty": {
+      "title": "Akukabikho ntlawulo",
+      "description": "Iintlawulo zivela apha kwangoko xa zifika, kwaye ifowuni yakho iyazifunda ngokuvakalayo."
+    }
+  },
+  "tab": {
+    "title": "Iithebhu zam",
+    "empty": {
+      "title": "Akukho thebhu zivuliweyo",
+      "description": "Vula ithebhu kwispaza sakho kanye, uze uhlawule ngokuchukumisa, nokuba akukho nethiwekhi."
+    }
+  },
+  "settings": {
+    "title": "Iisetingi",
+    "appearance": "Inkangeleko",
+    "theme": {
+      "system": "Njengefowuni",
+      "light": "Ukukhanya",
+      "dark": "Ubumnyama"
+    },
+    "about": "Malunga",
+    "version": "Uguqulelo {{version}}"
+  },
+  "offline": {
+    "banner": "Awukho kwi-intanethi. I-AnyPay iyaqhubeka isebenza kwaye iza kuvumelanisa xa ubuyile."
+  },
+  "update": {
+    "ready": "Kukho uguqulelo olutsha",
+    "reload": "Layisha kwakhona",
+    "dismiss": "Hayi ngoku"
+  },
+  "notFound": {
+    "title": "Iphepha alifumanekanga",
+    "description": "Eli khonkco alikhokeleli ndawo.",
+    "home": "Buyela ekhaya"
+  },
+  "error": {
+    "title": "Kukho into engahambanga kakuhle",
+    "description": "Layisha kwakhona iphepha ukuze uzame kwakhona.",
+    "reload": "Layisha kwakhona"
+  },
+  "errors": {
+    "money": {
+      "minorUnits": "Faka isixa esichanekileyo"
+    },
+    "walletAddress": {
+      "required": "Faka idilesi yewalethi yakho",
+      "tooLong": "Loo dilesi inde kakhulu",
+      "format": "Iidilesi zewalethi ziqala ngo-$ okanye ngo-https://"
+    },
+    "idempotencyKey": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona."
+  }
+}

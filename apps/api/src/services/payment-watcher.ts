@@ -1,4 +1,4 @@
-import { NotImplementedError } from '../lib/errors'
+import { notImplemented } from '../lib/errors'
 
 /**
  * Polls an incoming payment until it completes, then emits an event that the merchant's live
@@ -8,7 +8,7 @@ import { NotImplementedError } from '../lib/errors'
  */
 export class PaymentWatcher {
   /** Starts watching one incoming payment. */
-  async watch(): Promise<never> {
-    throw new NotImplementedError('PaymentWatcher.watch')
+  watch(): Promise<never> {
+    return notImplemented('PaymentWatcher.watch')
   }
 }

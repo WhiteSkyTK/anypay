@@ -1,0 +1,93 @@
+{
+  "app": {
+    "name": "AnyPay",
+    "skipToContent": "Fetela go diteng"
+  },
+  "nav": {
+    "label": "Lenaneo le legolo",
+    "shop": "Lebenkele",
+    "tab": "Akhaonte",
+    "settings": "Dipeakanyo"
+  },
+  "onboarding": {
+    "documentTitle": "Lefela spaza efe goba efe ka wolete efe goba efe",
+    "headlineLine1": "Lefela spaza efe goba efe.",
+    "headlineLine2": "Ka wolete efe goba efe.",
+    "body": "Amogela ditefelo ka QR code fela. Ga go nyakege motšhene wa dikarata, e šomiša data e nyane kudu, gomme e tšwela pele e šoma le ge netweke e se gona.",
+    "setUpShop": "Beakanya lebenkele la ka",
+    "imCustomer": "Ke moreki",
+    "features": {
+      "qr": "QR code fela",
+      "anyWallet": "Wolete efe goba efe",
+      "offline": "E šoma ntle le inthanete"
+    }
+  },
+  "language": {
+    "label": "Polelo"
+  },
+  "pay": {
+    "title": "Lefela lebenkele le",
+    "shopCode": "Khoutu ya lebenkele {{shopId}}",
+    "amountLabel": "Palo",
+    "empty": {
+      "title": "Ditefelo di tla bulwa kgauswinyane",
+      "description": "Lebenkele le le sa beakanywa. Leka gape ka morago ga nakwana."
+    }
+  },
+  "merchant": {
+    "title": "Lebenkele la gago",
+    "totalLabel": "Tše amogetšwego lehono",
+    "payments": "Ditefelo",
+    "empty": {
+      "title": "Ga go na ditefelo ga bjale",
+      "description": "Ditefelo di tšwelela mo gang ge di fihla, gomme mogala wa gago o a di bala ka lentšu."
+    }
+  },
+  "tab": {
+    "title": "Diakhaonte tša ka",
+    "empty": {
+      "title": "Ga go na diakhaonte tše di bulegilego",
+      "description": "Bula akhaonte spazeng ya gago gatee fela, ke moka o lefe ka go kgoma, le ge netweke e se gona."
+    }
+  },
+  "settings": {
+    "title": "Dipeakanyo",
+    "appearance": "Ponagalo",
+    "theme": {
+      "system": "Bjalo ka mogala",
+      "light": "Seetša",
+      "dark": "Leswiswi"
+    },
+    "about": "Ka ga",
+    "version": "Phetolelo {{version}}"
+  },
+  "offline": {
+    "banner": "Ga o na inthanete. AnyPay e tšwela pele e šoma gomme e tla nyalanya ge o boile."
+  },
+  "update": {
+    "ready": "Go na le phetolelo ye mpsha",
+    "reload": "Laiša gape",
+    "dismiss": "Aowa bjale"
+  },
+  "notFound": {
+    "title": "Letlakala ga le hwetšwe",
+    "description": "Kgokagano ye ga e ye felo.",
+    "home": "Boela gae"
+  },
+  "error": {
+    "title": "Go na le seo se sa šomego gabotse",
+    "description": "Laiša letlakala gape go leka gape.",
+    "reload": "Laiša gape"
+  },
+  "errors": {
+    "money": {
+      "minorUnits": "Tsenya palo ye e nepagetšego"
+    },
+    "walletAddress": {
+      "required": "Tsenya aterese ya wolete ya gago",
+      "tooLong": "Aterese yeo e telele kudu",
+      "format": "Diaterese tša wolete di thoma ka $ goba https://"
+    },
+    "idempotencyKey": "Go na le seo se sa šomego gabotse. Hle leka gape."
+  }
+}

@@ -15,7 +15,15 @@
     "headlineLine2": "From any wallet.",
     "body": "Take payments with just a QR code. No card machine, very little data, and it keeps working when the signal drops.",
     "setUpShop": "Set up my shop",
-    "imCustomer": "I'm a customer"
+    "imCustomer": "I'm a customer",
+    "features": {
+      "qr": "Just a QR code",
+      "anyWallet": "Any wallet",
+      "offline": "Works offline"
+    }
+  },
+  "language": {
+    "label": "Language"
   },
   "pay": {
     "title": "Pay this shop",

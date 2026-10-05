@@ -17,12 +17,9 @@ export function UpdatePrompt() {
   if (!needRefresh) return null
 
   return (
-    <div
-      role="status"
-      className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-[max(1rem,env(safe-area-inset-top))]"
-    >
+    <div className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-[max(1rem,env(safe-area-inset-top))]">
       <div className="flex items-center gap-2 rounded-full border bg-card py-1.5 pr-1.5 pl-5 text-card-foreground shadow-lg">
-        <span className="text-sm font-medium">{t('update.ready')}</span>
+        <output className="text-sm font-medium">{t('update.ready')}</output>
         <Button onClick={() => void updateServiceWorker(true)}>{t('update.reload')}</Button>
         <Button
           variant="ghost"

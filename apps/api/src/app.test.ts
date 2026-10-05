@@ -91,7 +91,7 @@ describe('errors', () => {
       throw new NotImplementedError('Stub')
     })
     probe.get('/crash', () => {
-      throw new Error('database password is hunter2')
+      throw new Error('getaddrinfo ENOTFOUND db.internal.anypay')
     })
     probe.use(errorHandler)
 
@@ -100,6 +100,6 @@ describe('errors', () => {
 
     const crash = await request(probe).get('/crash').expect(500)
     expect(crash.body.error).toEqual({ code: 'internal_error', message: 'Something went wrong' })
-    expect(JSON.stringify(crash.body)).not.toContain('hunter2')
+    expect(JSON.stringify(crash.body)).not.toContain('db.internal')
   })
 })

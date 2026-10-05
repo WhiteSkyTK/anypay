@@ -16,13 +16,13 @@ export function ThemeSwitcher() {
   return (
     <fieldset>
       <legend className="section-label">{t('settings.appearance')}</legend>
-      <div className="mt-3 grid grid-cols-3 gap-1 rounded-full bg-muted p-1">
+      <div className="mt-3 grid grid-cols-3 gap-1 rounded-[1.75rem] bg-muted p-1">
         {THEME_MODES.map((option) => {
           const Icon = ICONS[option]
           return (
             <label
               key={option}
-              className="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full text-sm font-semibold text-muted-foreground transition-colors has-checked:bg-card has-checked:text-card-foreground has-checked:shadow-sm has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring"
+              className="flex min-h-14 cursor-pointer flex-col items-center justify-center gap-1 rounded-3xl px-2 py-2 text-center text-sm leading-tight font-semibold text-muted-foreground transition-colors has-checked:bg-card has-checked:text-card-foreground has-checked:shadow-sm has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring"
             >
               <input
                 type="radio"

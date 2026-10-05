@@ -37,3 +37,24 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
   UI can act on, returns a correlation id, and hides everything else behind `internal_error`.
 - **CI runs on Ubuntu and Windows.** The team develops on Windows, so cross-platform scripts are
   verified rather than assumed.
+
+## Phase 0 follow-ups (2026-10-05)
+
+- **Four languages: English, Sepedi, isiXhosa, isiZulu.** The team's choice for the spaza owners we
+  expect to meet. Non-English strings are AI drafts until a native speaker reviews them. Only
+  English is bundled; each other language is its own chunk, so a phone downloads only its own.
+- **The phone's language is detected; a manual choice wins.** A phone set to isiZulu opens in
+  isiZulu with no setup. The picker is on the landing screen, not buried in Settings, because the
+  first screen must already be readable.
+- **Money is always formatted en-ZA (R 25,00), whatever the language.** Amounts must look the same
+  on the customer's and the merchant's phone, even if they use different languages.
+- **Landing page sized to the screen.** The illustration only takes leftover space, so longer
+  translations and small phones never push "Set up my shop" below the fold. iOS Safari's status
+  bar and overscroll stay dark on this screen (data-chrome flag) instead of showing a cream band.
+- **Secret scanners stay quiet on test data.** Test keys are generated at run time instead of
+  written as literals; GitGuardian flagged one fake value, which was never a real secret.
+- **CI supply-chain hardening.** Third-party actions are pinned to commit SHAs (Dependabot keeps
+  them current) and `npm ci --ignore-scripts` stops dependencies running code at install time.
+- **SonarCloud scope.** Vendored shadcn CSS is excluded: its Tailwind-only syntax produced 72 false
+  "bugs". Automatic Analysis reads `.sonarcloud.properties`; the CI scanner reads
+  `sonar-project.properties`. Both are kept in sync.

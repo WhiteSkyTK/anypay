@@ -23,10 +23,13 @@
         var dark =
           mode === 'dark' ||
           (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        // The landing page is a full-bleed dark screen in both themes (see useDarkChrome).
+        var landing = location.pathname === '/'
+        if (landing) document.documentElement.dataset.chrome = 'dark'
         document.documentElement.classList.toggle('dark', dark)
         document
           .querySelector('meta[name="theme-color"]')
-          .setAttribute('content', dark ? '#0f1211' : '#f5f2ea')
+          .setAttribute('content', dark || landing ? '#0f1211' : '#f5f2ea')
       })()
     </script>
   </head>

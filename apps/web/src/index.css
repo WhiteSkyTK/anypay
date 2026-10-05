@@ -59,6 +59,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Full-bleed dark screens also darken the overscroll area (see useDarkChrome). */
+  html[data-chrome='dark'] {
+    background-color: #0f1211;
+  }
+
   body {
     min-height: 100dvh;
   }
@@ -84,13 +89,17 @@
 }
 
 /* Frosted bar for the floating tab bar only: blur is costly on budget phones, so nowhere else. */
-@utility glass-bar {
-  background-color: var(--card);
+@layer components {
+  .glass-bar {
+    background-color: var(--card);
+  }
 
   @supports (backdrop-filter: blur(1rem)) or (-webkit-backdrop-filter: blur(1rem)) {
-    background-color: color-mix(in srgb, var(--card) 82%, transparent);
-    -webkit-backdrop-filter: saturate(1.8) blur(1.25rem);
-    backdrop-filter: saturate(1.8) blur(1.25rem);
+    .glass-bar {
+      background-color: color-mix(in srgb, var(--card) 82%, transparent);
+      -webkit-backdrop-filter: saturate(1.8) blur(1.25rem);
+      backdrop-filter: saturate(1.8) blur(1.25rem);
+    }
   }
 }
 

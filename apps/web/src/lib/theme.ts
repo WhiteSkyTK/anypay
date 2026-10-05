@@ -37,5 +37,17 @@ export function storeMode(mode: ThemeMode): void {
 
 export function applyTheme(theme: ResolvedTheme, doc: Document = document): void {
   doc.documentElement.classList.toggle('dark', theme === 'dark')
-  doc.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLORS[theme])
+  syncThemeColor(doc)
+}
+
+/**
+ * Browser chrome colour (iOS status bar, Android address bar): the theme's background, unless a
+ * full-bleed dark screen has claimed it with data-chrome="dark" (see useDarkChrome).
+ */
+export function syncThemeColor(doc: Document = document): void {
+  const root = doc.documentElement
+  const dark = root.dataset.chrome === 'dark' || root.classList.contains('dark')
+  doc
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', THEME_COLORS[dark ? 'dark' : 'light'])
 }
