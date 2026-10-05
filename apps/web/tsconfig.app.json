@@ -1,26 +1,17 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "es2023",
-    "lib": ["ES2023", "DOM"],
-    "module": "esnext",
-    "types": ["vite/client"],
-    "allowArbitraryExtensions": true,
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "vite-plugin-pwa/react"],
     "jsx": "react-jsx",
-
-    /* Linting */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests run in Node (tsconfig.test.json); keeping them out means app code can't use Node APIs.
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

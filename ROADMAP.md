@@ -2,20 +2,24 @@
 
 How to use this file: see CLAUDE.md → Workflow. Status values: Not started · In progress · Done.
 
-## Phase 0 — Scaffold · target 6 Oct · Status: Not started
-- [ ] npm workspaces monorepo: apps/web, apps/api, packages/shared
-- [ ] apps/web: Vite + React + TS PWA, Tailwind v4, shadcn/ui init, light/dark tokens + toggle, app shell with floating tab bar; routes / (onboarding), /shop/:id/pay, /merchant, /tab, /settings
-- [ ] apps/api: Express 5 + TS, composition root, class skeletons, zod env validation, GET /health
-- [ ] packages/shared: money utils + zod schemas with Vitest tests
-- [ ] ESLint, Prettier, .editorconfig, .gitattributes (LF), .gitignore (.env, *.key, dist, node_modules)
-- [ ] GitHub Actions CI (lint/test/build), sonar-project.properties, .env.example, README quick start
+## Phase 0 — Scaffold · target 6 Oct · Status: In progress
+- [x] npm workspaces monorepo: apps/web, apps/api, packages/shared
+- [x] apps/web: Vite + React + TS PWA, Tailwind v4, shadcn/ui init, light/dark tokens + toggle, app shell with floating tab bar; routes / (onboarding), /shop/:id/pay, /merchant, /tab, /settings
+- [x] apps/api: Express 5 + TS, composition root, class skeletons, zod env validation, GET /health
+- [x] packages/shared: money utils + zod schemas with Vitest tests
+- [x] ESLint, Prettier, .editorconfig
+- [x] .gitattributes (LF), .gitignore (.env, *.key, dist, node_modules)
+- [x] GitHub Actions CI (lint/test/build), sonar-project.properties, .env.example, README quick start
+- [x] docs/design/refs/ is missing from the repo: add the 4 chosen refs from the kickoff images
+- [x] i18next set up now so shell strings don't need retrofitting (English only for now)
+- [x] docs/decisions.md with Phase 0 decisions
 
 Scope: no payment logic yet.
 
 **Done when**
-- [ ] `npm install` and `npm run dev` start web and API on Windows
-- [ ] GET /health returns 200; the shell renders in both themes and installs as a PWA
-- [ ] Lint, test and build pass locally and in CI
+- [x] `npm install` and `npm run dev` start web and API on Windows
+- [x] GET /health returns 200; the shell renders in both themes and installs as a PWA
+- [ ] Lint, test and build pass locally and in CI (local: passing; CI: runs after the branch is pushed)
 
 **Team:** import the repo into SonarCloud.
 
@@ -39,6 +43,7 @@ Scope: no payment logic yet.
 - [ ] Merchant live feed: SSE, voice confirm, aria-live, daily totals, CSV export
 - [ ] Empty, loading, offline, error and success states on every screen
 - [ ] Deploy web + API on tiers that don't sleep; URLs in the README
+- [ ] Component tests (Testing Library + happy-dom) for the new screens: SonarCloud's default gate wants 80% coverage on new code, and React components have none yet
 
 **Done when**
 - [ ] On the deployed URLs, a payment from one phone appears and is announced on another within seconds
@@ -76,3 +81,4 @@ Scope: no payment logic yet.
 
 ## Progress log
 <!-- One entry per session: YYYY-MM-DD · done · next · blockers -->
+- 2026-10-05 · Phase 0 scaffold built on `phase-0-scaffold`: shared money utils + zod schemas, Express 5 API (env validation, /health, security middleware, service skeletons), React PWA shell (tokens, light/dark toggle, floating tab bar, 5 lazy routes, i18n, offline banner, update prompt), CI + Sonar config, docs. 155 tests; lint, typecheck and build pass; first load 138.8 KB gz of 200 KB. · Next: push, confirm CI is green on Ubuntu + Windows, mark Phase 0 Done, then Phase 1 (Open Payments, no UI). · Blockers: SonarCloud needs Automatic Analysis turned off and a `SONAR_TOKEN` repo secret (the CI job skips until then); second language still to choose.

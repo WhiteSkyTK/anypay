@@ -1,0 +1,85 @@
+{
+  "app": {
+    "name": "AnyPay",
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "label": "Main",
+    "shop": "Shop",
+    "tab": "Tab",
+    "settings": "Settings"
+  },
+  "onboarding": {
+    "documentTitle": "Pay any spaza from any wallet",
+    "headlineLine1": "Pay any spaza.",
+    "headlineLine2": "From any wallet.",
+    "body": "Take payments with just a QR code. No card machine, very little data, and it keeps working when the signal drops.",
+    "setUpShop": "Set up my shop",
+    "imCustomer": "I'm a customer"
+  },
+  "pay": {
+    "title": "Pay this shop",
+    "shopCode": "Shop code {{shopId}}",
+    "amountLabel": "Amount",
+    "empty": {
+      "title": "Payments open soon",
+      "description": "This shop is still setting up. Try again in a moment."
+    }
+  },
+  "merchant": {
+    "title": "Your shop",
+    "totalLabel": "Taken today",
+    "payments": "Payments",
+    "empty": {
+      "title": "No payments yet",
+      "description": "Payments appear here the moment they land, and your phone reads them out."
+    }
+  },
+  "tab": {
+    "title": "My tabs",
+    "empty": {
+      "title": "No open tabs",
+      "description": "Open a tab at your local spaza once, then pay with a tap, even when there's no signal."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": {
+      "system": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "about": "About",
+    "version": "Version {{version}}"
+  },
+  "offline": {
+    "banner": "You're offline. AnyPay keeps working and syncs when you're back."
+  },
+  "update": {
+    "ready": "A new version is ready",
+    "reload": "Reload",
+    "dismiss": "Not now"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "This link doesn't go anywhere.",
+    "home": "Go home"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "Reload the page to try again.",
+    "reload": "Reload"
+  },
+  "errors": {
+    "money": {
+      "minorUnits": "Enter a valid amount"
+    },
+    "walletAddress": {
+      "required": "Enter your wallet address",
+      "tooLong": "That address is too long",
+      "format": "Wallet addresses start with $ or https://"
+    },
+    "idempotencyKey": "Something went wrong. Please try again."
+  }
+}

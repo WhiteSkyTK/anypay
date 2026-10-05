@@ -1,0 +1,73 @@
+/*
+ * AnyPay design tokens: the single source of colour. Tailwind utilities and shadcn/ui
+ * components both read these variables, so every component inherits the palette.
+ *
+ * CLAUDE.md name → variable
+ *   bg → --background        surface → --card, --popover   ink → --foreground
+ *   muted → --muted-foreground  brand → --primary            on-brand → --primary-foreground
+ *   danger → --destructive    warn → --warn
+ *
+ * tokens.test.ts enforces contrast in both themes: text pairs ≥ 4.5:1, UI edges ≥ 3:1.
+ */
+
+:root {
+  color-scheme: light;
+
+  --background: #f5f2ea;
+  --foreground: #1c1f1a;
+  --card: #ffffff;
+  --card-foreground: #1c1f1a;
+  --popover: #ffffff;
+  --popover-foreground: #1c1f1a;
+
+  --primary: #1f4d3a;
+  --primary-foreground: #ffffff;
+  --secondary: #eae6db;
+  --secondary-foreground: #1c1f1a;
+  --muted: #eae6db;
+  --muted-foreground: #5f6358;
+  --accent: #e1ece4;
+  --accent-foreground: #1f4d3a;
+
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --warn: #8a5a00;
+  --warn-foreground: #ffffff;
+
+  /* Hairlines are decorative; --input outlines form fields and must reach 3:1. */
+  --border: #e2ddd1;
+  --input: #80847a;
+  --ring: #1f4d3a;
+
+  --radius: 1.25rem;
+}
+
+/* A class rather than a media query, so the manual toggle wins and a subtree can opt in. */
+.dark {
+  color-scheme: dark;
+
+  --background: #0f1211;
+  --foreground: #f2f0ea;
+  --card: #181c1a;
+  --card-foreground: #f2f0ea;
+  --popover: #181c1a;
+  --popover-foreground: #f2f0ea;
+
+  --primary: #5bd19a;
+  --primary-foreground: #0f1211;
+  --secondary: #252a27;
+  --secondary-foreground: #f2f0ea;
+  --muted: #252a27;
+  --muted-foreground: #a3a89e;
+  --accent: #1a2c23;
+  --accent-foreground: #5bd19a;
+
+  --destructive: #ff8a7a;
+  --destructive-foreground: #0f1211;
+  --warn: #f5b544;
+  --warn-foreground: #0f1211;
+
+  --border: #2a302c;
+  --input: #6e746b;
+  --ring: #5bd19a;
+}

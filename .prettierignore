@@ -1,0 +1,13 @@
+node_modules
+dist
+dev-dist
+coverage
+package-lock.json
+apps/web/public
+
+# Hand-written project docs: keep the team's own formatting
+CLAUDE.md
+ROADMAP.md
+
+# Vendored from the shadcn package
+apps/web/src/styles/shadcn.css
