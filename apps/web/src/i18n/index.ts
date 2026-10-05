@@ -2,7 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import {
   DEFAULT_LANGUAGE,
-  detectLanguage,
+  initialLanguage,
   LANGUAGE_STORAGE_KEY,
   LANGUAGES,
   type LanguageCode,
@@ -58,7 +58,7 @@ export async function initI18n(): Promise<void> {
     supportedLngs: LANGUAGES.map((language) => language.code),
     interpolation: { escapeValue: false }, // React already escapes output
   })
-  const initial = detectLanguage(readStoredLanguage(), navigator.languages)
+  const initial = initialLanguage(readStoredLanguage())
   if (initial === DEFAULT_LANGUAGE) return
   try {
     await loadLanguage(initial)

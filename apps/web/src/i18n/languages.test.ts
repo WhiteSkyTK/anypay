@@ -1,28 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { detectLanguage, isLanguageCode } from './languages'
+import { initialLanguage, isLanguageCode } from './languages'
 
-describe('detectLanguage', () => {
-  it('keeps a saved choice over the phone language', () => {
-    expect(detectLanguage('xh', ['zu-ZA'])).toBe('xh')
+describe('initialLanguage', () => {
+  it('starts in English when nothing was chosen', () => {
+    expect(initialLanguage(null)).toBe('en')
   })
 
-  it.each([
-    [['zu-ZA', 'en-ZA'], 'zu'],
-    [['xh'], 'xh'],
-    [['nso-ZA'], 'nso'],
-    [['NSO'], 'nso'],
-    [['af-ZA', 'xh-ZA'], 'xh'],
-  ])('picks the first supported phone language from %j', (preferred, expected) => {
-    expect(detectLanguage(null, preferred)).toBe(expected)
+  it.each(['nso', 'xh', 'zu', 'en'])('remembers a chosen language: %s', (code) => {
+    expect(initialLanguage(code)).toBe(code)
   })
 
-  it('falls back to English for unsupported languages', () => {
-    expect(detectLanguage(null, ['af-ZA', 'fr'])).toBe('en')
-    expect(detectLanguage(null, [])).toBe('en')
-  })
-
-  it('ignores junk in storage', () => {
-    expect(detectLanguage('klingon', ['zu'])).toBe('zu')
+  it.each(['klingon', '', 'zu-ZA', 42])('ignores junk in storage: %s', (stored) => {
+    expect(initialLanguage(stored)).toBe('en')
   })
 })
 

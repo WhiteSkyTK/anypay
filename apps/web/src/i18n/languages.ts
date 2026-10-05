@@ -18,14 +18,9 @@ export function isLanguageCode(value: unknown): value is LanguageCode {
 }
 
 /**
- * The person's saved choice wins; otherwise the first phone language we support ('zu-ZA' → 'zu'),
- * so a phone set to isiZulu opens in isiZulu without anyone touching settings.
+ * Everyone starts in English (a predictable first screen for a demo and for shared phones); once
+ * someone picks a language, that choice is remembered on the phone.
  */
-export function detectLanguage(stored: unknown, preferred: readonly string[]): LanguageCode {
-  if (isLanguageCode(stored)) return stored
-  for (const tag of preferred) {
-    const base = tag.toLowerCase().split('-')[0]
-    if (isLanguageCode(base)) return base
-  }
-  return DEFAULT_LANGUAGE
+export function initialLanguage(stored: unknown): LanguageCode {
+  return isLanguageCode(stored) ? stored : DEFAULT_LANGUAGE
 }

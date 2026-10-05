@@ -21,7 +21,7 @@ Brief, numbers, judging weights and submission rules: [docs/challenge.md](docs/c
 - [x] docs/decisions.md with Phase 0 decisions
 - [x] Follow-up: GitGuardian false positive (fake key in a test) replaced with a value generated at runtime
 - [x] Follow-up: SonarCloud first scan fixed (91 issues: stubs, read-only props, `<output>`, pinned actions, `npm ci --ignore-scripts`, vendored CSS excluded); `.sonarcloud.properties` for Automatic Analysis; Dependabot
-- [x] Follow-up: Sepedi, isiXhosa and isiZulu (drafts) with a language picker; locales lazy-loaded and key parity tested
+- [x] Follow-up: Sepedi, isiXhosa and isiZulu (drafts) with a language picker (starts in English, remembers the choice); locales lazy-loaded and key parity tested
 - [x] Follow-up: landing layout reworked (header aligned, illustration fills the middle, actions stay above the fold in every language, dark browser chrome on iOS)
 
 Scope: no payment logic yet.

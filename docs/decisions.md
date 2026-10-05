@@ -43,9 +43,9 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **Four languages: English, Sepedi, isiXhosa, isiZulu.** The team's choice for the spaza owners we
   expect to meet. Non-English strings are AI drafts until a native speaker reviews them. Only
   English is bundled; each other language is its own chunk, so a phone downloads only its own.
-- **The phone's language is detected; a manual choice wins.** A phone set to isiZulu opens in
-  isiZulu with no setup. The picker is on the landing screen, not buried in Settings, because the
-  first screen must already be readable.
+- **Everyone starts in English; a chosen language is remembered.** Team decision: a predictable
+  first screen for the demo and for phones shared in a shop. The picker is on the landing screen,
+  not buried in Settings, so switching is one tap away. (Replaces earlier phone-language detection.)
 - **Money is always formatted en-ZA (R 25,00), whatever the language.** Amounts must look the same
   on the customer's and the merchant's phone, even if they use different languages.
 - **Landing page sized to the screen.** The illustration only takes leftover space, so longer
