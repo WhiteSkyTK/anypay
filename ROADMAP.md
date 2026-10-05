@@ -33,14 +33,17 @@ Scope: no payment logic yet.
 
 **Team:** import the repo into SonarCloud (done, Automatic Analysis). Mark GitGuardian incident 37897618 as a false positive (test value, never a real secret).
 
-## Phase 1 — Prove Open Payments works (no UI) · target 11 Oct · Status: Not started
-- [ ] Read the SDK types and openpayments.dev first
+## Phase 1 — Prove Open Payments works (no UI) · target 11 Oct · Status: In progress
+- [x] Read the SDK types and openpayments.dev first (SDK 7.4.0 types, interaction hash spec, Rafiki outgoing-payment errors)
 - [ ] OpenPaymentsGateway, WalletAddressResolver, GrantService, PaymentOrchestrator (CLAUDE.md steps 1–5)
 - [ ] Private key from env (base64) or a gitignored file; never logged
 - [ ] `npm run demo:pay -- --from <wallet> --to <wallet> --amount 25.00`: logs each step, waits while I approve consent in the browser
 - [ ] Clear errors for declined consent, expired quote and insufficient funds
 - [ ] Orchestrator unit tests with a mocked gateway
 - [ ] WalletAddressResolver SSRF tests: http, IP literals, localhost, private ranges, hosts off the allowlist
+- [ ] Allowlist matches subdomains: the test wallet's auth server is `auth.interledger-test.dev`, not `ilp.`; also check the auth/resource server URLs a wallet address returns
+- [ ] Interaction `hash` verification (SHA-256 base64 of client nonce, AS nonce, interact_ref, grant URL; padding-tolerant, constant-time) with tests
+- [ ] Insufficient funds surfaces after creation (payment `failed`, nothing sent), so poll the outgoing payment; confirm against the test wallet
 
 **Done when**
 - [ ] A real test-wallet payment completes and both balances change
