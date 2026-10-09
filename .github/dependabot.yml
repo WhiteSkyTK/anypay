@@ -14,6 +14,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
+    ignore:
+      # typescript-eslint only supports TypeScript < 6.1: a newer TypeScript makes `npm ci` fail
+      # (CI and the Render build broke on 7.0.2). Lift this once typescript-eslint supports it.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
     groups:
       minor-and-patch:
         update-types: [minor, patch]
