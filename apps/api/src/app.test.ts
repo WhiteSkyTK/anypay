@@ -1,17 +1,31 @@
 import { ApiErrorSchema, HealthResponseSchema } from '@anypay/shared'
 import express from 'express'
 import request from 'supertest'
-import { describe, expect, it } from 'vitest'
+import type { Express } from 'express'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from './app'
 import { parseEnv } from './config/env'
 import { createContainer } from './container'
 import { errorHandler } from './http/errors'
 import { requestLogger } from './http/request-logger'
 import { NotImplementedError } from './lib/errors'
+import type { DatabaseHandle } from './db/database'
+import { createFakeOpenPayments } from './testing/fake-open-payments'
+import { openTestDatabase } from './testing/test-database'
 
 const WEB_ORIGIN = 'https://anypay.example'
-const container = createContainer(parseEnv({ NODE_ENV: 'test', WEB_ORIGIN }))
-const app = createApp(container)
+let database: DatabaseHandle
+let container: ReturnType<typeof createContainer>
+let app: Express
+
+beforeAll(async () => {
+  database = await openTestDatabase()
+  container = createContainer(parseEnv({ NODE_ENV: 'test', WEB_ORIGIN }), database.db, {
+    openPayments: createFakeOpenPayments(),
+  })
+  app = createApp(container)
+})
+afterAll(() => database.close())
 
 describe('GET /health', () => {
   it('returns 200 with the shared health shape', async () => {
@@ -91,7 +105,7 @@ describe('errors', () => {
       throw new NotImplementedError('Stub')
     })
     probe.get('/crash', () => {
-      throw new Error('database password is hunter2')
+      throw new Error('getaddrinfo ENOTFOUND db.internal.anypay')
     })
     probe.use(errorHandler)
 
@@ -100,6 +114,6 @@ describe('errors', () => {
 
     const crash = await request(probe).get('/crash').expect(500)
     expect(crash.body.error).toEqual({ code: 'internal_error', message: 'Something went wrong' })
-    expect(JSON.stringify(crash.body)).not.toContain('hunter2')
+    expect(JSON.stringify(crash.body)).not.toContain('db.internal')
   })
 })

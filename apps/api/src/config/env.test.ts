@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { parseEnv as parseDotEnv } from 'node:util'
 import { describe, expect, it } from 'vitest'
@@ -25,7 +26,7 @@ describe('parseEnv', () => {
       PORT: 3000,
       WEB_ORIGIN: ['http://localhost:5173'],
       DEMO_MODE: false,
-      ALLOWED_WALLET_HOSTS: ['ilp.interledger-test.dev'],
+      ALLOWED_WALLET_HOSTS: ['interledger-test.dev'],
     })
   })
 
@@ -68,7 +69,8 @@ describe('parseEnv', () => {
   })
 
   it('never echoes values, which may be secrets', () => {
-    const secret = 'c3VwZXItc2VjcmV0LWtleQ'
-    expect(envErrorMessage({ TOKEN_ENCRYPTION_KEY: secret })).not.toContain(secret)
+    // Generated per run, so no secret-shaped literal lives in the repo (secret scanners flag those).
+    const wrongLengthKey = randomBytes(24).toString('base64')
+    expect(envErrorMessage({ TOKEN_ENCRYPTION_KEY: wrongLengthKey })).not.toContain(wrongLengthKey)
   })
 })

@@ -14,6 +14,8 @@ export default defineConfig({
         'apps/web/src/components/ui/**',
         'apps/web/src/main.tsx',
         'apps/api/src/server.ts',
+        'apps/api/src/cli/**',
+        'apps/api/src/testing/**',
       ],
     },
   },

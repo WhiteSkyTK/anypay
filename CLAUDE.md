@@ -6,6 +6,7 @@ Hackathon proof of concept (Cape Town Software Development Meetup × Interledger
 Goal: let spaza shops take digital payments with no POS hardware, minimal data and tolerance for poor/no connectivity, using Open Payments (Interledger).
 Judged on: problem understanding, solution design, meaningful Open Payments use, technical quality, UX/accessibility, impact, demo.
 A focused feature that works beats a broad one that doesn't. Optimise for a reliable live demo.
+The brief, key numbers, judging weights and submission rules are summarised in docs/challenge.md.
 
 ## Workflow
 - ROADMAP.md is the source of truth. At the start of each session, read it and work only on the first phase whose Status isn't Done.
@@ -99,7 +100,7 @@ Rules:
 - No SF Pro / SF Symbols (Apple-platforms licence). Theme follows prefers-color-scheme with a manual toggle.
 
 ## Accessibility
-Semantic landmarks, one h1 per page, labelled inputs, visible focus, focus managed on route change and sheets, `aria-live="polite"` for payment status, status never shown by colour alone, usable at 200% text size. Voice confirm via Web Speech API (toggle). All strings via i18next: English + one South African language checked by a native speaker.
+Semantic landmarks, one h1 per page, labelled inputs, visible focus, focus managed on route change and sheets, `aria-live="polite"` for payment status, status never shown by colour alone, usable at 200% text size. Voice confirm via Web Speech API (toggle). All strings via i18next in English, Sepedi (nso), isiXhosa (xh) and isiZulu (zu); every locale has every key (tested), and non-English drafts must be checked by a native speaker (see apps/web/src/i18n/README.md).
 
 ## Security
 - Secrets only in env; commit .env.example; validate env with zod at startup.

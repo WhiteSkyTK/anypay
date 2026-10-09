@@ -1,0 +1,93 @@
+{
+  "app": {
+    "name": "AnyPay",
+    "skipToContent": "Yeqela kokuqukethwe"
+  },
+  "nav": {
+    "label": "Okuyinhloko",
+    "shop": "Isitolo",
+    "tab": "Ithebhu",
+    "settings": "Izilungiselelo"
+  },
+  "onboarding": {
+    "documentTitle": "Khokha kunoma iyiphi i-spaza ngenoma iyiphi iwalethi",
+    "headlineLine1": "Khokha kunoma iyiphi i-spaza.",
+    "headlineLine2": "Ngenoma iyiphi iwalethi.",
+    "body": "Thatha izinkokhelo nge-QR code kuphela. Awudingi umshini wamakhadi, isebenzisa idatha encane kakhulu, futhi iyaqhubeka isebenza noma isiginali ingekho.",
+    "setUpShop": "Misa isitolo sami",
+    "imCustomer": "Ngiyikhasimende",
+    "features": {
+      "qr": "I-QR code kuphela",
+      "anyWallet": "Noma iyiphi iwalethi",
+      "offline": "Isebenza ngaphandle kwe-inthanethi"
+    }
+  },
+  "language": {
+    "label": "Ulimi"
+  },
+  "pay": {
+    "title": "Khokha lesi sitolo",
+    "shopCode": "Ikhodi yesitolo {{shopId}}",
+    "amountLabel": "Inani",
+    "empty": {
+      "title": "Izinkokhelo zizovulwa maduze",
+      "description": "Lesi sitolo sisalungiselela. Zama futhi emva kwesikhashana."
+    }
+  },
+  "merchant": {
+    "title": "Isitolo sakho",
+    "totalLabel": "Okungenile namuhla",
+    "payments": "Izinkokhelo",
+    "empty": {
+      "title": "Azikabikho izinkokhelo",
+      "description": "Izinkokhelo zivela lapha ngokushesha uma zingena, futhi ifoni yakho iyazifunda ngezwi."
+    }
+  },
+  "tab": {
+    "title": "Amathebhu ami",
+    "empty": {
+      "title": "Awekho amathebhu avuliwe",
+      "description": "Vula ithebhu e-spaza yakho kanye nje, bese ukhokha ngokuthinta, ngisho noma isiginali ingekho."
+    }
+  },
+  "settings": {
+    "title": "Izilungiselelo",
+    "appearance": "Ukubukeka",
+    "theme": {
+      "system": "Njengefoni",
+      "light": "Ukukhanya",
+      "dark": "Ubumnyama"
+    },
+    "about": "Mayelana",
+    "version": "Inguqulo {{version}}"
+  },
+  "offline": {
+    "banner": "Awuxhumekile ku-inthanethi. I-AnyPay iyaqhubeka isebenza futhi izovumelanisa uma usubuyile."
+  },
+  "update": {
+    "ready": "Kukhona inguqulo entsha",
+    "reload": "Layisha kabusha",
+    "dismiss": "Hhayi manje"
+  },
+  "notFound": {
+    "title": "Ikhasi alitholakali",
+    "description": "Lesi sixhumanisi asiyi ndawo.",
+    "home": "Buyela ekhaya"
+  },
+  "error": {
+    "title": "Kukhona okungahambanga kahle",
+    "description": "Layisha kabusha ikhasi ukuze uzame futhi.",
+    "reload": "Layisha kabusha"
+  },
+  "errors": {
+    "money": {
+      "minorUnits": "Faka inani elifanele"
+    },
+    "walletAddress": {
+      "required": "Faka ikheli lewalethi yakho",
+      "tooLong": "Lelo kheli lide kakhulu",
+      "format": "Amakheli ewalethi aqala ngo-$ noma ngo-https://"
+    },
+    "idempotencyKey": "Kukhona okungahambanga kahle. Sicela uzame futhi."
+  }
+}

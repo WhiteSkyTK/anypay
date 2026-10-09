@@ -21,3 +21,8 @@ export class NotImplementedError extends AppError {
     this.name = 'NotImplementedError'
   }
 }
+
+/** Body for a scaffolded async method: rejects like the real method will on failure. */
+export function notImplemented(feature: string): Promise<never> {
+  return Promise.reject(new NotImplementedError(feature))
+}

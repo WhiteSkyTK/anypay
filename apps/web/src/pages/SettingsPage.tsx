@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { LanguageSelect } from '@/components/LanguageSelect'
 import { Page } from '@/components/Page'
 import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 
@@ -7,6 +8,7 @@ export function Component() {
   return (
     <Page title={t('settings.title')}>
       <div className="mt-8 flex flex-col gap-10">
+        <LanguageSelect />
         <ThemeSwitcher />
 
         <section aria-labelledby="about-heading">
