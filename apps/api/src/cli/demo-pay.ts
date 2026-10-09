@@ -25,7 +25,11 @@ const FAILURE_MESSAGES: Record<PaymentFailure, string> = {
   timeout: 'The money did not arrive in time. Check both wallets.',
 }
 
-const money = (amount: Money) => `${formatMoney(amount)} (${amount.assetCode})`
+// Add the code only when the symbol hides it (R 0,13 → R 0,13 ZAR; COP 25,00 already says COP).
+const money = (amount: Money) => {
+  const text = formatMoney(amount)
+  return text.includes(amount.assetCode) ? text : `${text} ${amount.assetCode}`
+}
 const print = (line = '') => console.log(line)
 
 function printStep(session: PaymentSession): void {
