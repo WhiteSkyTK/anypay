@@ -12,9 +12,9 @@ Tick what worked, and write what didn't under **Problems found**.
 ### Phase 1 (done)
 
 - [x] `npm run demo:pay -- --amount 25.00` completes a real payment (checked 2026-10-09)
-- [ ] Insufficient funds: run `npm run demo:pay -- --amount 999999` (more than the customer
+- [x] Insufficient funds: run `npm run demo:pay -- --amount 999999` (more than the customer
       holds), approve it, and check the script says the wallet does not have enough money
-- [ ] Declined: run `npm run demo:pay -- --amount 5`, then press **Decline** on the approval
+- [x] Declined: run `npm run demo:pay -- --amount 5`, then press **Decline** on the approval
       page. The script should say the customer declined
 
 ### Phase 2

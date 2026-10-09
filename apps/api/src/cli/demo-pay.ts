@@ -8,7 +8,7 @@ import { createInterface } from 'node:readline/promises'
 import { parseArgs } from 'node:util'
 import { parseEnv } from '../config/env'
 import { loadDotEnv } from '../config/repo-root'
-import { createContainer } from '../container'
+import { createCore } from '../container'
 import type { ConsentCallback } from '../services/grant-service'
 import type { PaymentFailure, PaymentSession } from '../services/payment-session'
 
@@ -144,8 +144,8 @@ async function main(): Promise<number> {
   loadDotEnv()
   const env = parseEnv({ ...process.env, LOG_LEVEL: 'silent' })
   const args = readArgs(env)
-  const container = createContainer(env, { onPaymentStep: printStep })
-  if (!container.openPayments.isConfigured) {
+  const container = createCore(env, { onPaymentStep: printStep })
+  if (!container.openPaymentsConfigured) {
     throw new Error(
       'Open Payments is not configured: set CLIENT_WALLET_ADDRESS, KEY_ID and PRIVATE_KEY in .env',
     )

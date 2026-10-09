@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "demo:pay": "tsx src/cli/demo-pay.ts"
+    "demo:pay": "tsx src/cli/demo-pay.ts",
+    "seed": "tsx src/cli/seed.ts"
   },
   "dependencies": {
     "@anypay/shared": "*",

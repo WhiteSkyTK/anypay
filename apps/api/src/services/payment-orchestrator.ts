@@ -34,6 +34,8 @@ export interface PaymentOrchestratorDeps {
 }
 
 export interface StartPaymentInput {
+  /** Payment id; pass one when the callback URL must contain it before the payment starts. */
+  id?: string
   customerWallet: string
   merchantWallet: string
   /** Decimal amount as typed ('25' or '25.00'), in the shop's currency. */
@@ -83,7 +85,7 @@ export class PaymentOrchestrator {
     ])
     const amount = this.#toShopAmount(input.amount, merchant)
     const session: PaymentSession = {
-      id: randomUUID(),
+      id: input.id ?? randomUUID(),
       step: 'created',
       customer,
       merchant,

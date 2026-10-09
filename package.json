@@ -18,7 +18,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "demo:pay": "npm run demo:pay -w @anypay/api --"
+    "demo:pay": "npm run demo:pay -w @anypay/api --",
+    "seed": "npm run seed -w @anypay/api --"
   },
   "overrides": {
     "uuid": "^11.1.1"
