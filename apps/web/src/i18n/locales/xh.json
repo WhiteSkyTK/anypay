@@ -3,6 +3,13 @@
     "name": "AnyPay",
     "skipToContent": "Tsibela kumxholo"
   },
+  "common": {
+    "back": "Emva",
+    "cancel": "Rhoxisa",
+    "retry": "Zama kwakhona",
+    "done": "Kugqityiwe",
+    "offline": "Awukho kwi-intanethi. Oku kufuna uqhagamshelwano; kuza kusebenza kwakhona xa ubuyile."
+  },
   "nav": {
     "label": "Okuphambili",
     "shop": "Ivenkile",
@@ -25,23 +32,143 @@
   "language": {
     "label": "Ulwimi"
   },
+  "setup": {
+    "title": "Lungiselela ivenkile yakho",
+    "step": "Inyathelo {{current}} kwezi-{{total}}",
+    "walletLabel": "Idilesi yewalethi yakho",
+    "walletHint": "Iqala ngo-$ okanye ngo-https://. Yifumane kwi-app yewalethi yakho.",
+    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
+    "check": "Khangela iwalethi",
+    "checking": "Iyakhangela…",
+    "walletFound": "Iwalethi ifunyenwe",
+    "receivesIn": "Iintlawulo zifika nge-{{currency}}",
+    "change": "Tshintsha",
+    "nameLabel": "Igama levenkile",
+    "nameHint": "Abathengi bayalibona eli gama xa behlawula.",
+    "create": "Yenza ivenkile yam",
+    "creating": "Iyenza…"
+  },
+  "poster": {
+    "title": "Iphosta yakho ye-QR",
+    "hint": "Yiprinte nge-A5 uyibeke apho abathengi banokuyiskena khona.",
+    "scanToPay": "Skena ukuze uhlawule",
+    "anyWallet": "Ngayo nayiphi na iwalethi ye-Open Payments",
+    "orOpen": "Okanye uvule",
+    "qrLabel": "Ikhowudi ye-QR yokuhlawula i-{{shop}}",
+    "print": "Printa iphosta",
+    "done": "Yiya kwivenkile yam"
+  },
+  "connect": {
+    "title": "Iqhagamshela ivenkile yakho",
+    "failed": "Eli khonkco alisebenzanga. Lungiselela ivenkile kwakhona okanye ucele ikhonkco elitsha."
+  },
   "pay": {
-    "title": "Hlawula le venkile",
-    "shopCode": "Ikhowudi yevenkile {{shopId}}",
+    "subtitle": "Hlawula ngayo nayiphi na iwalethi",
     "amountLabel": "Isixa",
-    "empty": {
-      "title": "Iintlawulo ziza kuvulwa kungekudala",
-      "description": "Le venkile isalungiselela. Zama kwakhona emva kwexeshana."
+    "keypad": {
+      "label": "Ikhiphedi yesixa",
+      "delete": "Cima",
+      "decimal": "Ikoma yedesimali"
+    },
+    "walletLabel": "Idilesi yewalethi yakho",
+    "walletHint": "Igcinwe kule fowuni ngexesha elizayo.",
+    "continue": "Qhubeka",
+    "gettingQuote": "Ifumana ixabiso…",
+    "notFound": {
+      "title": "Ivenkile ayifumanekanga",
+      "description": "Khangela ikhowudi ye-QR, okanye ucele ivenkile ikhonkco layo."
+    },
+    "quote": {
+      "title": "Qinisekisa intlawulo",
+      "youPay": "Uhlawula",
+      "shopGets": "I-{{shop}} ifumana",
+      "includes": "Kubandakanya zonke iifizi nezinga lotshintshiselwano.",
+      "validUntil": "Ixabiso ligcinwe de kube ngu-{{time}}",
+      "approve": "Vuma kwiwalethi yam",
+      "redirecting": "Ivula iwalethi yakho…"
     }
+  },
+  "receipt": {
+    "title": "Intlawulo",
+    "loading": "Ikhangela intlawulo…",
+    "waiting": {
+      "title": "Kulindelwe imvume",
+      "description": "Vuma intlawulo kwiwalethi yakho ukuze ugqibe."
+    },
+    "sending": {
+      "title": "Iqinisekisa intlawulo…",
+      "description": "Oku kuthatha imizuzwana embalwa."
+    },
+    "completed": {
+      "title": "Kuhlawuliwe",
+      "description": "I-{{shop}} ifumene {{amount}}.",
+      "youPaid": "Uhlawule {{amount}}"
+    },
+    "failed": {
+      "title": "Intlawulo ayigqitywanga"
+    },
+    "callbackError": "Asikakwazi ukuqinisekisa imvume yakho. Khangela iwalethi yakho phambi kokuzama kwakhona.",
+    "payAgain": "Hlawula kwakhona",
+    "notFound": "Asiyifumananga le risithi."
   },
   "merchant": {
     "title": "Ivenkile yakho",
     "totalLabel": "Ezingenileyo namhlanje",
-    "payments": "Iintlawulo",
+    "payments": "Iintlawulo zanamhlanje",
     "empty": {
       "title": "Akukabikho ntlawulo",
-      "description": "Iintlawulo zivela apha kwangoko xa zifika, kwaye ifowuni yakho iyazifunda ngokuvakalayo."
-    }
+      "description": "Iintlawulo zivela apha kwangoko xa zifika, kwaye ifowuni yakho ingazifunda ngokuvakalayo."
+    },
+    "setUp": {
+      "title": "Akukabikho venkile kule fowuni",
+      "description": "Ukulungiselela kuthatha ngaphantsi kwemizuzu emibini: idilesi yewalethi yakho negama levenkile.",
+      "cta": "Lungiselela ivenkile yam"
+    },
+    "live": {
+      "loading": "Iyaqhagamshela…",
+      "connecting": "Iyaqhagamshela…",
+      "live": "Ngqo",
+      "reconnecting": "Iphinda iqhagamshele…",
+      "closed": "Ayiqhagamshelwanga",
+      "unauthorized": "Uphumile",
+      "offline": "Awukho kwi-intanethi"
+    },
+    "voice": {
+      "label": "Funda iintlawulo ngokuvakalayo",
+      "received": "Intlawulo ifunyenwe, {{amount}}",
+      "unsupported": "Le fowuni ayikwazi ukufunda ngokuvakalayo."
+    },
+    "actions": {
+      "poster": "Iphosta",
+      "export": "Thumela i-CSV",
+      "exporting": "Iyathumela…"
+    },
+    "unauthorized": {
+      "title": "Le fowuni iphumile kwivenkile",
+      "description": "Vula ikhonkco levenkile yakho kwakhona, okanye ulungiselele ivenkile kwakhona.",
+      "reset": "Lungiselela kwakhona"
+    },
+    "paidWith": "Umthengi uhlawule {{amount}}",
+    "newPayment": "Intlawulo ifunyenwe: {{amount}}"
+  },
+  "status": {
+    "created": "Iqalile",
+    "incoming-payment-created": "Iqalile",
+    "quoted": "Inexabiso",
+    "awaiting-consent": "Ilindile",
+    "sending": "Iyaqinisekisa",
+    "completed": "Ifunyenwe",
+    "failed": "Ayiphumelelanga"
+  },
+  "failures": {
+    "consent_declined": "Intlawulo yaliwe kwiwalethi. Akukho mali ithathiweyo.",
+    "consent_invalid": "Imvume ayikwazanga ukuqinisekiswa, ngoko akukho mali ithathiweyo.",
+    "consent_timeout": "Intlawulo ayivunywanga ngexesha. Akukho mali ithathiweyo.",
+    "quote_expired": "Ixabiso liphelelwe lixesha phambi kokuba intlawulo ivunywe. Nceda uzame kwakhona.",
+    "insufficient_funds": "Iwalethi ayinamali yaneleyo yale ntlawulo.",
+    "grant_limit": "Intlawulo ingaphezulu koko iwalethi ikuvumileyo.",
+    "payment_failed": "Intlawulo ayiphumelelanga. Akukho mali ithathiweyo.",
+    "timeout": "Imali ithatha ixesha elide ukufika. Khangela iwalethi phambi kokuhlawula kwakhona."
   },
   "tab": {
     "title": "Iithebhu zam",
@@ -60,6 +187,9 @@
     },
     "about": "Malunga",
     "version": "Uguqulelo {{version}}"
+  },
+  "demo": {
+    "banner": "Imowudi yokubonisa · imali yovavanyo kuphela"
   },
   "offline": {
     "banner": "Awukho kwi-intanethi. I-AnyPay iyaqhubeka isebenza kwaye iza kuvumelanisa xa ubuyile."
@@ -81,13 +211,33 @@
   },
   "errors": {
     "money": {
-      "minorUnits": "Faka isixa esichanekileyo"
+      "minorUnits": "Faka isixa esichanekileyo",
+      "invalid": "Faka isixa esichanekileyo",
+      "tooLarge": "Eso sixa sikhulu kakhulu"
     },
     "walletAddress": {
       "required": "Faka idilesi yewalethi yakho",
       "tooLong": "Loo dilesi inde kakhulu",
       "format": "Iidilesi zewalethi ziqala ngo-$ okanye ngo-https://"
     },
-    "idempotencyKey": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona."
+    "shopName": {
+      "tooShort": "Sebenzisa ubuncinci oonobumba aba-2",
+      "tooLong": "Sebenzisa ubuninzi boonobumba abangama-60"
+    },
+    "idempotencyKey": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona.",
+    "api": {
+      "network_error": "Akukho qhagamshelwano. Khangela idatha yakho uze uzame kwakhona.",
+      "wallet_host_not_allowed": "I-AnyPay ayikakwazi ukusebenzisa iiwalethi zalo mboneleli.",
+      "wallet_address_invalid": "Le ayisiyo idilesi yewalethi esebenzayo.",
+      "wallet_not_found": "Akukho walethi kuloo dilesi.",
+      "shop_not_found": "Ivenkile ayifumanekanga.",
+      "payment_not_found": "Intlawulo ayifumanekanga.",
+      "rate_limited": "Imizamo emininzi kakhulu. Linda umzuzu, uze uzame kwakhona.",
+      "open_payments_unavailable": "Umboneleli wewalethi akaphenduli. Zama kwakhona kungekudala.",
+      "open_payments_not_configured": "Iintlawulo azikavulwa kule seva ye-AnyPay.",
+      "merchant_unauthorized": "Le fowuni ayingenanga kwivenkile.",
+      "invalid_amount": "Faka isixa esingaphezulu kweqanda.",
+      "unknown": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona."
+    }
   }
 }

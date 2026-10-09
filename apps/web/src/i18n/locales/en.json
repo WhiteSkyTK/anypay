@@ -3,6 +3,13 @@
     "name": "AnyPay",
     "skipToContent": "Skip to content"
   },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "done": "Done",
+    "offline": "You're offline. This needs a connection; it will work again once you're back."
+  },
   "nav": {
     "label": "Main",
     "shop": "Shop",
@@ -25,23 +32,143 @@
   "language": {
     "label": "Language"
   },
+  "setup": {
+    "title": "Set up your shop",
+    "step": "Step {{current}} of {{total}}",
+    "walletLabel": "Your wallet address",
+    "walletHint": "It starts with $ or https://. Find it in your wallet app.",
+    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
+    "check": "Check wallet",
+    "checking": "Checking…",
+    "walletFound": "Wallet found",
+    "receivesIn": "Payments arrive in {{currency}}",
+    "change": "Change",
+    "nameLabel": "Shop name",
+    "nameHint": "Customers see this when they pay.",
+    "create": "Create my shop",
+    "creating": "Creating…"
+  },
+  "poster": {
+    "title": "Your QR poster",
+    "hint": "Print it on A5 and put it where customers can scan it.",
+    "scanToPay": "Scan to pay",
+    "anyWallet": "With any Open Payments wallet",
+    "orOpen": "Or open",
+    "qrLabel": "QR code to pay {{shop}}",
+    "print": "Print poster",
+    "done": "Go to my shop"
+  },
+  "connect": {
+    "title": "Connecting your shop",
+    "failed": "This link didn't work. Set up the shop again or ask for a new link."
+  },
   "pay": {
-    "title": "Pay this shop",
-    "shopCode": "Shop code {{shopId}}",
+    "subtitle": "Pay with any wallet",
     "amountLabel": "Amount",
-    "empty": {
-      "title": "Payments open soon",
-      "description": "This shop is still setting up. Try again in a moment."
+    "keypad": {
+      "label": "Amount keypad",
+      "delete": "Delete",
+      "decimal": "Decimal comma"
+    },
+    "walletLabel": "Your wallet address",
+    "walletHint": "Saved on this phone for next time.",
+    "continue": "Continue",
+    "gettingQuote": "Getting the price…",
+    "notFound": {
+      "title": "Shop not found",
+      "description": "Check the QR code, or ask the shop for their link."
+    },
+    "quote": {
+      "title": "Confirm payment",
+      "youPay": "You pay",
+      "shopGets": "{{shop}} gets",
+      "includes": "Includes all fees and the exchange rate.",
+      "validUntil": "Price held until {{time}}",
+      "approve": "Approve in my wallet",
+      "redirecting": "Opening your wallet…"
     }
+  },
+  "receipt": {
+    "title": "Payment",
+    "loading": "Checking the payment…",
+    "waiting": {
+      "title": "Waiting for approval",
+      "description": "Approve the payment in your wallet to finish."
+    },
+    "sending": {
+      "title": "Confirming payment…",
+      "description": "This takes a few seconds."
+    },
+    "completed": {
+      "title": "Paid",
+      "description": "{{shop}} received {{amount}}.",
+      "youPaid": "You paid {{amount}}"
+    },
+    "failed": {
+      "title": "Payment not completed"
+    },
+    "callbackError": "We couldn't confirm your approval yet. Check your wallet before trying again.",
+    "payAgain": "Pay again",
+    "notFound": "We couldn't find this receipt."
   },
   "merchant": {
     "title": "Your shop",
     "totalLabel": "Taken today",
-    "payments": "Payments",
+    "payments": "Today's payments",
     "empty": {
       "title": "No payments yet",
-      "description": "Payments appear here the moment they land, and your phone reads them out."
-    }
+      "description": "Payments appear here the moment they land, and your phone can read them out."
+    },
+    "setUp": {
+      "title": "No shop on this phone yet",
+      "description": "Setting up takes under two minutes: your wallet address and a shop name.",
+      "cta": "Set up my shop"
+    },
+    "live": {
+      "loading": "Connecting…",
+      "connecting": "Connecting…",
+      "live": "Live",
+      "reconnecting": "Reconnecting…",
+      "closed": "Not connected",
+      "unauthorized": "Signed out",
+      "offline": "Offline"
+    },
+    "voice": {
+      "label": "Read payments out loud",
+      "received": "Payment received, {{amount}}",
+      "unsupported": "This phone can't read out loud."
+    },
+    "actions": {
+      "poster": "Poster",
+      "export": "Export CSV",
+      "exporting": "Exporting…"
+    },
+    "unauthorized": {
+      "title": "This phone is signed out of the shop",
+      "description": "Open your shop's link again, or set up the shop again.",
+      "reset": "Set up again"
+    },
+    "paidWith": "Customer paid {{amount}}",
+    "newPayment": "Payment received: {{amount}}"
+  },
+  "status": {
+    "created": "Started",
+    "incoming-payment-created": "Started",
+    "quoted": "Priced",
+    "awaiting-consent": "Waiting",
+    "sending": "Confirming",
+    "completed": "Received",
+    "failed": "Failed"
+  },
+  "failures": {
+    "consent_declined": "The payment was declined in the wallet. No money was taken.",
+    "consent_invalid": "The approval couldn't be verified, so no money was taken.",
+    "consent_timeout": "The payment wasn't approved in time. No money was taken.",
+    "quote_expired": "The price expired before the payment was approved. Please try again.",
+    "insufficient_funds": "The wallet doesn't have enough money for this payment.",
+    "grant_limit": "The payment is more than the wallet approved.",
+    "payment_failed": "The payment failed. No money was taken.",
+    "timeout": "The money is taking long to arrive. Check the wallet before paying again."
   },
   "tab": {
     "title": "My tabs",
@@ -60,6 +187,9 @@
     },
     "about": "About",
     "version": "Version {{version}}"
+  },
+  "demo": {
+    "banner": "Demo mode · test money only"
   },
   "offline": {
     "banner": "You're offline. AnyPay keeps working and syncs when you're back."
@@ -81,13 +211,33 @@
   },
   "errors": {
     "money": {
-      "minorUnits": "Enter a valid amount"
+      "minorUnits": "Enter a valid amount",
+      "invalid": "Enter a valid amount",
+      "tooLarge": "That amount is too large"
     },
     "walletAddress": {
       "required": "Enter your wallet address",
       "tooLong": "That address is too long",
       "format": "Wallet addresses start with $ or https://"
     },
-    "idempotencyKey": "Something went wrong. Please try again."
+    "shopName": {
+      "tooShort": "Use at least 2 letters",
+      "tooLong": "Use at most 60 characters"
+    },
+    "idempotencyKey": "Something went wrong. Please try again.",
+    "api": {
+      "network_error": "No connection. Check your data and try again.",
+      "wallet_host_not_allowed": "AnyPay can't use wallets from that provider yet.",
+      "wallet_address_invalid": "That isn't a valid wallet address.",
+      "wallet_not_found": "There's no wallet at that address.",
+      "shop_not_found": "Shop not found.",
+      "payment_not_found": "Payment not found.",
+      "rate_limited": "Too many tries. Wait a minute, then try again.",
+      "open_payments_unavailable": "The wallet provider isn't answering. Try again soon.",
+      "open_payments_not_configured": "Payments aren't switched on for this AnyPay server yet.",
+      "merchant_unauthorized": "This phone isn't signed in to the shop.",
+      "invalid_amount": "Enter an amount more than zero.",
+      "unknown": "Something went wrong. Please try again."
+    }
   }
 }

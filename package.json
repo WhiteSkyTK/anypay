@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "dev": "concurrently --kill-others-on-fail --names api,web --prefix-colors green,cyan \"npm run dev -w @anypay/api\" \"npm run dev -w @anypay/web\"",
+    "dev:lan": "concurrently --kill-others-on-fail --names api,web --prefix-colors green,cyan \"npm run dev -w @anypay/api\" \"npm run dev -w @anypay/web -- --host\"",
     "build": "npm run build --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",

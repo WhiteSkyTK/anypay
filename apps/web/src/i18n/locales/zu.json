@@ -3,6 +3,13 @@
     "name": "AnyPay",
     "skipToContent": "Yeqela kokuqukethwe"
   },
+  "common": {
+    "back": "Emuva",
+    "cancel": "Khansela",
+    "retry": "Zama futhi",
+    "done": "Kuqediwe",
+    "offline": "Awuxhunyiwe ku-inthanethi. Lokhu kudinga uxhumano; kuzosebenza futhi uma usubuyile."
+  },
   "nav": {
     "label": "Okuyinhloko",
     "shop": "Isitolo",
@@ -25,23 +32,143 @@
   "language": {
     "label": "Ulimi"
   },
+  "setup": {
+    "title": "Misa isitolo sakho",
+    "step": "Isinyathelo {{current}} kwezingu-{{total}}",
+    "walletLabel": "Ikheli lewalethi yakho",
+    "walletHint": "Liqala ngo-$ noma ngo-https://. Lithole ku-app yewalethi yakho.",
+    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
+    "check": "Hlola iwalethi",
+    "checking": "Iyahlola…",
+    "walletFound": "Iwalethi itholakele",
+    "receivesIn": "Izinkokhelo zingena ngo-{{currency}}",
+    "change": "Shintsha",
+    "nameLabel": "Igama lesitolo",
+    "nameHint": "Amakhasimende abona leli gama uma ekhokha.",
+    "create": "Dala isitolo sami",
+    "creating": "Iyadala…"
+  },
+  "poster": {
+    "title": "Iphosta yakho ye-QR",
+    "hint": "Yiphrinte ngo-A5 bese uyibeka lapho amakhasimende engayiskena khona.",
+    "scanToPay": "Skena ukuze ukhokhe",
+    "anyWallet": "Ngenoma iyiphi iwalethi ye-Open Payments",
+    "orOpen": "Noma vula",
+    "qrLabel": "Ikhodi ye-QR yokukhokha i-{{shop}}",
+    "print": "Phrinta iphosta",
+    "done": "Iya esitolo sami"
+  },
+  "connect": {
+    "title": "Ixhuma isitolo sakho",
+    "failed": "Lesi sixhumanisi asisebenzanga. Misa isitolo futhi noma ucele isixhumanisi esisha."
+  },
   "pay": {
-    "title": "Khokha lesi sitolo",
-    "shopCode": "Ikhodi yesitolo {{shopId}}",
+    "subtitle": "Khokha ngenoma iyiphi iwalethi",
     "amountLabel": "Inani",
-    "empty": {
-      "title": "Izinkokhelo zizovulwa maduze",
-      "description": "Lesi sitolo sisalungiselela. Zama futhi emva kwesikhashana."
+    "keypad": {
+      "label": "Ikhiphedi yenani",
+      "delete": "Susa",
+      "decimal": "Ukhefana lwedesimali"
+    },
+    "walletLabel": "Ikheli lewalethi yakho",
+    "walletHint": "Ligcinwe kule foni okwesikhathi esizayo.",
+    "continue": "Qhubeka",
+    "gettingQuote": "Ithola intengo…",
+    "notFound": {
+      "title": "Isitolo asitholakali",
+      "description": "Hlola ikhodi ye-QR, noma ucele isitolo isixhumanisi saso."
+    },
+    "quote": {
+      "title": "Qinisekisa inkokhelo",
+      "youPay": "Ukhokha",
+      "shopGets": "I-{{shop}} ithola",
+      "includes": "Kufakwe zonke izindleko nezinga lokushintshaniswa kwemali.",
+      "validUntil": "Intengo igcinwe kuze kube ngu-{{time}}",
+      "approve": "Vumela ewalethini yami",
+      "redirecting": "Ivula iwalethi yakho…"
     }
+  },
+  "receipt": {
+    "title": "Inkokhelo",
+    "loading": "Ihlola inkokhelo…",
+    "waiting": {
+      "title": "Kulindwe imvume",
+      "description": "Vumela inkokhelo ewalethini yakho ukuze uqedele."
+    },
+    "sending": {
+      "title": "Iqinisekisa inkokhelo…",
+      "description": "Lokhu kuthatha imizuzwana embalwa."
+    },
+    "completed": {
+      "title": "Kukhokhiwe",
+      "description": "I-{{shop}} ithole u-{{amount}}.",
+      "youPaid": "Ukhokhe u-{{amount}}"
+    },
+    "failed": {
+      "title": "Inkokhelo ayiphumelelanga"
+    },
+    "callbackError": "Asikakwazi ukuqinisekisa imvume yakho. Hlola iwalethi yakho ngaphambi kokuzama futhi.",
+    "payAgain": "Khokha futhi",
+    "notFound": "Asiyitholanga le risidi."
   },
   "merchant": {
     "title": "Isitolo sakho",
     "totalLabel": "Okungenile namuhla",
-    "payments": "Izinkokhelo",
+    "payments": "Izinkokhelo zanamuhla",
     "empty": {
       "title": "Azikabikho izinkokhelo",
-      "description": "Izinkokhelo zivela lapha ngokushesha uma zingena, futhi ifoni yakho iyazifunda ngezwi."
-    }
+      "description": "Izinkokhelo zivela lapha ngokushesha uma zingena, futhi ifoni yakho ingazifunda ngezwi."
+    },
+    "setUp": {
+      "title": "Asikabikho isitolo kule foni",
+      "description": "Ukumisa kuthatha ngaphansi kwemizuzu emibili: ikheli lewalethi yakho negama lesitolo.",
+      "cta": "Misa isitolo sami"
+    },
+    "live": {
+      "loading": "Iyaxhuma…",
+      "connecting": "Iyaxhuma…",
+      "live": "Bukhoma",
+      "reconnecting": "Iphinda ixhume…",
+      "closed": "Akuxhunyiwe",
+      "unauthorized": "Uphumile",
+      "offline": "Awuxhunyiwe"
+    },
+    "voice": {
+      "label": "Funda izinkokhelo ngezwi",
+      "received": "Inkokhelo yamukelwe, {{amount}}",
+      "unsupported": "Le foni ayikwazi ukufunda ngezwi."
+    },
+    "actions": {
+      "poster": "Iphosta",
+      "export": "Thumela i-CSV",
+      "exporting": "Iyathumela…"
+    },
+    "unauthorized": {
+      "title": "Le foni iphumile esitolo",
+      "description": "Vula isixhumanisi sesitolo sakho futhi, noma umise isitolo futhi.",
+      "reset": "Misa futhi"
+    },
+    "paidWith": "Ikhasimende likhokhe {{amount}}",
+    "newPayment": "Inkokhelo yamukelwe: {{amount}}"
+  },
+  "status": {
+    "created": "Iqalile",
+    "incoming-payment-created": "Iqalile",
+    "quoted": "Inentengo",
+    "awaiting-consent": "Ilindile",
+    "sending": "Iyaqinisekisa",
+    "completed": "Yamukelwe",
+    "failed": "Yehlulekile"
+  },
+  "failures": {
+    "consent_declined": "Inkokhelo inqatshiwe ewalethini. Ayikho imali ethathiwe.",
+    "consent_invalid": "Imvume ayikwazanga ukuqinisekiswa, ngakho ayikho imali ethathiwe.",
+    "consent_timeout": "Inkokhelo ayivunyelwanga ngesikhathi. Ayikho imali ethathiwe.",
+    "quote_expired": "Intengo iphelelwe yisikhathi ngaphambi kokuthi inkokhelo ivunyelwe. Sicela uzame futhi.",
+    "insufficient_funds": "Iwalethi ayinayo imali eyanele yale nkokhelo.",
+    "grant_limit": "Inkokhelo ingaphezu kwalokho iwalethi ekuvumelile.",
+    "payment_failed": "Inkokhelo yehlulekile. Ayikho imali ethathiwe.",
+    "timeout": "Imali ithatha isikhathi eside ukufika. Hlola iwalethi ngaphambi kokukhokha futhi."
   },
   "tab": {
     "title": "Amathebhu ami",
@@ -60,6 +187,9 @@
     },
     "about": "Mayelana",
     "version": "Inguqulo {{version}}"
+  },
+  "demo": {
+    "banner": "Imodi yokubonisa · imali yokuhlola kuphela"
   },
   "offline": {
     "banner": "Awuxhumekile ku-inthanethi. I-AnyPay iyaqhubeka isebenza futhi izovumelanisa uma usubuyile."
@@ -81,13 +211,33 @@
   },
   "errors": {
     "money": {
-      "minorUnits": "Faka inani elifanele"
+      "minorUnits": "Faka inani elifanele",
+      "invalid": "Faka inani elifanele",
+      "tooLarge": "Lelo nani likhulu kakhulu"
     },
     "walletAddress": {
       "required": "Faka ikheli lewalethi yakho",
       "tooLong": "Lelo kheli lide kakhulu",
       "format": "Amakheli ewalethi aqala ngo-$ noma ngo-https://"
     },
-    "idempotencyKey": "Kukhona okungahambanga kahle. Sicela uzame futhi."
+    "shopName": {
+      "tooShort": "Sebenzisa okungenani izinhlamvu ezi-2",
+      "tooLong": "Sebenzisa izinhlamvu ezingeqile ku-60"
+    },
+    "idempotencyKey": "Kukhona okungahambanga kahle. Sicela uzame futhi.",
+    "api": {
+      "network_error": "Akukho uxhumano. Hlola idatha yakho bese uzama futhi.",
+      "wallet_host_not_allowed": "I-AnyPay ayikakwazi ukusebenzisa amawalethi alowo mhlinzeki.",
+      "wallet_address_invalid": "Lelo akulona ikheli lewalethi elivumelekile.",
+      "wallet_not_found": "Ayikho iwalethi kulelo kheli.",
+      "shop_not_found": "Isitolo asitholakali.",
+      "payment_not_found": "Inkokhelo ayitholakali.",
+      "rate_limited": "Imizamo miningi kakhulu. Linda umzuzu, bese uzama futhi.",
+      "open_payments_unavailable": "Umhlinzeki wewalethi akaphenduli. Zama futhi maduze.",
+      "open_payments_not_configured": "Izinkokhelo azikavulwa kule seva ye-AnyPay.",
+      "merchant_unauthorized": "Le foni ayingenile esitolo.",
+      "invalid_amount": "Faka inani elingaphezu kuka-zero.",
+      "unknown": "Kukhona okungahambanga kahle. Sicela uzame futhi."
+    }
   }
 }

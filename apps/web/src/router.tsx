@@ -13,8 +13,14 @@ export const router = createBrowserRouter([
     HydrateFallback: () => <div aria-busy="true" className="min-h-dvh" />,
     children: [
       { index: true, lazy: () => import('@/pages/OnboardingPage') },
+      // Customer screens: reached from a QR code, so no tab bar to distract from paying.
       { path: 'shop/:shopId/pay', lazy: () => import('@/pages/PayPage') },
+      { path: 'receipt/:paymentId', lazy: () => import('@/pages/ReceiptPage') },
+      // Merchant screens.
       { path: 'merchant', handle: withTabBar, lazy: () => import('@/pages/MerchantPage') },
+      { path: 'merchant/new', lazy: () => import('@/pages/MerchantSetupPage') },
+      { path: 'merchant/poster', lazy: () => import('@/pages/PosterPage') },
+      { path: 'merchant/connect', lazy: () => import('@/pages/MerchantConnectPage') },
       { path: 'tab', handle: withTabBar, lazy: () => import('@/pages/TabPage') },
       { path: 'settings', handle: withTabBar, lazy: () => import('@/pages/SettingsPage') },
       { path: '*', lazy: () => import('@/pages/NotFoundPage') },
