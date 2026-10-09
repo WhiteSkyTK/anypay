@@ -1,0 +1,82 @@
+# Render Blueprint: the API (Node web service) and the PWA (static site on Render's CDN).
+# Postgres is on Neon (Render's free Postgres expires after 30 days). Steps: docs/deploy.md.
+#
+# `sync: false` values are secrets or URLs only known after the first deploy: Render asks for
+# them when the Blueprint is created, and they never live in this public repo.
+services:
+  - type: web
+    name: anypay-api
+    runtime: node
+    # Free instances sleep after 15 idle minutes and take about a minute to wake. Before a demo,
+    # switch to the smallest paid instance (or open /health a few minutes before presenting).
+    plan: free
+    region: frankfurt # closest Render region to South Africa
+    # --include=dev: NODE_ENV=production would otherwise skip the build tools (TypeScript, esbuild).
+    # --ignore-scripts: no dependency runs code at install time (same as CI).
+    buildCommand: npm ci --include=dev --ignore-scripts && npm run build -w @anypay/api
+    startCommand: node apps/api/dist/server.js
+    healthCheckPath: /health
+    buildFilter:
+      paths: [apps/api/**, packages/shared/**, package-lock.json]
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: '22'
+      - key: LOG_LEVEL
+        value: info
+      - key: DEMO_MODE
+        value: 'true'
+      - key: TRUST_PROXY
+        value: '1'
+      - key: ALLOWED_WALLET_HOSTS
+        value: interledger-test.dev
+      - key: DATABASE_URL # Neon connection string (pooled), with ?sslmode=require
+        sync: false
+      - key: TOKEN_ENCRYPTION_KEY # 32 random bytes, base64 (command in .env.example)
+        sync: false
+      - key: CLIENT_WALLET_ADDRESS
+        sync: false
+      - key: KEY_ID
+        sync: false
+      - key: PRIVATE_KEY # base64 of the PEM, as in your local .env
+        sync: false
+      - key: WEB_ORIGIN # https://<anypay-web>.onrender.com, once the site exists
+        sync: false
+      - key: PUBLIC_API_URL # https://<anypay-api>.onrender.com
+        sync: false
+
+  - type: web
+    name: anypay-web
+    runtime: static
+    buildCommand: npm ci --include=dev --ignore-scripts && npm run build -w @anypay/web
+    staticPublishPath: apps/web/dist
+    buildFilter:
+      paths: [apps/web/**, packages/shared/**, package-lock.json]
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: VITE_API_URL # https://<anypay-api>.onrender.com (read at build time)
+        sync: false
+    routes:
+      # Client-side routes (/shop/abc/pay, /receipt/…) all load the app shell.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      # Hashed file names never change, so phones keep them; the service worker must not be stale.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: X-Frame-Options
+        value: DENY

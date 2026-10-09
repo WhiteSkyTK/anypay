@@ -28,32 +28,44 @@ quote sheet, opening the wallet's sign-in, a declined payment updating both scre
 `npm run seed` sign-in link, bad link, unknown shop, CSV download. **The parts only you can do
 are the real approvals in the test wallet, the voice, printing and a real phone.**
 
-- [ ] **Set up a shop**: <http://localhost:5173> → **Set up my shop** → shop wallet → **Check
+> **Heads-up (2026-10-09, 22:40):** the local database was reset. Your `npm run dev` and Claude's
+> preview server both used `.data/pglite` at the same time, which corrupted it (now prevented: a
+> second API stops with a clear message). Shops made before 22:16 are gone: restart
+> `npm run dev`, and the shop page will say "signed out" → **Set up again**. The old data is kept
+> in `.data/pglite-damaged-2026-10-09` (safe to delete once you're happy).
+
+- [x] **Set up a shop**: <http://localhost:5173> → **Set up my shop** → shop wallet → **Check
       wallet** → it says COP → type a name → **Create my shop**. Under 2 minutes?
-- [ ] **Poster**: the QR shows; **Print poster** (Ctrl+P) previews one A5 page with no app
+- [x] **Poster**: the QR shows; **Print poster** (Ctrl+P) previews one A5 page with no app
       buttons on it. Scan the QR on screen with your phone camera: it should show the pay link
-- [ ] **Live feed**: **Go to my shop** shows a green **Live** dot, **COP 0,00** and "No payments yet"
-- [ ] **Voice**: turn on **Read payments out loud** (keep the shop window's sound on)
-- [ ] **Pay, approved** (the main demo): in the customer window open the link under the QR →
+- [x] **Live feed**: **Go to my shop** shows a green **Live** dot, **COP 0,00** and "No payments yet"
+- [x] **Voice**: turn on **Read payments out loud** (keep the shop window's sound on)
+- [x] **Pay, approved** (the main demo): in the customer window open the link under the QR →
       type an amount on the keypad (e.g. 50) → customer wallet → **Continue** → the sheet shows
       what the customer pays in **R** and what the shop gets in **COP** → **Approve in my
       wallet** → sign in to the test wallet as the customer → **Approve**. Expect: back on the
       receipt with a green tick and "Paid"; in the shop window the payment appears as **Received**
       without refreshing, the total goes up, and the phone says "Payment received, …"
-- [ ] **Pay, declined**: same, but press **Decline** in the wallet. Receipt: "declined in the
+- [x] **Pay, declined**: same, but press **Decline** in the wallet. Receipt: "declined in the
       wallet. No money was taken"; the shop window shows **Failed**, total unchanged
-- [ ] **Pay again** on the receipt goes back to the pay screen with the wallet already filled in
-- [ ] **Export CSV** (shop window) after an approved payment: opens in Excel/Sheets with one row
+- [x] **Pay again** on the receipt goes back to the pay screen with the wallet already filled in
+- [x] **Export CSV** (shop window) after an approved payment: opens in Excel/Sheets with one row
       per received payment
 - [ ] **Quote expired** (optional): press **Continue**, wait until after the "Price held until"
       time on the sheet, then approve. Expect a clear "price expired, try again" message
 - [ ] **Wrong wallet**: on setup, try `$ilp.interledger-test.dev/doesnotexist` and `hello`.
       Expect a plain message, not a crash
-- [ ] **Languages**: switch to isiZulu / isiXhosa / Sepedi on the start page, then walk through
+- [x] **Languages**: switch to isiZulu / isiXhosa / Sepedi on the start page, then walk through
       setup, pay and the feed. Note any wording that is wrong or too long (native speaker)
-- [ ] **Dark mode**: Settings → Dark. Everything readable, poster still prints black on white
+- [x] **Dark mode**: Settings → Dark. Everything readable, poster still prints black on white
 - [ ] **Demo sign-in link**: `npm run seed` prints a "Shop phone" link. Open it in a private
       window: it should land on the Demo Spaza feed
+
+- [ ] **Feed survives an API restart** (new): with the shop feed open, stop `npm run dev`
+      (Ctrl+C) and start it again. The feed shows **Not connected**, then **Live** again within
+      about 30 seconds, without reloading the page
+- [ ] **Old shop link after a reset** (new): a phone whose shop no longer exists shows "This
+      phone is signed out of the shop" and **Set up again**, not an endless "Connecting…"
 
 ### Phase 2: on a real phone (same Wi-Fi as the PC)
 

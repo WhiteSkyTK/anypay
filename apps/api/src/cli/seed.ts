@@ -1,4 +1,5 @@
 // npm run seed [-- --name "Demo Spaza"]   (with `npm run dev` running)
+// npm run seed -- --api https://<api>.onrender.com --web https://<web>.onrender.com   (deployed)
 //
 // Creates a demo shop on the shop wallet from DEMO_MERCHANT_WALLET and prints the two links a
 // demo needs: one to open on the shop's phone (live feed) and one for the customer (pay screen).
@@ -12,22 +13,28 @@ import { loadDotEnv } from '../config/repo-root'
 async function main(): Promise<void> {
   loadDotEnv()
   const env = parseEnv(process.env)
-  const { values } = parseArgs({ options: { name: { type: 'string', default: 'Demo Spaza' } } })
+  const { values } = parseArgs({
+    options: {
+      name: { type: 'string', default: 'Demo Spaza' },
+      api: { type: 'string', default: `http://localhost:${env.PORT}` },
+      web: { type: 'string', default: env.WEB_ORIGIN[0] ?? 'http://localhost:5173' },
+    },
+  })
   const walletAddress = env.DEMO_MERCHANT_WALLET
   if (!walletAddress) throw new Error('Set DEMO_MERCHANT_WALLET in .env first')
 
-  const api = `http://localhost:${env.PORT}`
+  const api = new URL(values.api).origin
   const res = await fetch(`${api}/api/shops`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Idempotency-Key': randomUUID() },
     body: JSON.stringify({ name: values.name, walletAddress }),
   }).catch(() => {
-    throw new Error(`Could not reach the API at ${api}. Start it with: npm run dev`)
+    throw new Error(`Could not reach the API at ${api}. Is it running? (Locally: npm run dev)`)
   })
   if (!res.ok) throw new Error(`The API refused the demo shop (${res.status}): ${await res.text()}`)
   const { shop, merchantToken } = CreateShopResponseSchema.parse(await res.json())
 
-  const web = env.WEB_ORIGIN[0] ?? 'http://localhost:5173'
+  const web = new URL(values.web).origin
   // The token travels in the URL fragment, which browsers never send to a server or log.
   const merchantLink = `${web}/merchant/connect#shop=${shop.id}&token=${merchantToken}`
   console.log(

@@ -7,8 +7,9 @@ Spaza shops take digital payments with no card machine, very little data and tol
 or no signal, using [Open Payments](https://openpayments.dev/) so customers can pay from any
 compatible wallet.
 
-> Status: Phase 1. Real Open Payments payments work from the terminal (`npm run demo:pay`); the
-> app screens come in Phase 2. See [ROADMAP.md](ROADMAP.md).
+> Status: Phase 2. Shops set up in under two minutes, print a QR poster and see payments arrive
+> live (with a spoken "Payment received"); customers pay from their own wallet after seeing the
+> exact price. The offline Digital Tab is Phase 3. See [ROADMAP.md](ROADMAP.md).
 
 ## Quick start
 
@@ -35,7 +36,24 @@ npm run dev
 - Web app: <http://localhost:5173>
 - API health check: <http://localhost:3000/health> (also proxied at <http://localhost:5173/health>)
 
-## Try a real Open Payments payment
+## Try the app
+
+With `npm run dev` running and the AnyPay app key in `.env` (see the next section):
+
+1. **Shop:** open <http://localhost:5173> → **Set up my shop** → a test wallet address (e.g.
+   `$ilp.interledger-test.dev/merchanttest`) → shop name → **Create my shop**. Print the poster
+   or keep it on screen, then **Go to my shop** for the live feed.
+2. **Customer:** in another window, open the link under the QR code (or scan it) → amount →
+   your test wallet → **Continue** → check the price → **Approve in my wallet**.
+3. The receipt shows a tick, and the shop's feed shows the payment as it lands (turn on **Read
+   payments out loud** to hear it).
+
+For a quick demo, `npm run seed` creates a shop and prints a private sign-in link for the shop
+phone and the customer's pay link. To test on real phones over Wi-Fi, see
+[docs/testing.md](docs/testing.md#phase-2-on-a-real-phone-same-wi-fi-as-the-pc). What's ready to
+test, and how, is always listed there.
+
+## Try a real Open Payments payment from the terminal
 
 This runs the whole flow against the Interledger test wallet (play money): the shop's payment
 request, a quote with fees and exchange rate, the customer's approval in their own wallet, and
@@ -65,6 +83,7 @@ Run from the repo root.
 | Command                              | What it does                                                          |
 | ------------------------------------ | --------------------------------------------------------------------- |
 | `npm run dev`                        | API (port 3000) and web app (port 5173) with live reload              |
+| `npm run dev:lan`                    | Same, with the web app reachable from phones on your Wi-Fi            |
 | `npm run build`                      | Production builds, plus the web bundle size against the 200 KB budget |
 | `npm run lint`                       | ESLint, including SonarCloud's rules (eslint-plugin-sonarjs)          |
 | `npm run format`                     | Format everything with Prettier (`format:check` only checks)          |
@@ -72,6 +91,7 @@ Run from the repo root.
 | `npm test`                           | Vitest across all workspaces (`test:coverage` adds an lcov report)    |
 | `npm run preview -w @anypay/web`     | Serve the production web build, to test the PWA and offline mode      |
 | `npm run demo:pay -- --amount 25.00` | A real test-wallet payment from the terminal (see above)              |
+| `npm run seed`                       | A demo shop on `DEMO_MERCHANT_WALLET`, with its sign-in and pay links |
 
 A change is done when `npm run lint && npm test && npm run build` passes. CI runs the same
 checks on Ubuntu and Windows for every pull request.
@@ -87,7 +107,17 @@ packages/
 docs/
   design/refs/   Visual references for the design system
   decisions.md   Why things are built the way they are
+  deploy.md      Render + Neon deployment, step by step
+  testing.md     What is ready to test, and how
 ```
+
+## Deploy
+
+[render.yaml](render.yaml) deploys the API and the web app to Render; Postgres runs on Neon. Steps,
+settings and costs are in [docs/deploy.md](docs/deploy.md). Live URLs: _coming with Phase 2_.
+
+Locally, no database setup is needed: without `DATABASE_URL` the API keeps its data in an embedded
+Postgres (PGlite) under `.data/`. Delete that folder to start fresh.
 
 ## Security
 

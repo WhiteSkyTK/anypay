@@ -16,6 +16,7 @@ export default defineConfig({
         'apps/api/src/server.ts',
         'apps/api/src/cli/**',
         'apps/api/src/testing/**',
+        'apps/web/src/testing/**',
       ],
     },
   },

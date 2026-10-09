@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => {
   return {
     envDir,
     define: { __APP_VERSION__: JSON.stringify(version) },
+    // dist/.vite/manifest.json maps pages to chunks, so scripts/report-size.mjs can measure each
+    // page's real first load.
+    build: { manifest: true },
     resolve: {
       alias: { '@': fromHere('./src') },
     },

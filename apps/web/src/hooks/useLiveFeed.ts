@@ -15,6 +15,8 @@ export type FeedState = StreamState | 'loading' | 'unauthorized'
 
 export interface LiveFeed {
   state: FeedState
+  /** False until the first snapshot: show skeletons, not "no payments". */
+  loaded: boolean
   payments: PaymentSummary[]
   total: Money
 }
@@ -38,24 +40,31 @@ export function useLiveFeed(
   const [unauthorized, setUnauthorized] = useState(false)
 
   const url = unauthorized ? null : api.shopEventsUrl(session.shopId, session.token, since)
-  const stream = useEventSource(url, {
-    snapshot: (data) => {
-      const snapshot = ShopPaymentsResponseSchema.parse(data)
-      setPayments(snapshot.payments)
-      setTotal(snapshot.total)
+  // The shop's feed must survive API restarts and sleeping hosts, so it keeps trying.
+  const stream = useEventSource(
+    url,
+    {
+      snapshot: (data) => {
+        const snapshot = ShopPaymentsResponseSchema.parse(data)
+        setPayments(snapshot.payments)
+        setTotal(snapshot.total)
+      },
+      payment: (data) => {
+        const payment = PaymentSummarySchema.parse(data)
+        setPayments((list) => upsert(list ?? [], payment))
+        onNewPayment?.(payment)
+      },
     },
-    payment: (data) => {
-      const payment = PaymentSummarySchema.parse(data)
-      setPayments((list) => upsert(list ?? [], payment))
-      onNewPayment?.(payment)
-    },
-  })
+    { reconnectWhenClosed: true },
+  )
 
-  // EventSource hides HTTP statuses; when it gives up, ask once whether the token was refused.
+  // EventSource hides HTTP statuses; when it gives up, ask once whether the token was refused
+  // or the shop no longer exists (e.g. a reset local database). Anything else: keep retrying.
   useEffect(() => {
     if (stream !== 'closed') return
     api.shopPayments(session.shopId, session.token, since).catch((error: unknown) => {
-      if (error instanceof ApiRequestError && error.status === 401) setUnauthorized(true)
+      if (error instanceof ApiRequestError && [401, 404].includes(error.status))
+        setUnauthorized(true)
     })
   }, [stream, session.shopId, session.token, since])
 
@@ -67,9 +76,13 @@ export function useLiveFeed(
     return { ...total, value: sum.toString() }
   }, [payments, total])
 
-  if (unauthorized) return { state: 'unauthorized', payments: payments ?? [], total: liveTotal }
+  const loaded = payments !== null
+  if (unauthorized)
+    return { state: 'unauthorized', loaded, payments: payments ?? [], total: liveTotal }
   return {
-    state: payments === null ? 'loading' : stream,
+    // A stream that gave up says so, even before the first snapshot.
+    state: loaded || stream === 'closed' ? stream : 'loading',
+    loaded,
     payments: payments ?? [],
     total: liveTotal,
   }

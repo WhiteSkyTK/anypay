@@ -85,13 +85,13 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
         <h2 id="total-label" className="section-label">
           {t('merchant.totalLabel')}
         </h2>
-        {feed.state === 'loading' ? (
+        {feed.loaded ? (
+          <Amount money={feed.total} className="mt-2 block text-amount" />
+        ) : (
           <div
             aria-hidden="true"
             className="mx-auto mt-3 h-16 w-48 animate-pulse rounded-card bg-muted"
           />
-        ) : (
-          <Amount money={feed.total} className="mt-2 block text-amount" />
         )}
       </section>
 
@@ -137,14 +137,14 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
         <h2 id="payments-heading" className="section-label mb-3">
           {t('merchant.payments')}
         </h2>
-        {feed.state === 'loading' && (
+        {!feed.loaded && (
           <div aria-hidden="true" className="flex flex-col gap-3">
             {[0, 1, 2].map((row) => (
               <div key={row} className="h-20 animate-pulse rounded-card bg-muted" />
             ))}
           </div>
         )}
-        {feed.state !== 'loading' && feed.payments.length === 0 && (
+        {feed.loaded && feed.payments.length === 0 && (
           <EmptyState
             icon={ReceiptText}
             title={t('merchant.empty.title')}

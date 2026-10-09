@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core'
 import { mkdirSync } from 'node:fs'
+import { lockDataDir } from './data-dir-lock'
 import { MIGRATIONS, type Migration } from './migrations'
 import * as schema from './schema'
 
@@ -38,10 +39,23 @@ export async function openDatabase(options: OpenDatabaseOptions = {}): Promise<D
     import('@electric-sql/pglite'),
     import('drizzle-orm/pglite'),
   ])
-  if (options.dataDir) mkdirSync(options.dataDir, { recursive: true })
-  const client = new PGlite(options.dataDir)
-  await client.waitReady
-  return { db: drizzle(client, { schema }), kind: 'pglite', close: () => client.close() }
+  if (!options.dataDir) {
+    const client = new PGlite()
+    await client.waitReady
+    return { db: drizzle(client, { schema }), kind: 'pglite', close: () => client.close() }
+  }
+  mkdirSync(options.dataDir, { recursive: true })
+  // Before PGlite touches the folder: a second process on the same files would corrupt them.
+  const unlock = await lockDataDir(options.dataDir)
+  try {
+    const client = new PGlite(options.dataDir)
+    await client.waitReady
+    const close = () => client.close().finally(unlock)
+    return { db: drizzle(client, { schema }), kind: 'pglite', close }
+  } catch (error) {
+    unlock()
+    throw error
+  }
 }
 
 // Any fixed number: makes concurrent API instances apply migrations one at a time.

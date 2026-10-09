@@ -1,9 +1,10 @@
-import { join } from 'node:path'
+import { resolve } from 'node:path'
 import { createApp } from './app'
 import { EnvError, parseEnv } from './config/env'
 import { PrivateKeyError } from './config/private-key'
 import { findRepoRoot, loadDotEnv } from './config/repo-root'
 import { createContainer } from './container'
+import { DataDirLockedError } from './db/data-dir-lock'
 import { migrate, openDatabase } from './db/database'
 
 async function main(): Promise<void> {
@@ -12,7 +13,8 @@ async function main(): Promise<void> {
   const env = parseEnv(process.env)
   const database = await openDatabase({
     url: env.DATABASE_URL,
-    dataDir: join(root, env.DATA_DIR, 'pglite'),
+    // resolve, not join: DATA_DIR may also be an absolute path (a mounted disk, a temp folder).
+    dataDir: resolve(root, env.DATA_DIR, 'pglite'),
   })
   await migrate(database.db)
   const container = createContainer(env, database.db)
@@ -28,13 +30,19 @@ async function main(): Promise<void> {
   const resumed = await container.paymentService.resumeWatching()
   if (resumed > 0) logger.info({ resumed }, 'Resumed watching payments in flight')
 
-  const shutdown = () => server.close(() => void database.close().finally(() => process.exit(0)))
+  const shutdown = () => {
+    server.close(() => void database.close().finally(() => process.exit(0)))
+    // Live feeds (SSE) never end by themselves; without this, close() would wait for them forever
+    // and the local database would never be closed cleanly.
+    server.closeAllConnections()
+  }
   process.once('SIGINT', shutdown)
   process.once('SIGTERM', shutdown)
 }
 
 main().catch((error: unknown) => {
-  if (!(error instanceof EnvError || error instanceof PrivateKeyError)) throw error
+  const expected = [EnvError, PrivateKeyError, DataDirLockedError]
+  if (!(error instanceof Error) || !expected.some((type) => error instanceof type)) throw error
   console.error(error.message)
   process.exit(1)
 })

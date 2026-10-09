@@ -59,25 +59,30 @@ Scope: no payment logic yet.
 ## Phase 2 — Features 1–3 · target 18 Oct · Status: In progress
 Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; hand-written SQL migrations), encrypted payment sessions, merchant token for the feed, SSE for live updates, then the web screens. Test checklist: [docs/testing.md](docs/testing.md).
 
-- [ ] Merchant onboarding + printable A5 QR poster
-- [ ] Customer pay flow: keypad → quote sheet → consent redirect → receipt
-- [ ] Merchant live feed: SSE, voice confirm, aria-live, daily totals, CSV export
-- [ ] Empty, loading, offline, error and success states on every screen
-- [ ] Postgres via Drizzle: shops, payments, idempotency records; migrations (PGlite locally with zero setup, Neon/Supabase in production)
-- [ ] Grant tokens encrypted at rest (AES-256-GCM, TOKEN_ENCRYPTION_KEY); the customer wallet stays inside the encrypted session
-- [ ] Merchant token protects the live feed and CSV (shop ids are public on the poster)
-- [ ] Grant callback route: verify `hash`, single-use nonce, then continue the grant
-- [ ] `Idempotency-Key` required on every money-moving endpoint (duplicates return the original result); rate limits on payment routes
-- [ ] Motion (LazyMotion + `m`) spring animations for bottom sheets and the success tick; honour reduced motion
-- [ ] Seed script (demo merchant + customer) and DEMO_MODE banner
-- [ ] Dropped drizzle-kit (old esbuild advisory) for hand-written SQL migrations; audit fix for concurrently → shell-quote (critical)
-- [ ] Deploy web + API on tiers that don't sleep; URLs in the README
-- [ ] Component tests (Testing Library + happy-dom) for the new screens: SonarCloud's default gate wants 80% coverage on new code, and React components have none yet
-- [ ] New strings translated in all four locales (drafts are fine until the native-speaker review)
+- [x] Merchant onboarding + printable A5 QR poster
+- [x] Customer pay flow: keypad → quote sheet → consent redirect → receipt
+- [x] Merchant live feed: SSE, voice confirm, aria-live, daily totals, CSV export
+- [x] Empty, loading, offline, error and success states on every screen
+- [x] Postgres via Drizzle: shops, payments, idempotency records; migrations (PGlite locally with zero setup, Neon/Supabase in production)
+- [x] Grant tokens encrypted at rest (AES-256-GCM, TOKEN_ENCRYPTION_KEY); the customer wallet stays inside the encrypted session
+- [x] Merchant token protects the live feed and CSV (shop ids are public on the poster)
+- [x] Grant callback route: verify `hash`, single-use nonce, then continue the grant
+- [x] `Idempotency-Key` required on every money-moving endpoint (duplicates return the original result); rate limits on payment routes
+- [x] Motion (LazyMotion + `m`) spring animations for bottom sheets and the success tick; honour reduced motion
+- [x] Seed script (demo merchant + customer) and DEMO_MODE banner
+- [x] Dropped drizzle-kit (old esbuild advisory) for hand-written SQL migrations; audit fix for concurrently → shell-quote (critical)
+- [ ] Deploy web + API on tiers that don't sleep; URLs in the README. Ready to go: [render.yaml](render.yaml) + Neon, steps in [docs/deploy.md](docs/deploy.md); production bundle and cross-origin setup rehearsed locally (2026-10-09). Needs the team's Render and Neon accounts
+- [x] Route focus waits for pages that render their heading after loading data (pay, receipt); focus returns to Continue when the price sheet closes
+- [x] Quote sheet loads on Continue (pay page first load 206 → 186 KB); size report measures each page's real first load from Vite's manifest (heaviest page 189.5 KB, shell 181.3 KB)
+- [x] Live feed reconnects after the browser gives up (API restart, sleeping host) and signs out when the shop is gone (401/404); indicator is a status region
+- [x] Local database lock: two dev APIs on one `.data/pglite` corrupted it (2026-10-09). A second API now stops with a clear message; shutdown closes live connections so the database closes cleanly
+- [x] `DATA_DIR` accepts absolute paths; `npm run seed -- --api … --web …` for the deployed app; `npm run dev:lan` for phones on Wi-Fi
+- [x] Component tests (Testing Library + happy-dom) for the new screens: SonarCloud's default gate wants 80% coverage on new code. Page tests use a scripted API and a fake EventSource; overall coverage 55% → 82%, new pages and hooks 87–98%
+- [x] New strings translated in all four locales (drafts are fine until the native-speaker review)
 
 **Done when**
 - [ ] On the deployed URLs, a payment from one phone appears and is announced on another within seconds
-- [ ] First load ≤ 200 KB gzipped (number reported)
+- [x] First load ≤ 200 KB gzipped (number reported): heaviest page 189.5 KB, app shell 181.3 KB (2026-10-09)
 
 **Team:** hosting accounts and production env vars. Book the optional mid-project mentor check-in.
 
@@ -89,6 +94,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [ ] Rotate expired tab grant tokens (`token.rotate`); stored tokens encrypted at rest
 - [ ] Tests: valid voucher, tampered amount, reused nonce, cap exceeded, idempotent re-sync from both phones
 - [ ] DEMO_MODE "Simulate offline" toggle
+- [ ] Budget headroom is ~10 KB and Dexie is ~25 KB: move the web's zod to `zod/mini` (or validate less in the browser) before adding it
 
 **Done when**
 - [ ] Two phones in airplane mode complete a sale, and after reconnecting it settles exactly once
@@ -101,6 +107,8 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [ ] Test on a budget Android phone outdoors in sunlight, and on an iPhone
 - [ ] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
 - [ ] Summarise docs/decisions.md into slide-ready bullets
+- [ ] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
+- [ ] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket
 
 **Done when**
 - [ ] Lighthouse mobile Performance and Accessibility ≥ 90; Sonar quality gate passes
@@ -135,3 +143,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 - 2026-10-05 · Phase 0 scaffold built on `phase-0-scaffold`: shared money utils + zod schemas, Express 5 API (env validation, /health, security middleware, service skeletons), React PWA shell (tokens, light/dark toggle, floating tab bar, 5 lazy routes, i18n, offline banner, update prompt), CI + Sonar config, docs. 155 tests; lint, typecheck and build pass; first load 138.8 KB gz of 200 KB. · Next: push, confirm CI is green on Ubuntu + Windows, mark Phase 0 Done, then Phase 1 (Open Payments, no UI). · Blockers: SonarCloud needs Automatic Analysis turned off and a `SONAR_TOKEN` repo secret (the CI job skips until then); second language still to choose.
 - 2026-10-05 · PR #1 merged; CI green on Ubuntu + Windows, Phase 0 Done. Follow-ups on `phase-0-polish`: GitGuardian false positive removed, 91 SonarCloud findings fixed or scoped out, Sepedi/isiXhosa/isiZulu drafts + language picker, landing layout reworked, roadmap extended (key dates, research track, submission checklist), docs/challenge.md. · Next: merge `phase-0-polish`, then Phase 1 plan. · Blockers: Phase 1 needs the test wallet addresses and developer key in a local `.env`; translations need a native-speaker review.
 - 2026-10-06 · Language now starts in English and remembers the choice. Pasted keys moved out of the committed .env.example into gitignored .env/.secrets (never committed or pushed). Phase 1 built: Open Payments gateway (only SDK importer), SSRF-safe wallet resolver, grant service with callback-hash verification, payment state machine, watcher, demo:pay CLI; 132 API tests (298 total). Live run reached consent against the real test wallet. · Next: approve one real payment (demo:pay), test insufficient funds live, then mark Phase 1 Done. · Blockers: needs a person to approve consent in the customer test wallet.
+- 2026-10-09 · Phase 1 closed (real payment verified, R 0,13 → COP 25,00). Phase 2 on `phase-2-features`: Postgres via Drizzle (PGlite locally), encrypted payment sessions, idempotency, rate limits, shops/payments/callback/SSE/CSV routes; web screens for shop setup, A5 QR poster, live feed with voice, pay flow with keypad and quote sheet, receipt. Checked in the browser against the real test wallet up to consent, plus decline, seed link and a production-style cross-origin run. Fixed on the way: route focus, sheet focus, quote sheet lazy-loaded (budget), feed reconnects, PGlite corruption from two dev APIs (now locked). 414 tests; lint, typecheck and build pass; heaviest first load 189.5 KB. Tested by the team: real approval announced by voice, decline, CSV, languages, dark mode, poster print. · Next: phone-over-Wi-Fi and the remaining checks in docs/testing.md; create Render + Neon accounts and deploy with render.yaml (docs/deploy.md); then the Done-when two-phone check closes Phase 2. · Blockers: hosting accounts; a Neon password was pasted into render.yaml (removed before any commit, never pushed): rotate it in Neon to be safe and paste the new one only into Render.
