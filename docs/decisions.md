@@ -88,3 +88,30 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
   only applies overrides when it resolves from scratch, so the lockfile was regenerated from the
   manifests. If `npm ls` ever shows the signing library's `structured-headers` as invalid,
   regenerate the lockfile the same way (a half-edited lockfile broke request signing once).
+
+## Phase 2: Shops, payments and the live feed (2026-10-09)
+
+- **PGlite locally, Neon in production, same SQL.** A fresh clone needs no database setup, and
+  the tests run against real Postgres semantics. Migrations are hand-written SQL behind an
+  advisory lock; drizzle-kit was dropped over an old esbuild advisory.
+- **Payment sessions are encrypted whole (AES-256-GCM).** Grant tokens, continue URIs and the
+  customer's wallet address never sit in the database in plain text; only amounts and status do.
+- **Shop ids are public, merchant tokens are not.** The poster's QR holds only the shop id; the
+  feed and CSV need a 32-byte token whose SHA-256 hash is stored. The sign-in link carries it in
+  the URL fragment, which browsers never send to servers, and the app strips it on arrival.
+- **SSE for the live feed.** One long-lived HTTP response, no polling from phones, automatic
+  reconnects, and it passes through proxies that block WebSockets. EventSource can't send
+  headers, so the merchant token goes in the query string; our logs record paths only.
+- **Idempotency-Key on every money-moving route.** A double tap or a retry on a bad connection
+  returns the first result instead of creating a second payment.
+- **A custom keypad instead of the phone keyboard.** Big keys, the same on every phone, it never
+  covers the amount, and it can't produce an invalid number. Typing still works for keyboards and
+  screen readers.
+- **The quote sheet loads when the customer presses Continue.** It is most of the pay screen's
+  code (vaul + Radix Dialog) and downloads while the quote is fetched, so a first scan stays at
+  186 KB instead of 206 KB. The size report now measures each page's real first load from Vite's
+  manifest instead of guessing.
+- **Speech uses the browser's own voices.** No audio files to download; it falls back to English
+  when a phone has no voice for the chosen language.
+- **Render Blueprint + Neon.** One file deploys both services; the static site never sleeps. The
+  API is one always-on process because it holds SSE connections and polls wallets.

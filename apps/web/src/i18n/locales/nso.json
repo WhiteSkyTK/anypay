@@ -3,6 +3,13 @@
     "name": "AnyPay",
     "skipToContent": "Fetela go diteng"
   },
+  "common": {
+    "back": "Morago",
+    "cancel": "Khansela",
+    "retry": "Leka gape",
+    "done": "Go fedile",
+    "offline": "Ga o na inthanete. Se se nyaka kgokagano; se tla šoma gape ge o boile."
+  },
   "nav": {
     "label": "Lenaneo le legolo",
     "shop": "Lebenkele",
@@ -25,23 +32,143 @@
   "language": {
     "label": "Polelo"
   },
+  "setup": {
+    "title": "Beakanya lebenkele la gago",
+    "step": "Kgato ya {{current}} go tše {{total}}",
+    "walletLabel": "Aterese ya wolete ya gago",
+    "walletHint": "E thoma ka $ goba https://. E hwetše ka go app ya wolete ya gago.",
+    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
+    "check": "Lekola wolete",
+    "checking": "E a lekola…",
+    "walletFound": "Wolete e hweditšwe",
+    "receivesIn": "Ditefelo di tla ka {{currency}}",
+    "change": "Fetola",
+    "nameLabel": "Leina la lebenkele",
+    "nameHint": "Bareki ba bona leina le ge ba lefela.",
+    "create": "Hlama lebenkele la ka",
+    "creating": "E a hlama…"
+  },
+  "poster": {
+    "title": "Phosetara ya gago ya QR",
+    "hint": "E gatiše ka A5 o e bee moo bareki ba ka e sekenago gona.",
+    "scanToPay": "Sekena go lefela",
+    "anyWallet": "Ka wolete efe goba efe ya Open Payments",
+    "orOpen": "Goba bula",
+    "qrLabel": "Khoutu ya QR ya go lefela {{shop}}",
+    "print": "Gatiša phosetara",
+    "done": "Eya lebenkeleng la ka"
+  },
+  "connect": {
+    "title": "E kgokaganya lebenkele la gago",
+    "failed": "Kgokagano ye ga se ya šoma. Beakanya lebenkele gape goba o kgopele kgokagano ye mpsha."
+  },
   "pay": {
-    "title": "Lefela lebenkele le",
-    "shopCode": "Khoutu ya lebenkele {{shopId}}",
+    "subtitle": "Lefela ka wolete efe goba efe",
     "amountLabel": "Palo",
-    "empty": {
-      "title": "Ditefelo di tla bulwa kgauswinyane",
-      "description": "Lebenkele le le sa beakanywa. Leka gape ka morago ga nakwana."
+    "keypad": {
+      "label": "Khiphete ya palo",
+      "delete": "Phumola",
+      "decimal": "Khoma ya tesimale"
+    },
+    "walletLabel": "Aterese ya wolete ya gago",
+    "walletHint": "E bolokilwe mogaleng wo go ya pele.",
+    "continue": "Tšwela pele",
+    "gettingQuote": "E hwetša theko…",
+    "notFound": {
+      "title": "Lebenkele ga le hwetšwe",
+      "description": "Lekola khoutu ya QR, goba o kgopele lebenkele kgokagano ya lona."
+    },
+    "quote": {
+      "title": "Netefatša tefelo",
+      "youPay": "O lefela",
+      "shopGets": "{{shop}} e hwetša",
+      "includes": "Go akaretša ditefelo ka moka le kelo ya go fetolela tšhelete.",
+      "validUntil": "Theko e swaretšwe go fihla ka {{time}}",
+      "approve": "Dumela ka wolete ya ka",
+      "redirecting": "E bula wolete ya gago…"
     }
+  },
+  "receipt": {
+    "title": "Tefelo",
+    "loading": "E lekola tefelo…",
+    "waiting": {
+      "title": "E letile tumelelo",
+      "description": "Dumela tefelo ka wolete ya gago gore o fetše."
+    },
+    "sending": {
+      "title": "E netefatša tefelo…",
+      "description": "Se se tšea metsotswana e se mekae."
+    },
+    "completed": {
+      "title": "Go lefilwe",
+      "description": "{{shop}} e amogetše {{amount}}.",
+      "youPaid": "O lefile {{amount}}"
+    },
+    "failed": {
+      "title": "Tefelo ga se ya phethega"
+    },
+    "callbackError": "Ga re so kgone go netefatša tumelelo ya gago. Lekola wolete ya gago pele o leka gape.",
+    "payAgain": "Lefela gape",
+    "notFound": "Ga re a hwetša rasiti ye."
   },
   "merchant": {
     "title": "Lebenkele la gago",
     "totalLabel": "Tše amogetšwego lehono",
-    "payments": "Ditefelo",
+    "payments": "Ditefelo tša lehono",
     "empty": {
       "title": "Ga go na ditefelo ga bjale",
-      "description": "Ditefelo di tšwelela mo gang ge di fihla, gomme mogala wa gago o a di bala ka lentšu."
-    }
+      "description": "Ditefelo di tšwelela mo gang ge di fihla, gomme mogala wa gago o ka di bala ka lentšu."
+    },
+    "setUp": {
+      "title": "Ga go na lebenkele mogaleng wo",
+      "description": "Go beakanya go tšea ka tlase ga metsotso e mebedi: aterese ya wolete ya gago le leina la lebenkele.",
+      "cta": "Beakanya lebenkele la ka"
+    },
+    "live": {
+      "loading": "E a kgokagana…",
+      "connecting": "E a kgokagana…",
+      "live": "Thwii",
+      "reconnecting": "E kgokagana gape…",
+      "closed": "Ga e a kgokagana",
+      "unauthorized": "O tšwile",
+      "offline": "Ga o na inthanete"
+    },
+    "voice": {
+      "label": "Bala ditefelo ka lentšu",
+      "received": "Tefelo e amogetšwe, {{amount}}",
+      "unsupported": "Mogala wo ga o kgone go bala ka lentšu."
+    },
+    "actions": {
+      "poster": "Phosetara",
+      "export": "Romela CSV",
+      "exporting": "E a romela…"
+    },
+    "unauthorized": {
+      "title": "Mogala wo o tšwile lebenkeleng",
+      "description": "Bula kgokagano ya lebenkele la gago gape, goba o beakanye lebenkele gape.",
+      "reset": "Beakanya gape"
+    },
+    "paidWith": "Moreki o lefile {{amount}}",
+    "newPayment": "Tefelo e amogetšwe: {{amount}}"
+  },
+  "status": {
+    "created": "E thomile",
+    "incoming-payment-created": "E thomile",
+    "quoted": "E na le theko",
+    "awaiting-consent": "E a leta",
+    "sending": "E a netefatša",
+    "completed": "E amogetšwe",
+    "failed": "E paletšwe"
+  },
+  "failures": {
+    "consent_declined": "Tefelo e ganneditšwe ka wolete. Ga go tšhelete yeo e tšerwego.",
+    "consent_invalid": "Tumelelo ga se ya kgona go netefatšwa, ka gona ga go tšhelete yeo e tšerwego.",
+    "consent_timeout": "Tefelo ga se ya dumelelwa ka nako. Ga go tšhelete yeo e tšerwego.",
+    "quote_expired": "Theko e feletšwe ke nako pele tefelo e dumelelwa. Hle leka gape.",
+    "insufficient_funds": "Wolete ga e na tšhelete ye e lekanego tefelo ye.",
+    "grant_limit": "Tefelo e feta seo wolete e se dumeletšego.",
+    "payment_failed": "Tefelo e paletšwe. Ga go tšhelete yeo e tšerwego.",
+    "timeout": "Tšhelete e tšea nako ye telele go fihla. Lekola wolete pele o lefela gape."
   },
   "tab": {
     "title": "Diakhaonte tša ka",
@@ -60,6 +187,9 @@
     },
     "about": "Ka ga",
     "version": "Phetolelo {{version}}"
+  },
+  "demo": {
+    "banner": "Mokgwa wa pontšho · tšhelete ya teko fela"
   },
   "offline": {
     "banner": "Ga o na inthanete. AnyPay e tšwela pele e šoma gomme e tla nyalanya ge o boile."
@@ -81,13 +211,33 @@
   },
   "errors": {
     "money": {
-      "minorUnits": "Tsenya palo ye e nepagetšego"
+      "minorUnits": "Tsenya palo ye e nepagetšego",
+      "invalid": "Tsenya palo ye e nepagetšego",
+      "tooLarge": "Palo yeo e kgolo kudu"
     },
     "walletAddress": {
       "required": "Tsenya aterese ya wolete ya gago",
       "tooLong": "Aterese yeo e telele kudu",
       "format": "Diaterese tša wolete di thoma ka $ goba https://"
     },
-    "idempotencyKey": "Go na le seo se sa šomego gabotse. Hle leka gape."
+    "shopName": {
+      "tooShort": "Šomiša bonyane ditlhaka tše 2",
+      "tooLong": "Šomiša ditlhaka tše di sa fetego 60"
+    },
+    "idempotencyKey": "Go na le seo se sa šomego gabotse. Hle leka gape.",
+    "api": {
+      "network_error": "Ga go na kgokagano. Lekola data ya gago o leke gape.",
+      "wallet_host_not_allowed": "AnyPay ga e so kgone go šomiša diwolete tša mofani yoo.",
+      "wallet_address_invalid": "Yeo ga se aterese ya wolete ye e šomago.",
+      "wallet_not_found": "Ga go na wolete atereseng yeo.",
+      "shop_not_found": "Lebenkele ga le hwetšwe.",
+      "payment_not_found": "Tefelo ga e hwetšwe.",
+      "rate_limited": "Maiteko a mantši kudu. Leta motsotso, ke moka o leke gape.",
+      "open_payments_unavailable": "Mofani wa wolete ga a arabe. Leka gape kgauswinyane.",
+      "open_payments_not_configured": "Ditefelo ga di so bulwe sebeleng se sa AnyPay.",
+      "merchant_unauthorized": "Mogala wo ga o a tsena lebenkeleng.",
+      "invalid_amount": "Tsenya palo ye e fetago lefela.",
+      "unknown": "Go na le seo se sa šomego gabotse. Hle leka gape."
+    }
   }
 }

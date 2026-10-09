@@ -113,3 +113,16 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Printing is for the A5 QR poster: white paper, no app chrome. */
+@media print {
+  @page {
+    size: A5 portrait;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #ffffff;
+  }
+}

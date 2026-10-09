@@ -69,7 +69,7 @@ export function Component() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" variant="inverse">
-              <Link to="/merchant">
+              <Link to="/merchant/new">
                 {t('onboarding.setUpShop')}
                 <ArrowRight aria-hidden="true" />
               </Link>

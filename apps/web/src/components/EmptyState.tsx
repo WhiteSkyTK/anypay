@@ -2,7 +2,8 @@ import type { LucideIcon } from 'lucide-react'
 
 interface EmptyStateProps {
   icon: LucideIcon
-  title: string
+  /** Leave out when the page heading already says it. */
+  title?: string
   description: string
 }
 
@@ -13,8 +14,8 @@ export function EmptyState({ icon: Icon, title, description }: Readonly<EmptySta
       <span className="mb-4 grid size-14 place-items-center rounded-full bg-accent text-accent-foreground">
         <Icon aria-hidden="true" className="size-6" />
       </span>
-      <p className="text-lg font-semibold">{title}</p>
-      <p className="mt-1 max-w-sm text-muted-foreground">{description}</p>
+      {title && <p className="mb-1 text-lg font-semibold">{title}</p>}
+      <p className="max-w-sm text-muted-foreground">{description}</p>
     </div>
   )
 }

@@ -1,42 +1,64 @@
 // Reports gzipped JS+CSS against the CLAUDE.md low-data budget and fails the build if the
 // first load is over it. Runs after every `vite build`; in CI it also writes the job summary.
-import { appendFile, readFile, readdir } from 'node:fs/promises'
+//
+// "First load" of a page = what index.html loads up front plus that page's route chunk and its
+// static imports, read from Vite's build manifest. Chunks loaded later on purpose (the quote sheet
+// after "Continue", the QR encoder on the poster, other languages) are not part of it.
+import { appendFile, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 
 const BUDGET_KB = 200
 const dist = fileURLToPath(new URL('../dist/', import.meta.url))
-const assetsDir = join(dist, 'assets')
+
+/** @type {Record<string, { file: string, src?: string, isEntry?: boolean, imports?: string[], css?: string[] }>} */
+const manifest = JSON.parse(await readFile(join(dist, '.vite', 'manifest.json'), 'utf8'))
 
 const gzipKb = async (file) =>
-  gzipSync(await readFile(join(assetsDir, file)), { level: 9 }).length / 1024
+  gzipSync(await readFile(join(dist, file)), { level: 9 }).length / 1024
 const kb = (value) => `${value.toFixed(1)} KB`
 
-const files = (await readdir(assetsDir)).filter((file) => /\.(js|css)$/.test(file))
-const sizes = new Map(await Promise.all(files.map(async (file) => [file, await gzipKb(file)])))
+/** Every file a manifest entry needs before it can run: itself, its CSS and its static imports. */
+function filesFor(key, files = new Set()) {
+  const chunk = manifest[key]
+  if (!chunk || files.has(chunk.file)) return files
+  files.add(chunk.file)
+  for (const css of chunk.css ?? []) files.add(css)
+  for (const imported of chunk.imports ?? []) filesFor(imported, files)
+  return files
+}
 
-// Everything index.html loads up front, plus the biggest lazy route chunk as the worst case
-// for whichever page a visitor lands on first.
-const html = await readFile(join(dist, 'index.html'), 'utf8')
-const entryFiles = new Set([...html.matchAll(/\/assets\/([^"]+\.(?:js|css))"/g)].map((m) => m[1]))
-const sum = (list) => list.reduce((total, file) => total + (sizes.get(file) ?? 0), 0)
-const entryKb = sum([...entryFiles])
-const largestLazyKb = Math.max(
-  0,
-  ...files.filter((f) => !entryFiles.has(f)).map((f) => sizes.get(f)),
+const sizeOf = async (files) => {
+  const sizes = await Promise.all([...files].map(gzipKb))
+  return sizes.reduce((total, size) => total + size, 0)
+}
+
+const entryFiles = filesFor('index.html')
+const pages = Object.keys(manifest).filter((key) => /^src\/pages\/\w+\.tsx$/.test(key))
+const pageLoads = await Promise.all(
+  pages.map(async (key) => ({
+    page: key.replace(/^src\/pages\/|\.tsx$/g, ''),
+    size: await sizeOf(filesFor(key, new Set(entryFiles))),
+  })),
 )
-const firstLoadKb = entryKb + largestLazyKb
-const totalKb = sum(files)
+const worst = pageLoads.reduce((max, load) => (load.size > max.size ? load : max), {
+  page: 'index.html',
+  size: await sizeOf(entryFiles),
+})
+const allFiles = new Set(
+  Object.values(manifest).flatMap((chunk) => [chunk.file, ...(chunk.css ?? [])]),
+)
+const totalKb = await sizeOf([...allFiles].filter((file) => /\.(js|css)$/.test(file)))
 
-const withinBudget = firstLoadKb <= BUDGET_KB
+const withinBudget = worst.size <= BUDGET_KB
 const report = [
   '### Web bundle size (gzipped)',
   '',
   '| Measure | Size |',
   '| --- | --- |',
-  `| Entry (index.html) | ${kb(entryKb)} |`,
-  `| Worst-case first load (entry + largest route) | ${kb(firstLoadKb)} |`,
+  `| App shell (index.html) | ${kb(await sizeOf(entryFiles))} |`,
+  `| Heaviest first load (${worst.page}) | ${kb(worst.size)} |`,
   `| All JS + CSS (cached by the service worker) | ${kb(totalKb)} |`,
   `| Budget for first load | ${BUDGET_KB} KB ${withinBudget ? '✅' : '❌'} |`,
   '',
@@ -45,6 +67,8 @@ const report = [
 console.log(`\n${report}`)
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, report)
 if (!withinBudget) {
-  console.error(`First load ${kb(firstLoadKb)} is over the ${BUDGET_KB} KB budget.`)
+  console.error(
+    `First load of ${worst.page} (${kb(worst.size)}) is over the ${BUDGET_KB} KB budget.`,
+  )
   process.exitCode = 1
 }
