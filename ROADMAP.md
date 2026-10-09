@@ -56,16 +56,21 @@ Scope: no payment logic yet.
 
 **Note:** the shop wallet is in COP and the customer in ZAR, so the demo shows a cross-currency quote. For a South African spaza story, consider a ZAR shop wallet for the main demo and keep COP to show FX.
 
-## Phase 2 — Features 1–3 · target 18 Oct · Status: Not started
+## Phase 2 — Features 1–3 · target 18 Oct · Status: In progress
+Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; hand-written SQL migrations), encrypted payment sessions, merchant token for the feed, SSE for live updates, then the web screens. Test checklist: [docs/testing.md](docs/testing.md).
+
 - [ ] Merchant onboarding + printable A5 QR poster
 - [ ] Customer pay flow: keypad → quote sheet → consent redirect → receipt
 - [ ] Merchant live feed: SSE, voice confirm, aria-live, daily totals, CSV export
 - [ ] Empty, loading, offline, error and success states on every screen
-- [ ] Postgres (Neon or Supabase free tier) via Drizzle: shops, payments, idempotency records; migrations
+- [ ] Postgres via Drizzle: shops, payments, idempotency records; migrations (PGlite locally with zero setup, Neon/Supabase in production)
+- [ ] Grant tokens encrypted at rest (AES-256-GCM, TOKEN_ENCRYPTION_KEY); the customer wallet stays inside the encrypted session
+- [ ] Merchant token protects the live feed and CSV (shop ids are public on the poster)
 - [ ] Grant callback route: verify `hash`, single-use nonce, then continue the grant
 - [ ] `Idempotency-Key` required on every money-moving endpoint (duplicates return the original result); rate limits on payment routes
 - [ ] Motion (LazyMotion + `m`) spring animations for bottom sheets and the success tick; honour reduced motion
 - [ ] Seed script (demo merchant + customer) and DEMO_MODE banner
+- [ ] Dropped drizzle-kit (old esbuild advisory) for hand-written SQL migrations; audit fix for concurrently → shell-quote (critical)
 - [ ] Deploy web + API on tiers that don't sleep; URLs in the README
 - [ ] Component tests (Testing Library + happy-dom) for the new screens: SonarCloud's default gate wants 80% coverage on new code, and React components have none yet
 - [ ] New strings translated in all four locales (drafts are fine until the native-speaker review)

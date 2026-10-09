@@ -1,4 +1,4 @@
-import type { Money } from '@anypay/shared'
+import type { Money, PaymentFailure, PaymentStatus } from '@anypay/shared'
 import { AppError } from '../lib/errors'
 import type {
   GrantedAccess,
@@ -9,26 +9,9 @@ import type {
 } from '../open-payments/types'
 import type { ConsentRequest } from './grant-service'
 
-/** The online payment flow as an explicit state machine (CLAUDE.md steps 1–5). */
-export type PaymentStep =
-  | 'created'
-  | 'incoming-payment-created'
-  | 'quoted'
-  | 'awaiting-consent'
-  | 'sending'
-  | 'completed'
-  | 'failed'
-
-/** Every way a payment can fail, each with its own message in the UI. */
-export type PaymentFailure =
-  | 'consent_declined'
-  | 'consent_invalid'
-  | 'consent_timeout'
-  | 'quote_expired'
-  | 'insufficient_funds'
-  | 'grant_limit'
-  | 'payment_failed'
-  | 'timeout'
+// Steps and failure reasons are shared with the web app (one source of truth in @anypay/shared).
+export type PaymentStep = PaymentStatus
+export type { PaymentFailure }
 
 const TRANSITIONS: Record<PaymentStep, readonly PaymentStep[]> = {
   created: ['incoming-payment-created', 'failed'],

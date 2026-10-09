@@ -41,11 +41,32 @@ const EnvSchema = z.object({
       error: 'Must be 32 bytes, base64-encoded',
     })
     .optional(),
-  DATABASE_URL: z.url().optional(),
+  /** Postgres (Neon, Supabase…). Unset: an embedded Postgres (PGlite) under DATA_DIR, no setup. */
+  DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }).optional(),
+  /** Where local data lives when DATABASE_URL is unset (relative to the repo root). */
+  DATA_DIR: z.string().default('.data'),
+
+  /** How browsers and wallets reach this API: the consent callback URL is built from it. */
+  PUBLIC_API_URL: z
+    .url({ protocol: /^https?$/ })
+    .default('http://localhost:3000')
+    .transform((url) => new URL(url).origin),
+  /** Proxy hops in front of the API (hosting load balancers), so rate limits see real client IPs. */
+  TRUST_PROXY: z.coerce.number().int().min(0).max(10).default(0),
 
   /** Default wallets for `npm run demo:pay` (public addresses, like email addresses). */
   DEMO_CUSTOMER_WALLET: z.string().optional(),
   DEMO_MERCHANT_WALLET: z.string().optional(),
+})
+
+// A deploy without these would lose data on restart or keep grant tokens unencrypted.
+const PRODUCTION_REQUIRED = ['DATABASE_URL', 'TOKEN_ENCRYPTION_KEY'] as const
+
+const EnvSchemaWithRules = EnvSchema.superRefine((env, ctx) => {
+  if (env.NODE_ENV !== 'production') return
+  for (const key of PRODUCTION_REQUIRED) {
+    if (!env[key]) ctx.addIssue({ code: 'custom', path: [key], message: 'Required in production' })
+  }
 })
 
 export type Env = z.infer<typeof EnvSchema>
@@ -64,7 +85,7 @@ export class EnvError extends Error {
 export function parseEnv(source: NodeJS.ProcessEnv): Env {
   // `KEY=` in a .env file means "not set", not "set to an empty string".
   const present = Object.fromEntries(Object.entries(source).filter(([, value]) => value !== ''))
-  const result = EnvSchema.safeParse(present)
+  const result = EnvSchemaWithRules.safeParse(present)
   if (!result.success) throw new EnvError(z.prettifyError(result.error))
   return result.data
 }
