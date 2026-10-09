@@ -36,8 +36,6 @@
     "title": "Misa isitolo sakho",
     "step": "Isinyathelo {{current}} kwezingu-{{total}}",
     "walletLabel": "Ikheli lewalethi yakho",
-    "walletHint": "Liqala ngo-$ noma ngo-https://. Lithole ku-app yewalethi yakho.",
-    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
     "check": "Hlola iwalethi",
     "checking": "Iyahlola…",
     "walletFound": "Iwalethi itholakele",
@@ -47,6 +45,13 @@
     "nameHint": "Amakhasimende abona leli gama uma ekhokha.",
     "create": "Dala isitolo sami",
     "creating": "Iyadala…"
+  },
+  "wallet": {
+    "nameHint": "Igama lewalethi yakho kuphela: ingxenye engemuva kuka-/.",
+    "namePlaceholder": "igama",
+    "otherProvider": "Iwalethi yomunye umhlinzeki?",
+    "useDefault": "Sebenzisa iwalethi ye-{{host}}",
+    "fullHint": "Liqala ngo-$ noma ngo-https://. Lithole ku-app yewalethi yakho."
   },
   "poster": {
     "title": "Iphosta yakho ye-QR",

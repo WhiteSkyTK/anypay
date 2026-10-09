@@ -4,6 +4,7 @@ import { type FormEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { Field } from '@/components/Field'
+import { WalletAddressField } from '@/components/WalletAddressField'
 import { Page } from '@/components/Page'
 import { Button } from '@/components/ui/button'
 import { useErrorText } from '@/hooks/useErrorText'
@@ -114,18 +115,11 @@ export function Component() {
         </form>
       ) : (
         <form onSubmit={checkWallet} className="mt-8 flex flex-col gap-6" noValidate>
-          <Field
+          <WalletAddressField
             label={t('setup.walletLabel')}
-            hint={t('setup.walletHint')}
             error={errorMessage}
             value={walletInput}
-            onChange={(event) => setWalletInput(event.target.value)}
-            placeholder={t('setup.walletPlaceholder')}
-            autoComplete="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            inputMode="url"
-            required
+            onChange={setWalletInput}
           />
           <Button type="submit" size="lg" disabled={busy !== 'idle' || !online}>
             {busy === 'checking' && <LoaderCircle aria-hidden="true" className="animate-spin" />}

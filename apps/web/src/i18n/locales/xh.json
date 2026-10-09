@@ -36,8 +36,6 @@
     "title": "Lungiselela ivenkile yakho",
     "step": "Inyathelo {{current}} kwezi-{{total}}",
     "walletLabel": "Idilesi yewalethi yakho",
-    "walletHint": "Iqala ngo-$ okanye ngo-https://. Yifumane kwi-app yewalethi yakho.",
-    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
     "check": "Khangela iwalethi",
     "checking": "Iyakhangela…",
     "walletFound": "Iwalethi ifunyenwe",
@@ -47,6 +45,13 @@
     "nameHint": "Abathengi bayalibona eli gama xa behlawula.",
     "create": "Yenza ivenkile yam",
     "creating": "Iyenza…"
+  },
+  "wallet": {
+    "nameHint": "Igama lewalethi yakho kuphela: inxalenye emva kwe-/.",
+    "namePlaceholder": "igama",
+    "otherProvider": "Iwalethi yomnye umboneleli?",
+    "useDefault": "Sebenzisa iwalethi ye-{{host}}",
+    "fullHint": "Iqala ngo-$ okanye ngo-https://. Yifumane kwi-app yewalethi yakho."
   },
   "poster": {
     "title": "Iphosta yakho ye-QR",

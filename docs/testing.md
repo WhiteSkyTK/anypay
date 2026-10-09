@@ -67,6 +67,22 @@ are the real approvals in the test wallet, the voice, printing and a real phone.
 - [ ] **Old shop link after a reset** (new): a phone whose shop no longer exists shows "This
       phone is signed out of the shop" and **Set up again**, not an endless "Connecting…"
 
+- [ ] **Wallet name only** (new): on setup type just `merchanttest`; on the pay screen just
+      `southtest`. The grey `$ilp.interledger-test.dev/` in front is filled in for you
+- [ ] **Pasting a whole address** (new): paste `$ilp.interledger-test.dev/southtest` into the
+      name box: it keeps only `southtest`
+- [ ] **Another provider** (new): tap **Wallet from another provider?**, the full address shows
+      and can be edited; **Use a ilp.interledger-test.dev wallet** goes back
+
+### Phase 2: deployed (Render)
+
+- [ ] After fixing `VITE_API_URL` (with `.com`) and redeploying the web service: set up a shop
+      on <https://anypay-web.onrender.com> without "No connection"
+- [ ] In the Render logs of anypay-api, a minute after a deploy: "PUBLIC_API_URL reaches the API"
+      (a warning instead means it has a typo)
+- [ ] Two phones: one shows the shop feed, the other scans the poster and pays. The shop phone
+      shows **Received** and says "Payment received" within seconds (Phase 2's "Done when")
+
 ### Phase 2: on a real phone (same Wi-Fi as the PC)
 
 1. Find the PC's address: run `ipconfig`, look for **IPv4 Address** (e.g. `192.168.1.20`).

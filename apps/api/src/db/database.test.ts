@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { rowsOf } from '../testing/test-database'
 import { type DatabaseHandle, migrate, openDatabase } from './database'
+import { MIGRATIONS } from './migrations'
 
 describe('migrate', () => {
   let handle: DatabaseHandle
@@ -12,7 +13,7 @@ describe('migrate', () => {
   afterAll(() => handle.close())
 
   it('creates every table on a fresh database', async () => {
-    expect(await migrate(handle.db)).toEqual(['0001_shops_payments_idempotency'])
+    expect(await migrate(handle.db)).toEqual(MIGRATIONS.map((migration) => migration.name))
     const tables = await handle.db.execute(
       sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name`,
     )

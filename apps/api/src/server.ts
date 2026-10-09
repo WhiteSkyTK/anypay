@@ -6,6 +6,9 @@ import { findRepoRoot, loadDotEnv } from './config/repo-root'
 import { createContainer } from './container'
 import { DataDirLockedError } from './db/data-dir-lock'
 import { migrate, openDatabase } from './db/database'
+import { checkPublicUrl } from './lib/public-url-check'
+
+const DAY_MS = 24 * 60 * 60 * 1000
 
 async function main(): Promise<void> {
   const root = findRepoRoot()
@@ -29,6 +32,9 @@ async function main(): Promise<void> {
   })
   const resumed = await container.paymentService.resumeWatching()
   if (resumed > 0) logger.info({ resumed }, 'Resumed watching payments in flight')
+  const purged = await container.idempotency.purgeOlderThan(new Date(Date.now() - DAY_MS))
+  if (purged > 0) logger.info({ purged }, 'Removed old idempotency records')
+  if (env.NODE_ENV === 'production') void checkPublicUrl(env.PUBLIC_API_URL, logger)
 
   const shutdown = () => {
     server.close(() => void database.close().finally(() => process.exit(0)))

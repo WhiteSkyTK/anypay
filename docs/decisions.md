@@ -115,3 +115,13 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
   when a phone has no voice for the chosen language.
 - **Render Blueprint + Neon.** One file deploys both services; the static site never sleeps. The
   API is one always-on process because it holds SSE connections and polls wallets.
+- **The wallet field asks for a name, not an address.** Every test-wallet address is
+  `$ilp.interledger-test.dev/<name>`, so typing only the name is faster and harder to get wrong
+  on a small phone. It stays one input in both modes, so pasting a full address or switching to
+  another provider never loses the caret, and other Open Payments wallets keep working.
+- **Config mistakes fail at deploy time.** A missing `.com` in `VITE_API_URL` showed up only as
+  "No connection" on phones, so the web build now checks that the host exists, and the API warns
+  when `PUBLIC_API_URL` (where wallets send customers back) doesn't reach it.
+- **Idempotency replies are encrypted too.** They are full API responses, and a new shop's
+  response contains its merchant token; hashing the token in `shops` meant nothing while the
+  replay cache kept it readable. They are also deleted after a day: retries come within minutes.

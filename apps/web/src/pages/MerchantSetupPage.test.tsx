@@ -57,10 +57,20 @@ describe('MerchantSetupPage', () => {
     expect(create?.headers['Idempotency-Key']).toBeTruthy()
   })
 
-  it('catches a mistyped address before asking the server', async () => {
+  it('needs only the wallet name on the usual provider', async () => {
+    const user = userEvent.setup()
+    const calls = fakeApi({ 'POST /api/wallet-addresses/lookup': LOOKUP })
+    openSetup()
+    await checkWallet(user, 'merchanttest')
+    expect(await screen.findByText('Payments arrive in COP')).toBeTruthy()
+    expect(calls[0]?.body).toEqual({ walletAddress: '$ilp.interledger-test.dev/merchanttest' })
+  })
+
+  it('catches a mistyped full address before asking the server', async () => {
     const user = userEvent.setup()
     const calls = fakeApi({})
     openSetup()
+    await user.click(screen.getByRole('button', { name: 'Wallet from another provider?' }))
     await checkWallet(user, 'hello')
     expect(screen.getByText('Wallet addresses start with $ or https://')).toBeTruthy()
     expect(calls).toHaveLength(0)

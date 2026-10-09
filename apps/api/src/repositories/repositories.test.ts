@@ -18,7 +18,7 @@ beforeAll(async () => {
   handle = await openTestDatabase()
   shops = new ShopRepository(handle.db)
   paymentsRepo = new PaymentRepository(handle.db, testCipher())
-  idempotency = new IdempotencyRepository(handle.db)
+  idempotency = new IdempotencyRepository(handle.db, testCipher())
   await shops.create({
     id: 'shop-1',
     name: 'Mama T Spaza',
@@ -144,5 +144,24 @@ describe('IdempotencyRepository', () => {
     await idempotency.begin('payments', 'k-4', 'h')
     await idempotency.abandon('payments', 'k-4')
     await expect(idempotency.begin('payments', 'k-4', 'h')).resolves.toEqual({ kind: 'started' })
+  })
+
+  it('never stores a response (e.g. a new merchant token) in plain text', async () => {
+    await idempotency.begin('shops', 'k-5', 'h')
+    await idempotency.complete('shops', 'k-5', 201, '{"merchantToken":"secret-token"}')
+    const rows = rowsOf<{ response_body: string }>(
+      await handle.db.execute(sql`SELECT response_body FROM idempotency_keys WHERE key = 'k-5'`),
+    )
+    expect(rows[0]?.response_body).not.toContain('secret-token')
+  })
+
+  it('purges records older than the cutoff', async () => {
+    await idempotency.begin('shops', 'k-old', 'h')
+    await handle.db.execute(
+      sql`UPDATE idempotency_keys SET created_at = now() - interval '2 days' WHERE key = 'k-old'`,
+    )
+    const removed = await idempotency.purgeOlderThan(new Date(Date.now() - 86_400_000))
+    expect(removed).toBe(1)
+    await expect(idempotency.begin('shops', 'k-old', 'h')).resolves.toEqual({ kind: 'started' })
   })
 })

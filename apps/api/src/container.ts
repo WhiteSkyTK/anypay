@@ -102,11 +102,12 @@ function createCipher(env: Env, logger: Logger): TokenCipher {
 /** The full API: the core plus storage, services and the live event bus. */
 export function createContainer(env: Env, db: Database, options: CoreOptions = {}): Container {
   const core = createCore(env, options)
+  const cipher = createCipher(env, core.logger)
   const shopService = new ShopService(new ShopRepository(db), core.walletAddressResolver)
   const paymentEvents = new PaymentEvents()
   const paymentService = new PaymentService({
     shops: shopService,
-    payments: new PaymentRepository(db, createCipher(env, core.logger)),
+    payments: new PaymentRepository(db, cipher),
     orchestrator: core.paymentOrchestrator,
     watcher: core.paymentWatcher,
     events: paymentEvents,
@@ -119,7 +120,7 @@ export function createContainer(env: Env, db: Database, options: CoreOptions = {
     shopService,
     paymentService,
     paymentEvents,
-    idempotency: new IdempotencyRepository(db),
+    idempotency: new IdempotencyRepository(db, cipher),
     tabService: new TabService(),
   }
 }

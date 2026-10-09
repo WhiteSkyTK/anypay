@@ -73,10 +73,9 @@ describe('PayPage', () => {
     localStorage.setItem('anypay.customerWallet', '$ilp.interledger-test.dev/southtest')
     fakeApi({ [`GET /api/shops/${SHOP.id}`]: { body: SHOP } })
     openPayPage()
-    expect(await screen.findByLabelText('Your wallet address')).toHaveProperty(
-      'value',
-      '$ilp.interledger-test.dev/southtest',
-    )
+    // Only the name is shown; the provider part sits in front of it.
+    expect(await screen.findByLabelText('Your wallet address')).toHaveProperty('value', 'southtest')
+    expect(screen.getByText('$ilp.interledger-test.dev/')).toBeTruthy()
   })
 
   it('explains a refused wallet and retries the same attempt, so no payment is made twice', async () => {

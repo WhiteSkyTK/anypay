@@ -36,8 +36,6 @@
     "title": "Set up your shop",
     "step": "Step {{current}} of {{total}}",
     "walletLabel": "Your wallet address",
-    "walletHint": "It starts with $ or https://. Find it in your wallet app.",
-    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
     "check": "Check wallet",
     "checking": "Checking…",
     "walletFound": "Wallet found",
@@ -47,6 +45,13 @@
     "nameHint": "Customers see this when they pay.",
     "create": "Create my shop",
     "creating": "Creating…"
+  },
+  "wallet": {
+    "nameHint": "Just your wallet name: the part after the slash.",
+    "namePlaceholder": "yourname",
+    "otherProvider": "Wallet from another provider?",
+    "useDefault": "Use a {{host}} wallet",
+    "fullHint": "It starts with $ or https://. Find it in your wallet app."
   },
   "poster": {
     "title": "Your QR poster",

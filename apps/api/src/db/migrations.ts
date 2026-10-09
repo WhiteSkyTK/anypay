@@ -50,4 +50,10 @@ export const MIGRATIONS: readonly Migration[] = [
       )`,
     ],
   },
+  {
+    // Responses were stored in plain text before they were encrypted, including new shops'
+    // merchant tokens. They are only a retry cache, so clearing them loses nothing.
+    name: '0002_clear_plaintext_idempotency_responses',
+    statements: ['DELETE FROM idempotency_keys'],
+  },
 ]

@@ -5,10 +5,10 @@ import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { EmptyState } from '@/components/EmptyState'
-import { Field } from '@/components/Field'
 import { Keypad } from '@/components/Keypad'
 import { DocumentTitle, Page } from '@/components/Page'
 import { Button } from '@/components/ui/button'
+import { WalletAddressField } from '@/components/WalletAddressField'
 import { useErrorText } from '@/hooks/useErrorText'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { usePaymentFlow } from '@/hooks/usePaymentFlow'
@@ -85,17 +85,13 @@ function PayForm({ shop }: Readonly<{ shop: Shop }>) {
         onKey={(key) => setTyped((current) => applyKey(current, key, shop.assetScale))}
       />
 
-      <Field
+      <WalletAddressField
         className="mt-6"
         label={t('pay.walletLabel')}
         hint={t('pay.walletHint')}
         value={flow.wallet}
-        onChange={(event) => flow.setWallet(event.target.value)}
-        placeholder={t('setup.walletPlaceholder')}
-        autoComplete="off"
-        autoCapitalize="off"
-        spellCheck={false}
-        inputMode="url"
+        onChange={flow.setWallet}
+        disabled={busy}
       />
 
       {!online && <p className="mt-4 rounded-card bg-muted px-5 py-4">{t('common.offline')}</p>}

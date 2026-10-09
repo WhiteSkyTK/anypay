@@ -4,4 +4,6 @@ declare const __APP_VERSION__: string
 interface ImportMetaEnv {
   /** The API's origin in production (e.g. https://api.anypay.example). Empty in dev: Vite proxies /api. */
   readonly VITE_API_URL?: string
+  /** Wallet provider whose addresses the wallet field shortens to a name. */
+  readonly VITE_WALLET_HOST?: string
 }

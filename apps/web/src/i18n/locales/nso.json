@@ -36,8 +36,6 @@
     "title": "Beakanya lebenkele la gago",
     "step": "Kgato ya {{current}} go tše {{total}}",
     "walletLabel": "Aterese ya wolete ya gago",
-    "walletHint": "E thoma ka $ goba https://. E hwetše ka go app ya wolete ya gago.",
-    "walletPlaceholder": "$ilp.interledger-test.dev/yourshop",
     "check": "Lekola wolete",
     "checking": "E a lekola…",
     "walletFound": "Wolete e hweditšwe",
@@ -47,6 +45,13 @@
     "nameHint": "Bareki ba bona leina le ge ba lefela.",
     "create": "Hlama lebenkele la ka",
     "creating": "E a hlama…"
+  },
+  "wallet": {
+    "nameHint": "Leina la wolete ya gago fela: karolo ka morago ga /.",
+    "namePlaceholder": "leina",
+    "otherProvider": "Wolete ya mofani o mongwe?",
+    "useDefault": "Šomiša wolete ya {{host}}",
+    "fullHint": "E thoma ka $ goba https://. E hwetše ka go app ya wolete ya gago."
   },
   "poster": {
     "title": "Phosetara ya gago ya QR",

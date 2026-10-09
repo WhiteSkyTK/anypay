@@ -77,6 +77,10 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [x] Live feed reconnects after the browser gives up (API restart, sleeping host) and signs out when the shop is gone (401/404); indicator is a status region
 - [x] Local database lock: two dev APIs on one `.data/pglite` corrupted it (2026-10-09). A second API now stops with a clear message; shutdown closes live connections so the database closes cleanly
 - [x] `DATA_DIR` accepts absolute paths; `npm run seed -- --api … --web …` for the deployed app; `npm run dev:lan` for phones on Wi-Fi
+- [x] Wallet field asks only for the name after `$ilp.interledger-test.dev/` (team idea); pasting a full address works, and one tap switches to any other provider
+- [x] Deploy guards: the web build fails when `VITE_API_URL`'s host doesn't exist (the first deploy shipped `https://anypay-api.onrender`, no `.com`), and the API warns at startup when `PUBLIC_API_URL` doesn't reach it
+- [x] Idempotency records are encrypted (they kept new shops' merchant tokens in plain text), old ones cleared by migration 0002, and records older than a day purged at startup
+- [x] Dependabot's TypeScript 7 bump broke `npm ci` (typescript-eslint supports < 6.1): back to 6.0, TypeScript minor/major updates ignored until it does
 - [x] Component tests (Testing Library + happy-dom) for the new screens: SonarCloud's default gate wants 80% coverage on new code. Page tests use a scripted API and a fake EventSource; overall coverage 55% → 82%, new pages and hooks 87–98%
 - [x] New strings translated in all four locales (drafts are fine until the native-speaker review)
 
