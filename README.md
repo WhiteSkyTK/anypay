@@ -11,6 +11,9 @@ compatible wallet.
 > <https://anypay-api.onrender.com/health>. The free API instance sleeps when idle, so the first
 > request after a quiet spell can take about a minute.
 >
+> Short links: <https://anypay-web.onrender.com/start> sets up a shop;
+> `https://anypay-web.onrender.com/s/<code>` opens a shop's pay screen.
+>
 > Status: Phase 2. Shops set up in under two minutes, print a QR poster and see payments arrive
 > live (with a spoken "Payment received"); customers pay from their own wallet after seeing the
 > exact price. The offline Digital Tab is Phase 3. See [ROADMAP.md](ROADMAP.md).

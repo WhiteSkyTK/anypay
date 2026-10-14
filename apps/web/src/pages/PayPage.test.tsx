@@ -197,3 +197,27 @@ describe('PayPage, leaving and coming back', () => {
     expect(await screen.findByText('Stub page /pay')).toBeTruthy()
   })
 })
+
+describe('PayPage, remembered shops', () => {
+  it('opens a shop paid at before, even with no signal', async () => {
+    localStorage.setItem(`anypay.cache.shop.${SHOP.id}`, JSON.stringify(SHOP))
+    fakeApi({ [`GET /api/shops/${SHOP.id}`]: { networkError: true } })
+    openPayPage()
+    expect(screen.getByRole('heading', { level: 1, name: SHOP.name })).toBeTruthy()
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull())
+  })
+
+  it('does not keep showing a shop that no longer exists', async () => {
+    localStorage.setItem(`anypay.cache.shop.${SHOP.id}`, JSON.stringify(SHOP))
+    fakeApi({ [`GET /api/shops/${SHOP.id}`]: apiError(404, 'shop_not_found') })
+    openPayPage()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Shop not found' })).toBeTruthy()
+  })
+
+  it('ignores a damaged cache entry', async () => {
+    localStorage.setItem(`anypay.cache.shop.${SHOP.id}`, '{"id":42')
+    fakeApi({ [`GET /api/shops/${SHOP.id}`]: { body: SHOP } })
+    openPayPage()
+    expect(await screen.findByRole('heading', { level: 1, name: SHOP.name })).toBeTruthy()
+  })
+})

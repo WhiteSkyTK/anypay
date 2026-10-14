@@ -96,13 +96,13 @@ are the real approvals in the test wallet, the voice, printing and a real phone.
 
 Or simply test on the deployed app (<https://anypay-web.onrender.com>): no setup at all.
 
-- [ ] Phone camera scans the poster QR and opens the pay screen
-- [ ] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
-- [ ] After approving in the wallet on the phone, it comes back to the receipt
-- [ ] The PC (shop) announces the payment out loud
+- [x] Phone camera scans the poster QR and opens the pay screen
+- [x] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
+- [x] After approving in the wallet on the phone, it comes back to the receipt
+- [x] The PC (shop) announces the payment out loud
 - [ ] Phone with the shop feed open: lock the screen for a minute, unlock, pay again: the
       feed reconnects (**Live**) and shows the new payment
-- [ ] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
+- [x] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
 
 ### Phase 2: getting around and safety (2026-10-14)
 
@@ -129,6 +129,17 @@ because an installed app on iPhone has no browser Back button.
       the shop name: it says to remove hidden or special characters
 - [ ] **Deployed site still works** after this update is live (the new security policy blocks
       anything not from AnyPay itself; a blank page or "No connection" would mean it's too strict)
+
+### Phase 2 wrap-up: short links and remembering (2026-10-14)
+
+- [ ] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
+- [ ] <https://anypay-web.onrender.com/start> opens shop set-up
+- [ ] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
+      (`…/shop/<code>/pay`) still work
+- [ ] Pay at a shop once, then turn on airplane mode and scan its poster again: the pay screen
+      still opens (paying itself needs signal, and says so)
+- [ ] Open the shop feed, close the app, turn off data, open it again: today's payments and total
+      are still there while it says **Connecting…**
 
 ## Problems found
 

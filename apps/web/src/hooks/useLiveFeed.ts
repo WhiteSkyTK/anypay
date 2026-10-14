@@ -6,7 +6,9 @@ import {
   zeroMoney,
 } from '@anypay/shared'
 import { useEffect, useMemo, useState } from 'react'
+import { z } from 'zod'
 import { api, ApiRequestError } from '@/lib/api'
+import { readCache, writeCache } from '@/lib/cache'
 import { startOfToday } from '@/lib/format'
 import type { MerchantSession } from '@/lib/merchant-session'
 import { type StreamState, useEventSource } from './useEventSource'
@@ -19,6 +21,15 @@ export interface LiveFeed {
   loaded: boolean
   payments: PaymentSummary[]
   total: Money
+}
+
+// Today's feed on this phone: shown at once when the feed opens, before the live connection is up.
+const CachedFeedSchema = ShopPaymentsResponseSchema.extend({ day: z.string() })
+type CachedFeed = z.infer<typeof CachedFeedSchema>
+
+function cachedToday(shopId: string, day: string): CachedFeed | undefined {
+  const cached = readCache(`feed.${shopId}`, CachedFeedSchema)
+  return cached?.day === day ? cached : undefined
 }
 
 function upsert(list: PaymentSummary[], payment: PaymentSummary): PaymentSummary[] {
@@ -35,9 +46,17 @@ export function useLiveFeed(
   onNewPayment?: (payment: PaymentSummary) => void,
 ): LiveFeed {
   const since = useMemo(() => startOfToday(), [])
-  const [payments, setPayments] = useState<PaymentSummary[] | null>(null)
-  const [total, setTotal] = useState<Money>(zeroMoney(session.assetCode, session.assetScale))
+  const day = since.toISOString()
+  const [cached] = useState(() => cachedToday(session.shopId, day))
+  const [payments, setPayments] = useState<PaymentSummary[] | null>(cached?.payments ?? null)
+  const [total, setTotal] = useState<Money>(
+    cached?.total ?? zeroMoney(session.assetCode, session.assetScale),
+  )
   const [unauthorized, setUnauthorized] = useState(false)
+
+  useEffect(() => {
+    if (payments) writeCache(`feed.${session.shopId}`, { day, payments, total })
+  }, [session.shopId, day, payments, total])
 
   const url = unauthorized ? null : api.shopEventsUrl(session.shopId, session.token, since)
   // The shop's feed must survive API restarts and sleeping hosts, so it keeps trying.

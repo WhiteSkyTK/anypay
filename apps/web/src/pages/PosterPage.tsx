@@ -29,7 +29,8 @@ export function Component() {
     if (fromFeed) void navigate(-1)
     else void navigate('/merchant', { replace: true })
   }
-  const payUrl = `${window.location.origin}/shop/${session.shopId}/pay`
+  // The short form (see router.tsx): fewer characters, a smaller QR code, easier to type.
+  const payUrl = `${window.location.origin}/s/${session.shopId}`
   return (
     <div className="mx-auto w-full max-w-xl px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-10 print:max-w-none print:p-0">
       <DocumentTitle title={t('poster.title')} />

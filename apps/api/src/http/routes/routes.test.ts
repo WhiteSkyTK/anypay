@@ -452,3 +452,10 @@ describe('config', () => {
     expect(res.body).toEqual({ demoMode: false, version: '0.1.0' })
   })
 })
+
+describe('API root', () => {
+  it('sends people who open the API address to the web app', async () => {
+    const res = await request(app).get('/').expect(302)
+    expect(res.headers.location).toBe(env.WEB_ORIGIN[0])
+  })
+})

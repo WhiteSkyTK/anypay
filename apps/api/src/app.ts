@@ -45,6 +45,8 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
   app.use(express.json({ limit: BODY_LIMIT }))
 
   app.use(healthRouter(container.version))
+  // People who open the API's own address (a shared link, the GitHub page) land on the app.
+  app.get('/', (_req, res) => res.redirect(302, env.WEB_ORIGIN[0] ?? '/health'))
   app.get('/api/config', (_req, res) => {
     const body: ConfigResponse = { demoMode: env.DEMO_MODE, version: container.version }
     res.json(body)
