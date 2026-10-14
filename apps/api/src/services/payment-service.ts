@@ -48,6 +48,7 @@ export function toSummary(record: PaymentRecord, shopName: string): PaymentSumma
     failure: record.failure,
     amount: record.amount,
     debitAmount: record.debitAmount,
+    tabId: record.tabId,
     createdAt: record.createdAt.toISOString(),
     completedAt: record.completedAt?.toISOString(),
   }
@@ -171,6 +172,21 @@ export class PaymentService {
         payment.id,
       ])
     return [header, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n') + '\r\n'
+  }
+
+  /**
+   * A payment the customer approved in advance (a tab voucher) joins the shop's feed like any
+   * other: stored, published live, and watched until the money arrives (or it fails).
+   */
+  async trackPreAuthorised(
+    shop: ShopRecord,
+    session: PaymentSession,
+    tabId: string,
+  ): Promise<PaymentSummary> {
+    const record = await this.#deps.payments.insert(shop.id, session, tabId)
+    const summary = this.#publish(record, shop.name)
+    if (session.step === 'sending') void this.#watch(session, shop)
+    return summary
   }
 
   /** After a restart, keeps watching payments that were sent but not yet confirmed. */

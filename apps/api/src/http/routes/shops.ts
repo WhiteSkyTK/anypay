@@ -10,6 +10,7 @@ import type { ShopRecord } from '../../repositories/shop-repository'
 import type { PaymentEvents } from '../../services/payment-events'
 import type { PaymentService } from '../../services/payment-service'
 import { type ShopService, toShop } from '../../services/shop-service'
+import type { TabService } from '../../services/tab-service'
 import { idempotent } from '../idempotency'
 import { openEventStream } from '../sse'
 import { parse } from '../validate'
@@ -19,6 +20,7 @@ export interface ShopRouteDeps {
   payments: PaymentService
   events: PaymentEvents
   idempotency: IdempotencyRepository
+  tabs: TabService
   /** Rate limit for routes that create things or call out to wallets. */
   limit: RequestHandler
   /** Caps open live streams (see limitStreams). */
@@ -47,6 +49,7 @@ export function shopRoutes({
   payments,
   events,
   idempotency,
+  tabs,
   limit,
   streams,
 }: ShopRouteDeps): Router {
@@ -84,6 +87,11 @@ export function shopRoutes({
     res.locals.shop = await shops.authenticateMerchant(String(req.params.shopId), token)
     next()
   }
+
+  /** Active tabs at this shop, with keys and caps: the shop's phone keeps them to work offline. */
+  router.get('/shops/:shopId/tabs', merchant, async (_req, res) => {
+    res.json({ tabs: await tabs.listForShop(res.locals.shop as ShopRecord) })
+  })
 
   router.get('/shops/:shopId/payments', merchant, async (req, res) => {
     res.json(await payments.listForShop(res.locals.shop as ShopRecord, sinceOf(req.query)))

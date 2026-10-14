@@ -94,7 +94,8 @@ export interface OutgoingPaymentInfo {
 
 export interface CreateIncomingPaymentArgs {
   walletAddress: string
-  incomingAmount: Money
+  /** Omit for an open amount (the sender's quote decides what arrives). */
+  incomingAmount?: Money
   expiresAt: string
   metadata?: Record<string, unknown>
 }
@@ -103,6 +104,11 @@ export interface CreateQuoteArgs {
   walletAddress: string
   /** The incoming payment URL the quote pays into. */
   receiver: string
+  /**
+   * Fixed send: exactly this leaves the customer's wallet, and the quote says what arrives.
+   * Only for an incoming payment without an amount; omit to pay the incoming payment's amount.
+   */
+  debitAmount?: Money
 }
 
 export interface CreateOutgoingPaymentArgs {

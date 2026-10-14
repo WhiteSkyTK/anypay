@@ -3,6 +3,8 @@ import { randomUUID } from 'node:crypto'
 import { AppError } from '../lib/errors'
 import { type OpenPaymentsErrorCode, isOpenPaymentsError } from '../open-payments/errors'
 import type { OpenPaymentsPort } from '../open-payments/port'
+import type { WalletAddressInfo } from '../open-payments/types'
+import type { GrantedAccess } from '../open-payments/types'
 import type { ConsentCallback, GrantService } from './grant-service'
 import {
   advance,
@@ -43,6 +45,16 @@ export interface StartPaymentInput {
   /** Our consent callback URL; omit to poll instead (CLI fallback). */
   finishUri?: string
   description?: string
+}
+
+/** A payment the customer approved in advance (a tab voucher): no consent step. */
+export interface PreAuthorisedPaymentInput {
+  id: string
+  customer: WalletAddressInfo
+  merchant: WalletAddressInfo
+  /** In the shop's currency, minor units. */
+  amount: Money
+  description: string
 }
 
 /** How long the shop's payment request stays open. */
@@ -129,6 +141,73 @@ export class PaymentOrchestrator {
     } catch (error) {
       return this.#failOrThrow(session, error)
     }
+  }
+
+  /**
+   * Tab settlement, steps 2 and 3: the shop's incoming payment and the customer's quote. Ends at
+   * `quoted` (or `failed`); `sendPreAuthorised` then pays it with the tab's grant.
+   */
+  async prepareSettlement(input: PreAuthorisedPaymentInput): Promise<PaymentSession> {
+    const session: PaymentSession = { ...input, step: 'created' }
+    let latest = this.#step(session)
+    try {
+      latest = await this.#createIncomingPayment(latest)
+      return await this.#createQuote(latest)
+    } catch (error) {
+      return this.#failOrThrow(latest, error)
+    }
+  }
+
+  /**
+   * Tab settlement, step 5: pays the quote with a grant the customer approved in advance, with no
+   * interaction. An expired token is thrown (the caller rotates it and tries again); a grant over
+   * its weekly limit ends the payment as `grant_limit`.
+   */
+  async sendPreAuthorised(session: PaymentSession, access: GrantedAccess): Promise<PaymentSession> {
+    assertStep(session, 'quoted')
+    const { quote, customer } = session
+    if (!quote) throw new AppError('invalid_payment_step', 'Payment was never quoted')
+    try {
+      const outgoingPayment = await this.#deps.openPayments.createOutgoingPayment(
+        customer.resourceServer,
+        access.accessToken.value,
+        { walletAddress: customer.id, quoteId: quote.id, metadata: this.#metadata(session) },
+      )
+      return this.#step(advance(session, 'sending', { outgoingAccess: access, outgoingPayment }))
+    } catch (error) {
+      if (isOpenPaymentsError(error, 'token_expired')) throw error
+      return this.#failOrThrow(session, error)
+    }
+  }
+
+  /**
+   * What the shop receives when exactly `debitAmount` leaves the customer's wallet, fees and
+   * exchange included: a fixed-send quote into an open-amount incoming payment that is never paid
+   * (it expires in a minute). Turns a tab's weekly cap into the shop's currency, so the shop's
+   * phone can check vouchers against it offline.
+   */
+  async quoteFixedSend(
+    customer: WalletAddressInfo,
+    merchant: WalletAddressInfo,
+    debitAmount: Money,
+  ): Promise<Money> {
+    const incomingAccess = await this.#deps.grants.requestIncomingPaymentAccess(merchant)
+    const incoming = await this.#deps.openPayments.createIncomingPayment(
+      merchant.resourceServer,
+      incomingAccess.accessToken.value,
+      {
+        walletAddress: merchant.id,
+        expiresAt: new Date(this.#now().getTime() + 60_000).toISOString(),
+        metadata: { description: 'AnyPay tab limit check (never paid)' },
+      },
+    )
+    const quoteAccess = await this.#deps.grants.requestQuoteAccess(customer)
+    const quote = await this.#deps.openPayments.createQuote(
+      customer.resourceServer,
+      quoteAccess.accessToken.value,
+      { walletAddress: customer.id, receiver: incoming.id, debitAmount },
+    )
+    return quote.receiveAmount
   }
 
   /** The customer pressed "decline" in their wallet (callback `result=grant_rejected`). */

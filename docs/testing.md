@@ -109,30 +109,30 @@ Or simply test on the deployed app (<https://anypay-web.onrender.com>): no setup
 Best on a phone, and once more with the app **installed** (browser menu → Add to Home screen),
 because an installed app on iPhone has no browser Back button.
 
-- [ ] **Back everywhere**: set-up, poster, Pay a shop, the pay screen and the "connecting" page
+- [x] **Back everywhere**: set-up, poster, Pay a shop, the pay screen and the "connecting" page
       all have **‹ Back** at the top. Opened from a QR code or link, Back goes somewhere sensible
       (Pay a shop, your shop, the start page) instead of leaving the app
-- [ ] **Start page knows your shop**: on a phone that runs a shop it says **Open <shop>**, not
+- [x] **Start page knows your shop**: on a phone that runs a shop it says **Open <shop>**, not
       "Set up my shop". The installed app opens straight into the live feed
-- [ ] **No accidental second shop**: go to set-up on the shop's phone. It says "This phone already
+- [x] **No accidental second shop**: go to set-up on the shop's phone. It says "This phone already
       runs …" with **Open** as the main button; the old shop is only replaced if you choose
       **Set up a new shop instead** and finish
-- [ ] **I'm a customer** opens **Pay a shop**: camera instructions, plus a box for the shop code.
+- [x] **I'm a customer** opens **Pay a shop**: camera instructions, plus a box for the shop code.
       Typing the code from the poster (any case, with or without the space) opens the pay screen
-- [ ] **Poster shows the shop code** under the QR (new shops get codes like `7KQM 4XPA`: no 0/O
+- [x] **Poster shows the shop code** under the QR (new shops get codes like `7KQM 4XPA`: no 0/O
       or 1/I/L mix-ups). Shops made before today keep their old code
-- [ ] **Poster → Go to my shop → Back** doesn't bounce between the poster and the feed
-- [ ] **Back from the wallet**: tap **Approve in my wallet**, then the phone's Back button before
+- [x] **Poster → Go to my shop → Back** doesn't bounce between the poster and the feed
+- [x] **Back from the wallet**: tap **Approve in my wallet**, then the phone's Back button before
       approving. The price sheet is usable again (not stuck on "Opening your wallet…")
-- [ ] **Receipt**: after paying there is **Done** (to Pay a shop) and **Pay again**
-- [ ] **Hidden characters**: copy a name with an invisible character (e.g. from a web page) into
+- [x] **Receipt**: after paying there is **Done** (to Pay a shop) and **Pay again**
+- [x] **Hidden characters**: copy a name with an invisible character (e.g. from a web page) into
       the shop name: it says to remove hidden or special characters
-- [ ] **Deployed site still works** after this update is live (the new security policy blocks
+- [x] **Deployed site still works** after this update is live (the new security policy blocks
       anything not from AnyPay itself; a blank page or "No connection" would mean it's too strict)
 
 ### Phase 2 wrap-up: short links and remembering (2026-10-14)
 
-- [ ] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
+- [x] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
 - [ ] <https://anypay-web.onrender.com/start> opens shop set-up
 - [ ] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
       (`…/shop/<code>/pay`) still work

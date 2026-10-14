@@ -13,6 +13,8 @@ export interface PaymentRecord {
   failure?: PaymentFailure
   amount: Money
   debitAmount?: Money
+  /** The tab whose voucher this payment settles, if any. */
+  tabId?: string
   createdAt: Date
   completedAt?: Date
 }
@@ -31,6 +33,7 @@ function toRecord(row: PaymentRow): PaymentRecord {
     failure: (row.failure ?? undefined) as PaymentFailure | undefined,
     amount: { value: row.amountValue, assetCode: row.assetCode, assetScale: row.assetScale },
     debitAmount,
+    tabId: row.tabId ?? undefined,
     createdAt: row.createdAt,
     completedAt: row.completedAt ?? undefined,
   }
@@ -51,10 +54,10 @@ export class PaymentRepository {
     this.#now = now
   }
 
-  async insert(shopId: string, session: PaymentSession): Promise<PaymentRecord> {
+  async insert(shopId: string, session: PaymentSession, tabId?: string): Promise<PaymentRecord> {
     const [row] = await this.#db
       .insert(payments)
-      .values({ id: session.id, shopId, ...this.#columns(session) })
+      .values({ id: session.id, shopId, tabId: tabId ?? null, ...this.#columns(session) })
       .returning()
     if (!row) throw new Error('Payment insert returned no row')
     return toRecord(row)

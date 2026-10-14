@@ -11,6 +11,7 @@ import { CORRELATION_HEADER, requestLogger } from './http/request-logger'
 import { healthRouter } from './http/routes/health'
 import { paymentRoutes } from './http/routes/payments'
 import { shopRoutes } from './http/routes/shops'
+import { tabRoutes } from './http/routes/tabs'
 
 // Payment requests are small JSON bodies; a low limit blunts abuse.
 const BODY_LIMIT = '16kb'
@@ -62,8 +63,18 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       payments: container.paymentService,
       events: container.paymentEvents,
       idempotency: container.idempotency,
+      tabs: container.tabService,
       limit,
       streams,
+    }),
+  )
+  app.use(
+    '/api',
+    tabRoutes({
+      tabs: container.tabService,
+      idempotency: container.idempotency,
+      limit,
+      webOrigin: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
     }),
   )
   app.use(

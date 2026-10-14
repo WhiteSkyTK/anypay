@@ -96,7 +96,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 
 **Team:** hosting accounts and production env vars. Book the optional mid-project mentor check-in.
 
-## Phase 3 — Offline Digital Tab · target 25 Oct · Status: Not started
+## Phase 3 — Offline Digital Tab · target 25 Oct · Status: In progress
 - [ ] Tab opening: interval-capped outgoing-payment grant + device key registration
 - [ ] Two-QR voucher exchange
 - [ ] Dexie outbox + SyncManager with per-item sync states

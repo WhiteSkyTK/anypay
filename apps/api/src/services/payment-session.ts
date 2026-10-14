@@ -16,7 +16,8 @@ export type { PaymentFailure }
 const TRANSITIONS: Record<PaymentStep, readonly PaymentStep[]> = {
   created: ['incoming-payment-created', 'failed'],
   'incoming-payment-created': ['quoted', 'failed'],
-  quoted: ['awaiting-consent', 'failed'],
+  // Straight to sending when the customer approved in advance (a tab's weekly-capped grant).
+  quoted: ['awaiting-consent', 'sending', 'failed'],
   'awaiting-consent': ['sending', 'failed'],
   sending: ['completed', 'failed'],
   completed: [],
