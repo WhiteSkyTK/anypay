@@ -6,6 +6,7 @@ import type { Container } from './container'
 import { errorHandler, notFound } from './http/errors'
 import { IDEMPOTENCY_HEADER } from './http/idempotency'
 import { createRateLimit } from './http/rate-limit'
+import { limitStreams, type StreamLimits } from './http/stream-limit'
 import { CORRELATION_HEADER, requestLogger } from './http/request-logger'
 import { healthRouter } from './http/routes/health'
 import { paymentRoutes } from './http/routes/payments'
@@ -17,6 +18,10 @@ const BODY_LIMIT = '16kb'
 export interface AppOptions {
   /** Requests per minute per IP on routes that create things or call wallets. */
   rateLimitPerMinute?: number
+  /** Requests per minute per IP on every API route: a ceiling against scripted floods. */
+  requestsPerMinute?: number
+  /** Open live streams per IP and in total. */
+  streamLimits?: StreamLimits
 }
 
 /** Builds the Express app without listening, so tests can drive it with supertest. */
@@ -44,7 +49,10 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
     const body: ConfigResponse = { demoMode: env.DEMO_MODE, version: container.version }
     res.json(body)
   })
+  // Generous for people (mobile networks share one IP between many phones), fatal for scripts.
+  app.use('/api', createRateLimit(options.requestsPerMinute ?? 600))
   const limit = createRateLimit(options.rateLimitPerMinute ?? 30)
+  const streams = limitStreams(options.streamLimits ?? { perClient: 50, total: 2000 })
   app.use(
     '/api',
     shopRoutes({
@@ -53,6 +61,7 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       events: container.paymentEvents,
       idempotency: container.idempotency,
       limit,
+      streams,
     }),
   )
   app.use(
@@ -61,6 +70,7 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       payments: container.paymentService,
       events: container.paymentEvents,
       webOrigin: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
+      streams,
     }),
   )
 

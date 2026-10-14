@@ -1,5 +1,5 @@
 import type { CreatePaymentResponse, Shop } from '@anypay/shared'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from '@/lib/api'
 import { errorMessageKey, failureMessageKey } from '@/lib/error-message'
 import { uuid } from '@/lib/uuid'
@@ -21,6 +21,15 @@ function readWallet(): string {
   }
 }
 
+/** The page the customer is sent to must be a real https page, never a javascript: or data: URL. */
+function isHttpsUrl(value: string): boolean {
+  try {
+    return new URL(value).protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function rememberWallet(wallet: string): void {
   try {
     localStorage.setItem(WALLET_KEY, wallet)
@@ -39,6 +48,19 @@ export function usePaymentFlow(shop: Shop) {
   const [wallet, setWallet] = useState(readWallet)
   const attemptKey = useRef<string | null>(null)
 
+  // Back from the wallet: browsers often restore this page exactly as it was left, mid-redirect
+  // with every button disabled. Show the price again, so the customer can approve or cancel.
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return
+      setState((current) =>
+        current.kind === 'redirecting' ? { kind: 'quoted', response: current.response } : current,
+      )
+    }
+    window.addEventListener('pageshow', onPageShow)
+    return () => window.removeEventListener('pageshow', onPageShow)
+  }, [])
+
   const requestQuote = useCallback(
     async (amount: string) => {
       attemptKey.current ??= uuid()
@@ -54,7 +76,8 @@ export function usePaymentFlow(shop: Shop) {
         const { payment, consentUrl } = response
         if (payment.failure)
           setState({ kind: 'error', messageKey: failureMessageKey(payment.failure) })
-        else if (consentUrl) setState({ kind: 'quoted', response: { ...response, consentUrl } })
+        else if (consentUrl && isHttpsUrl(consentUrl))
+          setState({ kind: 'quoted', response: { ...response, consentUrl } })
         else setState({ kind: 'error', messageKey: 'errors.api.unknown' })
       } catch (error) {
         // Keep the key: a retry of this same attempt must not create a second payment.

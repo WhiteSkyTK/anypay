@@ -84,6 +84,24 @@ describe('requestPaymentConsent', () => {
     })
   })
 
+  it.each(['javascript:alert(1)', 'http://wallet.example/approve', 'not a url'])(
+    'refuses to send the customer to an unsafe approval link (%s)',
+    async (redirectUrl) => {
+      const { openPayments, grants } = setup()
+      openPayments.requestGrant.mockResolvedValueOnce({
+        status: 'pending',
+        interaction: {
+          redirectUrl,
+          finishNonce: 'as-nonce',
+          continuation: access('outgoing').continuation,
+        },
+      })
+      await expect(
+        grants.requestPaymentConsent(customerWallet, { debitAmount, finishUri: FINISH_URI }),
+      ).rejects.toBeInstanceOf(OpenPaymentsError)
+    },
+  )
+
   it('uses a fresh, unguessable nonce every time', async () => {
     const { grants } = setup()
     const nonces = await Promise.all(

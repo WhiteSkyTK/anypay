@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { EmptyState } from '@/components/EmptyState'
 import { Keypad } from '@/components/Keypad'
+import { BackButton } from '@/components/BackButton'
 import { DocumentTitle, Page } from '@/components/Page'
 import { Button } from '@/components/ui/button'
 import { WalletAddressField } from '@/components/WalletAddressField'
@@ -55,7 +56,7 @@ function PayForm({ shop }: Readonly<{ shop: Shop }>) {
   }
 
   return (
-    <Page title={shop.name}>
+    <Page title={shop.name} back="/pay">
       <p className="mt-1 text-muted-foreground">{t('pay.subtitle')}</p>
 
       <section className="my-8 text-center">
@@ -148,9 +149,10 @@ export function Component() {
     return (
       <div
         aria-busy="true"
-        className="mx-auto w-full max-w-xl px-4 pt-[max(2rem,env(safe-area-inset-top))]"
+        className="mx-auto w-full max-w-xl px-4 pt-[max(0.5rem,env(safe-area-inset-top))]"
       >
         <DocumentTitle title={t('pay.amountLabel')} />
+        <BackButton fallback="/pay" className="mb-2" />
         <div className="h-10 w-2/3 animate-pulse rounded-card bg-muted" />
         <div className="mx-auto mt-12 h-16 w-1/2 animate-pulse rounded-card bg-muted" />
         <div className="mt-10 grid grid-cols-3 gap-2">
@@ -163,7 +165,7 @@ export function Component() {
   }
 
   return (
-    <Page title={state.notFound ? t('pay.notFound.title') : t('error.title')}>
+    <Page title={state.notFound ? t('pay.notFound.title') : t('error.title')} back="/pay">
       <div className="mt-8 flex flex-col gap-6">
         <EmptyState
           icon={Store}

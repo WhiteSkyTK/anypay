@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { type RequestHandler, Router } from 'express'
 import { z } from 'zod'
 import { AppError } from '../../lib/errors'
 import type { PaymentEvents } from '../../services/payment-events'
@@ -10,6 +10,8 @@ export interface PaymentRouteDeps {
   payments: PaymentService
   events: PaymentEvents
   webOrigin: string
+  /** Caps open live streams (see limitStreams). */
+  streams: RequestHandler
 }
 
 const PaymentIdSchema = z.uuid()
@@ -27,7 +29,7 @@ function paymentId(raw: unknown): string {
 
 const isFinal = (status: string) => status === 'completed' || status === 'failed'
 
-export function paymentRoutes({ payments, events, webOrigin }: PaymentRouteDeps): Router {
+export function paymentRoutes({ payments, events, webOrigin, streams }: PaymentRouteDeps): Router {
   const router = Router()
 
   /** The receipt: anyone holding the (unguessable) payment id may see its status. */
@@ -52,7 +54,7 @@ export function paymentRoutes({ payments, events, webOrigin }: PaymentRouteDeps)
   })
 
   /** Live receipt: the current status now, then every change until the payment is final. */
-  router.get('/payments/:paymentId/events', async (req, res) => {
+  router.get('/payments/:paymentId/events', streams, async (req, res) => {
     const id = paymentId(req.params.paymentId)
     const current = await payments.getPayment(id)
     let unsubscribe = () => undefined as void

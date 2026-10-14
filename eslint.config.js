@@ -34,7 +34,19 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
   {
-    files: ['apps/api/**/*.{ts,mjs}', 'packages/**/*.ts', 'apps/web/scripts/**', '*.{js,ts}'],
+    // Plain scripts the browser runs as they are (public/ is copied, not bundled).
+    files: ['apps/web/public/**/*.js'],
+    languageOptions: { globals: globals.browser, sourceType: 'script' },
+  },
+  {
+    files: [
+      'apps/api/**/*.{ts,mjs}',
+      'packages/**/*.ts',
+      'apps/web/scripts/**',
+      'apps/web/*.ts',
+      '.claude/*.mjs',
+      '*.{js,ts}',
+    ],
     languageOptions: { globals: globals.node },
   },
   prettier,

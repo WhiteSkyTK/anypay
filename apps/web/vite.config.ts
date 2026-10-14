@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { cspPlugin } from './csp'
 
 const fromHere = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 const { version } = JSON.parse(readFileSync(fromHere('./package.json'), 'utf8')) as {
@@ -15,7 +16,8 @@ const envDir = fromHere('../..')
 
 export default defineConfig(({ mode }) => {
   // Not PORT: that is the API's own variable, and dev tools often set it for the web server too.
-  const apiTarget = loadEnv(mode, envDir, '').API_PROXY_TARGET || 'http://localhost:3000'
+  const env = loadEnv(mode, envDir, '')
+  const apiTarget = env.API_PROXY_TARGET || 'http://localhost:3000'
 
   return {
     envDir,
@@ -33,6 +35,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      cspPlugin(env.VITE_API_URL),
       VitePWA({
         // 'prompt', not 'autoUpdate': a silent reload mid-payment would lose the customer's place.
         registerType: 'prompt',
@@ -42,7 +45,10 @@ export default defineConfig(({ mode }) => {
           short_name: 'AnyPay',
           description: 'Pay any spaza from any wallet, even offline.',
           lang: 'en',
-          start_url: '/',
+          // The id keeps installs recognised; ?source=pwa tells the start page it was launched as
+          // the installed app, so a shop's phone opens straight into its live feed.
+          id: '/',
+          start_url: '/?source=pwa',
           scope: '/',
           display: 'standalone',
           orientation: 'portrait',

@@ -1,20 +1,48 @@
 import { ShopNameSchema, WalletAddressInputSchema, type WalletLookupResponse } from '@anypay/shared'
-import { CircleCheck, LoaderCircle } from 'lucide-react'
+import { CircleCheck, LoaderCircle, Store } from 'lucide-react'
 import { type FormEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { EmptyState } from '@/components/EmptyState'
 import { Field } from '@/components/Field'
-import { WalletAddressField } from '@/components/WalletAddressField'
 import { Page } from '@/components/Page'
+import { WalletAddressField } from '@/components/WalletAddressField'
 import { Button } from '@/components/ui/button'
 import { useErrorText } from '@/hooks/useErrorText'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { api } from '@/lib/api'
 import { errorMessageKey } from '@/lib/error-message'
-import { setMerchantSession } from '@/lib/merchant-session'
+import { getMerchantSession, setMerchantSession } from '@/lib/merchant-session'
 import { uuid } from '@/lib/uuid'
 
 type Busy = 'idle' | 'checking' | 'creating'
+
+/**
+ * This phone already runs a shop. A new shop would replace it here, and only this phone holds
+ * the old shop's sign-in, so opening the existing shop is the default and replacing it is a choice.
+ */
+function ExistingShop({ name, onReplace }: Readonly<{ name: string; onReplace: () => void }>) {
+  const { t } = useTranslation()
+  return (
+    <Page title={t('setup.title')} back="/">
+      <div className="mt-8 flex flex-col gap-4">
+        <EmptyState
+          icon={Store}
+          title={t('setup.existing.title', { shop: name })}
+          description={t('setup.existing.description')}
+        />
+        <Button asChild size="lg" className="mt-2">
+          <Link to="/merchant" replace>
+            {t('setup.existing.open', { shop: name })}
+          </Link>
+        </Button>
+        <Button size="lg" variant="ghost" onClick={onReplace}>
+          {t('setup.existing.replace')}
+        </Button>
+      </div>
+    </Page>
+  )
+}
 
 /**
  * Feature 1, under two minutes: wallet address → check it → shop name → poster. The wallet is
@@ -31,6 +59,9 @@ export function Component() {
   const [busy, setBusy] = useState<Busy>('idle')
   const [error, setError] = useState<string | undefined>()
   const createKey = useRef<string | null>(null)
+  // The shop this phone ran when setup opened (not the one this setup creates).
+  const [existing] = useState(getMerchantSession)
+  const [replacing, setReplacing] = useState(false)
 
   async function checkWallet(event: FormEvent) {
     event.preventDefault()
@@ -77,11 +108,15 @@ export function Component() {
     }
   }
 
+  if (existing && !replacing) {
+    return <ExistingShop name={existing.name} onReplace={() => setReplacing(true)} />
+  }
+
   const step = wallet ? 2 : 1
   const errorMessage = error ? errorText(error) : undefined
 
   return (
-    <Page title={t('setup.title')}>
+    <Page title={t('setup.title')} back="/">
       <p className="mt-1 text-muted-foreground">{t('setup.step', { current: step, total: 2 })}</p>
       {!online && <p className="mt-6 rounded-card bg-muted px-5 py-4">{t('common.offline')}</p>}
 

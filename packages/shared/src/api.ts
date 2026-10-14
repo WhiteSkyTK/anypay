@@ -50,11 +50,22 @@ export const ShopSchema = z.object({
   assetScale: z.number().int(),
 })
 
+// Control characters and bidi overrides: invisible on screen, but they can make a name look like
+// another shop's (or reverse part of it) on the poster and in customers' wallets.
+const HIDDEN_CHARACTERS = /[\p{Cc}\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/u
+
 export const ShopNameSchema = z
   .string()
   .trim()
   .min(2, { error: 'errors.shopName.tooShort' })
   .max(60, { error: 'errors.shopName.tooLong' })
+  .refine((name) => !HIDDEN_CHARACTERS.test(name), { error: 'errors.shopName.characters' })
+
+/** At most nine whole digits (under one billion): far beyond any sale, safe for every currency. */
+const MAX_WHOLE_DIGITS = 9
+
+const wholeDigits = (amount: string) =>
+  (amount.split(/[.,]/)[0] ?? '').replace(/^0+(?=\d)/, '').length
 
 /** A decimal amount as typed on the keypad: '25', '25.5', '25,50'. */
 export const DecimalAmountSchema = z
@@ -62,6 +73,7 @@ export const DecimalAmountSchema = z
   .trim()
   .max(20, { error: 'errors.money.tooLarge' })
   .regex(/^\d+(?:[.,]\d+)?$/, { error: 'errors.money.invalid' })
+  .refine((amount) => wholeDigits(amount) <= MAX_WHOLE_DIGITS, { error: 'errors.money.tooLarge' })
 
 export const WalletLookupRequestSchema = z.object({ walletAddress: WalletAddressInputSchema })
 

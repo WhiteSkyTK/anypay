@@ -27,7 +27,8 @@
       "qr": "Just a QR code",
       "anyWallet": "Any wallet",
       "offline": "Works offline"
-    }
+    },
+    "openShop": "Open {{shop}}"
   },
   "language": {
     "label": "Language"
@@ -44,7 +45,13 @@
     "nameLabel": "Shop name",
     "nameHint": "Customers see this when they pay.",
     "create": "Create my shop",
-    "creating": "Creating…"
+    "creating": "Creating…",
+    "existing": {
+      "title": "This phone already runs {{shop}}",
+      "description": "A new shop replaces it on this phone, and this phone can't open the old one again.",
+      "open": "Open {{shop}}",
+      "replace": "Set up a new shop instead"
+    }
   },
   "wallet": {
     "nameHint": "Just your wallet name: the part after the slash.",
@@ -61,7 +68,8 @@
     "orOpen": "Or open",
     "qrLabel": "QR code to pay {{shop}}",
     "print": "Print poster",
-    "done": "Go to my shop"
+    "done": "Go to my shop",
+    "code": "Shop code"
   },
   "connect": {
     "title": "Connecting your shop",
@@ -92,6 +100,14 @@
       "approve": "Approve in my wallet",
       "redirecting": "Opening your wallet…"
     }
+  },
+  "customer": {
+    "title": "Pay a shop",
+    "scan": "Point your phone's camera at the shop's QR code. It opens the payment screen, no app needed.",
+    "or": "or",
+    "codeLabel": "Shop code",
+    "codeHint": "It's printed on the shop's poster, under the QR code.",
+    "go": "Go to the shop"
   },
   "receipt": {
     "title": "Payment",
@@ -227,7 +243,8 @@
     },
     "shopName": {
       "tooShort": "Use at least 2 letters",
-      "tooLong": "Use at most 60 characters"
+      "tooLong": "Use at most 60 characters",
+      "characters": "Remove the hidden or special characters"
     },
     "idempotencyKey": "Something went wrong. Please try again.",
     "api": {

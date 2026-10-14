@@ -27,7 +27,8 @@
       "qr": "I-QR code kuphela",
       "anyWallet": "Noma iyiphi iwalethi",
       "offline": "Isebenza ngaphandle kwe-inthanethi"
-    }
+    },
+    "openShop": "Vula i-{{shop}}"
   },
   "language": {
     "label": "Ulimi"
@@ -44,7 +45,13 @@
     "nameLabel": "Igama lesitolo",
     "nameHint": "Amakhasimende abona leli gama uma ekhokha.",
     "create": "Dala isitolo sami",
-    "creating": "Iyadala…"
+    "creating": "Iyadala…",
+    "existing": {
+      "title": "Le foni isivele isebenzisa i-{{shop}}",
+      "description": "Isitolo esisha sizothatha indawo yaso kule foni, futhi le foni ngeke isakwazi ukuvula esidala.",
+      "open": "Vula i-{{shop}}",
+      "replace": "Setha isitolo esisha"
+    }
   },
   "wallet": {
     "nameHint": "Igama lewalethi yakho kuphela: ingxenye engemuva kuka-/.",
@@ -61,7 +68,8 @@
     "orOpen": "Noma vula",
     "qrLabel": "Ikhodi ye-QR yokukhokha i-{{shop}}",
     "print": "Phrinta iphosta",
-    "done": "Iya esitolo sami"
+    "done": "Iya esitolo sami",
+    "code": "Ikhodi yesitolo"
   },
   "connect": {
     "title": "Ixhuma isitolo sakho",
@@ -92,6 +100,14 @@
       "approve": "Vumela ewalethini yami",
       "redirecting": "Ivula iwalethi yakho…"
     }
+  },
+  "customer": {
+    "title": "Khokha esitolo",
+    "scan": "Khomba ikhamera yefoni yakho kukhodi ye-QR yesitolo. Ivula ikhasi lokukhokha, ayikho i-app edingekayo.",
+    "or": "noma",
+    "codeLabel": "Ikhodi yesitolo",
+    "codeHint": "Iphrintiwe kuphosta yesitolo, ngaphansi kwekhodi ye-QR.",
+    "go": "Iya esitolo"
   },
   "receipt": {
     "title": "Inkokhelo",
@@ -227,7 +243,8 @@
     },
     "shopName": {
       "tooShort": "Sebenzisa okungenani izinhlamvu ezi-2",
-      "tooLong": "Sebenzisa izinhlamvu ezingeqile ku-60"
+      "tooLong": "Sebenzisa izinhlamvu ezingeqile ku-60",
+      "characters": "Susa izinhlamvu ezifihliwe noma ezikhethekile"
     },
     "idempotencyKey": "Kukhona okungahambanga kahle. Sicela uzame futhi.",
     "api": {

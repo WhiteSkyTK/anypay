@@ -37,8 +37,8 @@ afterAll(() => database.close())
 
 const key = () => randomUUID()
 
-async function createShop(name = 'Mama T Spaza') {
-  const res = await request(app)
+async function createShop(name = 'Mama T Spaza', on: Express = app) {
+  const res = await request(on)
     .post('/api/shops')
     .set('Idempotency-Key', key())
     .send({ name, walletAddress: '$ilp.interledger-test.dev/merchanttest' })
@@ -46,8 +46,8 @@ async function createShop(name = 'Mama T Spaza') {
   return CreateShopResponseSchema.parse(res.body)
 }
 
-async function startPayment(shopId: string, amount = '25.50') {
-  const res = await request(app)
+async function startPayment(shopId: string, amount = '25.50', on: Express = app) {
+  const res = await request(on)
     .post(`/api/shops/${shopId}/payments`)
     .set('Idempotency-Key', key())
     .send({ amount, customerWallet: '$ilp.interledger-test.dev/southtest' })
@@ -112,11 +112,26 @@ describe('merchant onboarding', () => {
       walletAddress: merchantWallet.id,
       assetCode: 'COP',
     })
-    expect(shop.id).toMatch(/^[\w-]{8}$/)
+    // Easy to read out and type: one case, no 0/O or 1/I/L look-alikes.
+    expect(shop.id).toMatch(/^[2-9A-HJKMNP-Z]{8}$/)
     expect(merchantToken.length).toBeGreaterThanOrEqual(40)
     const publicView = await request(app).get(`/api/shops/${shop.id}`).expect(200)
     expect(publicView.body).toEqual(shop)
     expect(JSON.stringify(publicView.body)).not.toContain(merchantToken)
+  })
+
+  it('finds a shop by its code typed in lower case', async () => {
+    const { shop } = await createShop()
+    const res = await request(app).get(`/api/shops/${shop.id.toLowerCase()}`).expect(200)
+    expect(res.body.id).toBe(shop.id)
+  })
+
+  it('answers "not found" for anything that is not a shop code, without a database lookup', async () => {
+    const res = await request(app)
+      .get(`/api/shops/${'x'.repeat(200)}`)
+      .expect(404)
+    expect(res.body.error.code).toBe('shop_not_found')
+    await request(app).get('/api/shops/%27%20OR%201%3D1').expect(404)
   })
 
   it('requires an Idempotency-Key to create a shop', async () => {
@@ -384,6 +399,50 @@ describe('rate limits', () => {
     await lookup().expect(200)
     const res = await lookup().expect(429)
     expect(res.body.error.code).toBe('rate_limited')
+  })
+
+  it('puts a ceiling on every API route, reads included', async () => {
+    const limited = createApp(createContainer(env, database.db, { openPayments }), {
+      requestsPerMinute: 2,
+    })
+    await request(limited).get('/api/shops/nope1234').expect(404)
+    await request(limited).get('/api/shops/nope1234').expect(404)
+    const res = await request(limited).get('/api/shops/nope1234').expect(429)
+    expect(res.body.error.code).toBe('rate_limited')
+  })
+
+  it('caps open live streams per client, and frees the slot when one closes', async () => {
+    const limited = createApp(createContainer(env, database.db, { openPayments }), {
+      streamLimits: { perClient: 1, total: 10 },
+    })
+    // Through the same app: each test container encrypts with its own key.
+    const { shop } = await createShop('Stream Spaza', limited)
+    const { payment } = await startPayment(shop.id, '5', limited)
+    const server = limited.listen(0)
+    const { port } = server.address() as AddressInfo
+    const url = `http://127.0.0.1:${port}/api/payments/${payment.id}/events`
+    const first = new AbortController()
+    try {
+      const open = await fetch(url, { signal: first.signal })
+      expect(open.status).toBe(200)
+      const refused = await fetch(url)
+      expect(refused.status).toBe(429)
+      expect(((await refused.json()) as { error: { code: string } }).error.code).toBe(
+        'too_many_streams',
+      )
+      first.abort()
+      await expect
+        .poll(async () => {
+          const again = await fetch(url, { signal: AbortSignal.timeout(2000) })
+          await again.body?.cancel()
+          return again.status
+        })
+        .toBe(200)
+    } finally {
+      first.abort()
+      server.closeAllConnections()
+      server.close()
+    }
   })
 })
 

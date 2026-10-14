@@ -27,7 +27,8 @@
       "qr": "QR code fela",
       "anyWallet": "Wolete efe goba efe",
       "offline": "E šoma ntle le inthanete"
-    }
+    },
+    "openShop": "Bula {{shop}}"
   },
   "language": {
     "label": "Polelo"
@@ -44,7 +45,13 @@
     "nameLabel": "Leina la lebenkele",
     "nameHint": "Bareki ba bona leina le ge ba lefela.",
     "create": "Hlama lebenkele la ka",
-    "creating": "E a hlama…"
+    "creating": "E a hlama…",
+    "existing": {
+      "title": "Mogala wo o šetše o šomiša {{shop}}",
+      "description": "Lebenkele le lefsa le tla tšea legato la lona mogaleng wo, gomme mogala wo o ka se sa kgona go bula la kgale.",
+      "open": "Bula {{shop}}",
+      "replace": "Beakanya lebenkele le lefsa"
+    }
   },
   "wallet": {
     "nameHint": "Leina la wolete ya gago fela: karolo ka morago ga /.",
@@ -61,7 +68,8 @@
     "orOpen": "Goba bula",
     "qrLabel": "Khoutu ya QR ya go lefela {{shop}}",
     "print": "Gatiša phosetara",
-    "done": "Eya lebenkeleng la ka"
+    "done": "Eya lebenkeleng la ka",
+    "code": "Khoutu ya lebenkele"
   },
   "connect": {
     "title": "E kgokaganya lebenkele la gago",
@@ -92,6 +100,14 @@
       "approve": "Dumela ka wolete ya ka",
       "redirecting": "E bula wolete ya gago…"
     }
+  },
+  "customer": {
+    "title": "Lefela lebenkele",
+    "scan": "Lebiša khamera ya mogala wa gago go khoutu ya QR ya lebenkele. E bula letlakala la tefelo, ga go nyakege app.",
+    "or": "goba",
+    "codeLabel": "Khoutu ya lebenkele",
+    "codeHint": "E gatišitšwe phosetareng ya lebenkele, ka tlase ga khoutu ya QR.",
+    "go": "Eya lebenkeleng"
   },
   "receipt": {
     "title": "Tefelo",
@@ -227,7 +243,8 @@
     },
     "shopName": {
       "tooShort": "Šomiša bonyane ditlhaka tše 2",
-      "tooLong": "Šomiša ditlhaka tše di sa fetego 60"
+      "tooLong": "Šomiša ditlhaka tše di sa fetego 60",
+      "characters": "Tloša ditlhaka tše di utilwego goba tše di sa tlwaelegago"
     },
     "idempotencyKey": "Go na le seo se sa šomego gabotse. Hle leka gape.",
     "api": {

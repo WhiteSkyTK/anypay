@@ -145,16 +145,27 @@ export class FakeEventSource {
 }
 
 /** Renders one page at `path`, plus stub pages for where it may navigate to. */
+interface RenderPageOptions {
+  pattern: string
+  path: string
+  /** Stub pages the page may navigate to; each renders 'Stub page <path>'. */
+  stubs?: string[]
+  /** In-app history before this page, so 'Back' has somewhere to go. */
+  before?: string[]
+  /** Navigation state the page was opened with. */
+  state?: unknown
+}
+
 export function renderPage(
   Page: ComponentType,
-  { pattern, path, stubs = [] }: { pattern: string; path: string; stubs?: string[] },
+  { pattern, path, stubs = [], before = [], state }: RenderPageOptions,
 ) {
   const router = createMemoryRouter(
     [
       { path: pattern, Component: Page },
       ...stubs.map((stub) => ({ path: stub, element: <p>{`Stub page ${stub}`}</p> })),
     ],
-    { initialEntries: [path] },
+    { initialEntries: [...before, state === undefined ? path : { pathname: path, state }] },
   )
   render(<RouterProvider router={router} />)
   return router

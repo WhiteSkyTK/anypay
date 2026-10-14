@@ -8,6 +8,7 @@ type Tokens = Record<string, string>
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const tokensCss = read('./tokens.css')
 const indexHtml = read('../../index.html')
+const themeScript = read('../../public/theme-init.js')
 
 /** Colour tokens in one block, e.g. `--primary: #1f4d3a;` → { primary: '#1f4d3a' }. */
 function readTokens(selector: ':root' | '.dark'): Tokens {
@@ -92,8 +93,13 @@ describe('first-paint theme script', () => {
   })
 
   it('reads the same storage key and colours as src/lib/theme.ts', () => {
-    expect(indexHtml).toContain(`'${THEME_STORAGE_KEY}'`)
-    expect(indexHtml).toContain(`'${THEME_COLORS.light}'`)
-    expect(indexHtml).toContain(`'${THEME_COLORS.dark}'`)
+    expect(themeScript).toContain(`'${THEME_STORAGE_KEY}'`)
+    expect(themeScript).toContain(`'${THEME_COLORS.light}'`)
+    expect(themeScript).toContain(`'${THEME_COLORS.dark}'`)
+  })
+
+  it('runs from a file, so the Content-Security-Policy can forbid inline scripts', () => {
+    expect(indexHtml).toContain('<script src="/theme-init.js"></script>')
+    expect(indexHtml).not.toMatch(/<script>/)
   })
 })

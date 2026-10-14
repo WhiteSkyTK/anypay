@@ -1,6 +1,6 @@
 import { pino } from 'pino'
 import { describe, expect, it, vi } from 'vitest'
-import { checkPublicUrl } from './public-url-check'
+import { checkPublicUrl, strandedPhonesWarning } from './public-url-check'
 
 /** A logger whose JSON lines the test can read. */
 function captureLogs() {
@@ -40,5 +40,22 @@ describe('checkPublicUrl', () => {
     await expect(
       checkPublicUrl('https://example.org', logger, { fetchFn, attempts: 1 }),
     ).resolves.toBe(false)
+  })
+})
+
+// Wi-Fi testing runs on plain http on the local network; that is exactly the case under test.
+/* eslint-disable sonarjs/no-clear-text-protocols */
+describe('strandedPhonesWarning', () => {
+  it('warns when phones use the PC address but wallets would send them to localhost', () => {
+    const warning = strandedPhonesWarning('http://10.0.0.4:5173', 'http://localhost:3000')
+    expect(warning).toContain('Set PUBLIC_API_URL=http://10.0.0.4:5173')
+  })
+
+  it.each([
+    ['http://localhost:5173', 'http://localhost:3000'],
+    ['http://10.0.0.4:5173', 'http://10.0.0.4:5173'],
+    ['https://anypay-web.onrender.com', 'https://anypay-api.onrender.com'],
+  ])('is quiet for %s with %s', (web, api) => {
+    expect(strandedPhonesWarning(web, api)).toBeNull()
   })
 })

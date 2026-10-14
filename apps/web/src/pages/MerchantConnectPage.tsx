@@ -59,7 +59,7 @@ export function Component() {
   }, [link, navigate])
 
   return (
-    <Page title={t('connect.title')}>
+    <Page title={t('connect.title')} back="/">
       {!link || rejected ? (
         <>
           <p role="alert" className="mt-4 text-muted-foreground">

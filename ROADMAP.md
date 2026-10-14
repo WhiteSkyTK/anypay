@@ -71,7 +71,11 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [x] Motion (LazyMotion + `m`) spring animations for bottom sheets and the success tick; honour reduced motion
 - [x] Seed script (demo merchant + customer) and DEMO_MODE banner
 - [x] Dropped drizzle-kit (old esbuild advisory) for hand-written SQL migrations; audit fix for concurrently → shell-quote (critical)
-- [ ] Deploy web + API on tiers that don't sleep; URLs in the README. Ready to go: [render.yaml](render.yaml) + Neon, steps in [docs/deploy.md](docs/deploy.md); production bundle and cross-origin setup rehearsed locally (2026-10-09). Needs the team's Render and Neon accounts
+- [ ] Deploy web + API on tiers that don't sleep; URLs in the README. Deployed on Render + Neon and the URLs are in the README (2026-10-14); the API is still on the free plan, which sleeps after 15 idle minutes. Team decision: a paid instance for demo week, or warm it up before presenting
+- [x] Navigation (team testing on phones, 2026-10-14): Back on every screen without the tab bar (installed iPhone apps have no browser Back), with a sensible fallback when opened from a QR code or link; start page offers **Open <shop>** and the installed app opens into the feed; set-up asks before replacing the phone's shop; **I'm a customer** opens a new **Pay a shop** page (camera + shop code); receipt has **Done**; Back from the wallet no longer leaves the price sheet frozen
+- [x] Shop codes are 8 characters from 31 unambiguous ones in one case (printed on the poster, typed in any case)
+- [x] Security pass: rate limit on every API route plus caps on open live feeds; wallet approval links must be https (server and app); Content-Security-Policy built into the page (no inline scripts) and a Permissions-Policy header; shop names refuse hidden/bidi characters; amounts capped below one billion; shop codes checked before any database lookup; `npm audit` clean
+- [x] The API warns at startup when phones on Wi-Fi couldn't come back from the wallet (`PUBLIC_API_URL` still localhost)
 - [x] Route focus waits for pages that render their heading after loading data (pay, receipt); focus returns to Continue when the price sheet closes
 - [x] Quote sheet loads on Continue (pay page first load 206 → 186 KB); size report measures each page's real first load from Vite's manifest (heaviest page 189.5 KB, shell 181.3 KB)
 - [x] Live feed reconnects after the browser gives up (API restart, sleeping host) and signs out when the shop is gone (401/404); indicator is a status region
@@ -85,7 +89,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [x] New strings translated in all four locales (drafts are fine until the native-speaker review)
 
 **Done when**
-- [ ] On the deployed URLs, a payment from one phone appears and is announced on another within seconds
+- [x] On the deployed URLs, a payment from one phone appears and is announced on another within seconds
 - [x] First load ≤ 200 KB gzipped (number reported): heaviest page 189.5 KB, app shell 181.3 KB (2026-10-09)
 
 **Team:** hosting accounts and production env vars. Book the optional mid-project mentor check-in.
@@ -98,6 +102,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [ ] Rotate expired tab grant tokens (`token.rotate`); stored tokens encrypted at rest
 - [ ] Tests: valid voucher, tampered amount, reused nonce, cap exceeded, idempotent re-sync from both phones
 - [ ] DEMO_MODE "Simulate offline" toggle
+- [ ] In-app QR scanner (qr-scanner, lazy-loaded): vouchers need it, and "Pay a shop" can use it too (installed apps can't hand off to the camera app)
 - [ ] Budget headroom is ~10 KB and Dexie is ~25 KB: move the web's zod to `zod/mini` (or validate less in the browser) before adding it
 
 **Done when**
@@ -112,6 +117,8 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [ ] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
 - [ ] Summarise docs/decisions.md into slide-ready bullets
 - [ ] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
+- [ ] Privacy notice page (what is stored: shop name, wallet address, amounts; customer wallets only encrypted) and how long payments are kept (POPIA)
+- [ ] "Use this shop on another phone" (show the sign-in link as a QR) and "sign out other phones" (rotate the merchant token)
 - [ ] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket
 
 **Done when**
@@ -148,3 +155,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 - 2026-10-05 · PR #1 merged; CI green on Ubuntu + Windows, Phase 0 Done. Follow-ups on `phase-0-polish`: GitGuardian false positive removed, 91 SonarCloud findings fixed or scoped out, Sepedi/isiXhosa/isiZulu drafts + language picker, landing layout reworked, roadmap extended (key dates, research track, submission checklist), docs/challenge.md. · Next: merge `phase-0-polish`, then Phase 1 plan. · Blockers: Phase 1 needs the test wallet addresses and developer key in a local `.env`; translations need a native-speaker review.
 - 2026-10-06 · Language now starts in English and remembers the choice. Pasted keys moved out of the committed .env.example into gitignored .env/.secrets (never committed or pushed). Phase 1 built: Open Payments gateway (only SDK importer), SSRF-safe wallet resolver, grant service with callback-hash verification, payment state machine, watcher, demo:pay CLI; 132 API tests (298 total). Live run reached consent against the real test wallet. · Next: approve one real payment (demo:pay), test insufficient funds live, then mark Phase 1 Done. · Blockers: needs a person to approve consent in the customer test wallet.
 - 2026-10-09 · Phase 1 closed (real payment verified, R 0,13 → COP 25,00). Phase 2 on `phase-2-features`: Postgres via Drizzle (PGlite locally), encrypted payment sessions, idempotency, rate limits, shops/payments/callback/SSE/CSV routes; web screens for shop setup, A5 QR poster, live feed with voice, pay flow with keypad and quote sheet, receipt. Checked in the browser against the real test wallet up to consent, plus decline, seed link and a production-style cross-origin run. Fixed on the way: route focus, sheet focus, quote sheet lazy-loaded (budget), feed reconnects, PGlite corruption from two dev APIs (now locked). 414 tests; lint, typecheck and build pass; heaviest first load 189.5 KB. Tested by the team: real approval announced by voice, decline, CSV, languages, dark mode, poster print. · Next: phone-over-Wi-Fi and the remaining checks in docs/testing.md; create Render + Neon accounts and deploy with render.yaml (docs/deploy.md); then the Done-when two-phone check closes Phase 2. · Blockers: hosting accounts; a Neon password was pasted into render.yaml (removed before any commit, never pushed): rotate it in Neon to be safe and paste the new one only into Render.
+- 2026-10-14 · Team tested on phones and on Render: the deployed two-phone payment works (Phase 2 "Done when" ticked). Fixed what testing found: navigation dead ends and the Back button (incl. installed iPhone app), accidental shop replacement, no customer start page, frozen price sheet after Back from the wallet. Security pass: rate limits everywhere, live-feed caps, https-only approval links, CSP and Permissions-Policy, stricter names/amounts, readable shop codes; `npm audit` clean. Local `.env` pointed at the production database (flagged; see .env.example). · Next: merge `phase-2-hardening`, Manual sync the Blueprint, test the new checklist section, decide on a paid API instance, then close Phase 2 and plan Phase 3. · Blockers: none in code; the paid-tier decision is the team's.

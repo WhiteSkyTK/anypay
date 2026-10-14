@@ -100,6 +100,11 @@ export class GrantService {
     if (result.status !== 'pending') {
       throw new OpenPaymentsError('open_payments_error', 'Expected the wallet to ask for consent')
     }
+    // The customer's browser is sent to this link, and the auth server is untrusted input: only an
+    // https page may be opened (never javascript: or data: URLs).
+    if (!isHttpsUrl(result.interaction.redirectUrl)) {
+      throw new OpenPaymentsError('open_payments_error', 'The wallet sent an unsafe approval link')
+    }
     return {
       redirectUrl: result.interaction.redirectUrl,
       clientNonce,
@@ -176,5 +181,13 @@ export class GrantService {
       await this.#sleep(Math.max(continuation.waitSeconds, 1) * 1000)
     }
     throw new OpenPaymentsError('consent_pending', 'The payment has not been approved yet')
+  }
+}
+
+function isHttpsUrl(value: string): boolean {
+  try {
+    return new URL(value).protocol === 'https:'
+  } catch {
+    return false
   }
 }

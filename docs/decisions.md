@@ -125,3 +125,24 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **Idempotency replies are encrypted too.** They are full API responses, and a new shop's
   response contains its merchant token; hashing the token in `shops` meant nothing while the
   replay cache kept it readable. They are also deleted after a day: retries come within minutes.
+
+## Phase 2 hardening: getting around and safety (2026-10-14)
+
+- **Every screen without the tab bar has a way back or onward.** An installed app on iPhone has
+  no browser Back button, so a page with no button is a dead end. "Back" goes back inside the app
+  when it can, and to a sensible parent (Pay a shop, the shop, the start page) when the page was
+  opened directly from a QR code, a link or the wallet.
+- **The start page knows the phone's shop, and set-up won't silently replace it.** Only the phone
+  that created a shop holds its sign-in; replacing it by accident locked owners out for good.
+- **Customers get a start page too.** The phone's camera does the scanning (no in-app scanner to
+  download yet; Phase 3 needs one anyway), with the printed shop code as the fallback. New codes
+  use 31 unambiguous characters in one case, so they can be read out and typed.
+- **Back from the wallet restores the price sheet.** Browsers keep the page as it was left
+  (back-forward cache), which froze it on "Opening your wallet…".
+- **Limits for scripts, not people.** A ceiling on every API route and on open live feeds stops
+  floods; the numbers are high because mobile networks share one address between many phones.
+- **The Content-Security-Policy lives in the page, built with the API address it was built for**,
+  so it is right on any host and testable with `vite preview`. The first-paint theme script moved
+  to a file so the policy can forbid every inline script.
+- **The wallet's approval link must be https**, checked on the server and again in the app: it is
+  input from an outside server, and the customer's browser is sent there.

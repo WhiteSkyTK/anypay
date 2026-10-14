@@ -115,15 +115,23 @@ export function Component() {
           />
         )}
       </div>
-      {payment && (final || payment.status === 'awaiting-consent') && (
-        <Button
-          asChild
-          size="lg"
-          variant={payment.status === 'completed' ? 'secondary' : 'default'}
-        >
-          <Link to={`/shop/${payment.shopId}/pay`}>{t('receipt.payAgain')}</Link>
-        </Button>
-      )}
+      {/* No "Back" here: it would return to the wallet's approval page. These are the ways on. */}
+      <div className="flex flex-col gap-3">
+        {payment && (final || payment.status === 'awaiting-consent') && (
+          <Button
+            asChild
+            size="lg"
+            variant={payment.status === 'completed' ? 'secondary' : 'default'}
+          >
+            <Link to={`/shop/${payment.shopId}/pay`}>{t('receipt.payAgain')}</Link>
+          </Button>
+        )}
+        {(final || notFound) && (
+          <Button asChild size="lg" variant={payment?.status === 'completed' ? 'default' : 'ghost'}>
+            <Link to="/pay">{t('common.done')}</Link>
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

@@ -81,3 +81,26 @@ npm run seed -- --api https://anypay-api.onrender.com --web https://anypay-web.o
   feed sends its token as `?token=` (EventSource can't set headers), so a hosting proxy that logs
   full URLs could record it; only the team can read those logs.
 - **Rate limits** count real client IPs because `TRUST_PROXY=1` tells Express about Render's proxy.
+
+## Security checklist
+
+What protects the live app, and what to keep doing:
+
+- **Secrets** live only in Render's environment settings and your local `.env` (gitignored).
+  Never paste them into tracked files or chats. If one leaks, rotate it: a new Neon password, a
+  new `TOKEN_ENCRYPTION_KEY` (existing payment sessions then can't be read, so do it between
+  demos), or a new developer key in the test wallet.
+- **Local development never uses the production database.** Leave `DATABASE_URL` empty in your
+  `.env` (the API uses its own local database), or point it at a separate Neon branch.
+- **Content-Security-Policy** is built into the page (`apps/web/csp.ts`): scripts only from the
+  site itself, data only to the site and the API. If you move the API to another address, set
+  `VITE_API_URL` and redeploy the web service so the policy follows.
+- **Other headers** (no framing, no sniffing, camera only for this site) come from `render.yaml`.
+  Render applies Blueprint changes on sync: after merging, open the Blueprint and press
+  **Manual sync** if the new headers don't show up (check with your browser's dev tools).
+- **Rate limits**: 600 requests a minute per address on every API route, 30 on routes that create
+  things or call wallets, and at most 50 open live feeds per address (2000 in total).
+- **Input checks**: shop names without hidden characters, amounts under one billion, shop codes
+  checked before any database lookup, and only `https` wallet approval pages are ever opened.
+- **Dependencies**: `npm audit` reports 0 known vulnerabilities (2026-10-14). Merge Dependabot pull
+  requests only when CI is green.

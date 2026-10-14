@@ -20,9 +20,9 @@
       "port": 4173
     },
     {
-      "name": "web-claude",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "-w", "@anypay/web", "--", "--port", "5199", "--strictPort"],
+      "name": "claude-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [".claude/preview.mjs"],
       "port": 5199
     }
   ]

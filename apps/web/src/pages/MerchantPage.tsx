@@ -96,7 +96,7 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
       </section>
 
       <div className="flex justify-center gap-10">
-        <Link to="/merchant/poster" className={quickAction}>
+        <Link to="/merchant/poster" state={{ from: 'feed' }} className={quickAction}>
           <span>
             <QrIcon aria-hidden="true" className="size-6" />
           </span>

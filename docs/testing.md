@@ -51,46 +51,50 @@ are the real approvals in the test wallet, the voice, printing and a real phone.
 - [x] **Pay again** on the receipt goes back to the pay screen with the wallet already filled in
 - [x] **Export CSV** (shop window) after an approved payment: opens in Excel/Sheets with one row
       per received payment
-- [ ] **Quote expired** (optional): press **Continue**, wait until after the "Price held until"
+- [x] **Quote expired** (optional): press **Continue**, wait until after the "Price held until"
       time on the sheet, then approve. Expect a clear "price expired, try again" message
-- [ ] **Wrong wallet**: on setup, try `$ilp.interledger-test.dev/doesnotexist` and `hello`.
+- [x] **Wrong wallet**: on setup, try `$ilp.interledger-test.dev/doesnotexist` and `hello`.
       Expect a plain message, not a crash
 - [x] **Languages**: switch to isiZulu / isiXhosa / Sepedi on the start page, then walk through
       setup, pay and the feed. Note any wording that is wrong or too long (native speaker)
 - [x] **Dark mode**: Settings → Dark. Everything readable, poster still prints black on white
-- [ ] **Demo sign-in link**: `npm run seed` prints a "Shop phone" link. Open it in a private
+- [x] **Demo sign-in link**: `npm run seed` prints a "Shop phone" link. Open it in a private
       window: it should land on the Demo Spaza feed
 
-- [ ] **Feed survives an API restart** (new): with the shop feed open, stop `npm run dev`
+- [x] **Feed survives an API restart** (new): with the shop feed open, stop `npm run dev`
       (Ctrl+C) and start it again. The feed shows **Not connected**, then **Live** again within
       about 30 seconds, without reloading the page
-- [ ] **Old shop link after a reset** (new): a phone whose shop no longer exists shows "This
+- [x] **Old shop link after a reset** (new): a phone whose shop no longer exists shows "This
       phone is signed out of the shop" and **Set up again**, not an endless "Connecting…"
 
-- [ ] **Wallet name only** (new): on setup type just `merchanttest`; on the pay screen just
+- [x] **Wallet name only** (new): on setup type just `merchanttest`; on the pay screen just
       `southtest`. The grey `$ilp.interledger-test.dev/` in front is filled in for you
-- [ ] **Pasting a whole address** (new): paste `$ilp.interledger-test.dev/southtest` into the
+- [x] **Pasting a whole address** (new): paste `$ilp.interledger-test.dev/southtest` into the
       name box: it keeps only `southtest`
-- [ ] **Another provider** (new): tap **Wallet from another provider?**, the full address shows
+- [x] **Another provider** (new): tap **Wallet from another provider?**, the full address shows
       and can be edited; **Use a ilp.interledger-test.dev wallet** goes back
 
 ### Phase 2: deployed (Render)
 
-- [ ] After fixing `VITE_API_URL` (with `.com`) and redeploying the web service: set up a shop
+- [x] After fixing `VITE_API_URL` (with `.com`) and redeploying the web service: set up a shop
       on <https://anypay-web.onrender.com> without "No connection"
-- [ ] In the Render logs of anypay-api, a minute after a deploy: "PUBLIC_API_URL reaches the API"
+- [x] In the Render logs of anypay-api, a minute after a deploy: "PUBLIC_API_URL reaches the API"
       (a warning instead means it has a typo)
-- [ ] Two phones: one shows the shop feed, the other scans the poster and pays. The shop phone
+- [x] Two phones: one shows the shop feed, the other scans the poster and pays. The shop phone
       shows **Received** and says "Payment received" within seconds (Phase 2's "Done when")
 
 ### Phase 2: on a real phone (same Wi-Fi as the PC)
 
-1. Find the PC's address: run `ipconfig`, look for **IPv4 Address** (e.g. `192.168.1.20`).
-2. In `.env` set `WEB_ORIGIN=http://192.168.1.20:5173` and
-   `PUBLIC_API_URL=http://192.168.1.20:5173` (your address; the web app forwards `/api`).
+1. Find the PC's address: run `ipconfig`, look for **IPv4 Address** (e.g. `10.0.0.4`). It
+   changes when you change networks, so check it each time.
+2. In `.env` set **both** `WEB_ORIGIN=http://10.0.0.4:5173` and
+   `PUBLIC_API_URL=http://10.0.0.4:5173` (your address; the web app forwards `/api`). With only
+   `WEB_ORIGIN`, phones can't come back from the wallet; the API now warns about that at start.
 3. Run `npm run dev:lan`. If Windows asks about the firewall, allow Node on **private** networks.
-4. On the PC open `http://192.168.1.20:5173/merchant/new` (not localhost, so the poster QR uses
+4. On the PC open `http://10.0.0.4:5173/merchant/new` (not localhost, so the poster QR uses
    the address the phone can reach) and set up the shop there, or use `npm run seed`.
+
+Or simply test on the deployed app (<https://anypay-web.onrender.com>): no setup at all.
 
 - [ ] Phone camera scans the poster QR and opens the pay screen
 - [ ] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
@@ -99,6 +103,32 @@ are the real approvals in the test wallet, the voice, printing and a real phone.
 - [ ] Phone with the shop feed open: lock the screen for a minute, unlock, pay again: the
       feed reconnects (**Live**) and shows the new payment
 - [ ] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
+
+### Phase 2: getting around and safety (2026-10-14)
+
+Best on a phone, and once more with the app **installed** (browser menu → Add to Home screen),
+because an installed app on iPhone has no browser Back button.
+
+- [ ] **Back everywhere**: set-up, poster, Pay a shop, the pay screen and the "connecting" page
+      all have **‹ Back** at the top. Opened from a QR code or link, Back goes somewhere sensible
+      (Pay a shop, your shop, the start page) instead of leaving the app
+- [ ] **Start page knows your shop**: on a phone that runs a shop it says **Open <shop>**, not
+      "Set up my shop". The installed app opens straight into the live feed
+- [ ] **No accidental second shop**: go to set-up on the shop's phone. It says "This phone already
+      runs …" with **Open** as the main button; the old shop is only replaced if you choose
+      **Set up a new shop instead** and finish
+- [ ] **I'm a customer** opens **Pay a shop**: camera instructions, plus a box for the shop code.
+      Typing the code from the poster (any case, with or without the space) opens the pay screen
+- [ ] **Poster shows the shop code** under the QR (new shops get codes like `7KQM 4XPA`: no 0/O
+      or 1/I/L mix-ups). Shops made before today keep their old code
+- [ ] **Poster → Go to my shop → Back** doesn't bounce between the poster and the feed
+- [ ] **Back from the wallet**: tap **Approve in my wallet**, then the phone's Back button before
+      approving. The price sheet is usable again (not stuck on "Opening your wallet…")
+- [ ] **Receipt**: after paying there is **Done** (to Pay a shop) and **Pay again**
+- [ ] **Hidden characters**: copy a name with an invisible character (e.g. from a web page) into
+      the shop name: it says to remove hidden or special characters
+- [ ] **Deployed site still works** after this update is live (the new security policy blocks
+      anything not from AnyPay itself; a blank page or "No connection" would mean it's too strict)
 
 ## Problems found
 

@@ -1,18 +1,25 @@
 import { ArrowRight, QrCode, Wallet, WifiOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, Navigate, useLocation } from 'react-router'
 import { HeroIllustration } from '@/components/HeroIllustration'
 import { LanguageSelect } from '@/components/LanguageSelect'
 import { LogoMark } from '@/components/LogoMark'
 import { DocumentTitle } from '@/components/Page'
 import { Button } from '@/components/ui/button'
 import { useDarkChrome } from '@/hooks/useDarkChrome'
+import { useMerchantSession } from '@/hooks/useMerchantSession'
 
 const FEATURES = [
   { key: 'onboarding.features.qr', Icon: QrCode },
   { key: 'onboarding.features.anyWallet', Icon: Wallet },
   { key: 'onboarding.features.offline', Icon: WifiOff },
 ] as const
+
+/** Started from the home-screen icon: the manifest's start_url, or a standalone window. */
+function launchedAsApp(search: string): boolean {
+  if (new URLSearchParams(search).get('source') === 'pwa') return true
+  return window.matchMedia?.('(display-mode: standalone)').matches ?? false
+}
 
 /**
  * Bold monochrome welcome (onboarding-mono reference). The `dark` class gives this subtree the
@@ -22,6 +29,14 @@ const FEATURES = [
 export function Component() {
   const { t } = useTranslation()
   useDarkChrome()
+  const session = useMerchantSession()
+  const { search, key } = useLocation()
+
+  // A shop's phone opens straight into its live feed when the app starts; choosing the start
+  // page from inside the app (key isn't 'default' then) still shows it.
+  if (session && key === 'default' && launchedAsApp(search)) {
+    return <Navigate to="/merchant" replace />
+  }
 
   return (
     // Exactly one screen tall (h-dvh), so the illustration can measure the space that's left.
@@ -68,14 +83,17 @@ export function Component() {
           </ul>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {/* A phone that already runs a shop opens it; setting up again would replace it. */}
             <Button asChild size="lg" variant="inverse">
-              <Link to="/merchant/new">
-                {t('onboarding.setUpShop')}
+              <Link to={session ? '/merchant' : '/merchant/new'}>
+                {session
+                  ? t('onboarding.openShop', { shop: session.name })
+                  : t('onboarding.setUpShop')}
                 <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="ghost">
-              <Link to="/tab">{t('onboarding.imCustomer')}</Link>
+              <Link to="/pay">{t('onboarding.imCustomer')}</Link>
             </Button>
           </div>
         </div>

@@ -14,6 +14,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, lazy: () => import('@/pages/OnboardingPage') },
       // Customer screens: reached from a QR code, so no tab bar to distract from paying.
+      { path: 'pay', lazy: () => import('@/pages/CustomerPage') },
       { path: 'shop/:shopId/pay', lazy: () => import('@/pages/PayPage') },
       { path: 'receipt/:paymentId', lazy: () => import('@/pages/ReceiptPage') },
       // Merchant screens.

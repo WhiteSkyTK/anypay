@@ -6,7 +6,7 @@ import { findRepoRoot, loadDotEnv } from './config/repo-root'
 import { createContainer } from './container'
 import { DataDirLockedError } from './db/data-dir-lock'
 import { migrate, openDatabase } from './db/database'
-import { checkPublicUrl } from './lib/public-url-check'
+import { checkPublicUrl, strandedPhonesWarning } from './lib/public-url-check'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -35,6 +35,11 @@ async function main(): Promise<void> {
   const purged = await container.idempotency.purgeOlderThan(new Date(Date.now() - DAY_MS))
   if (purged > 0) logger.info({ purged }, 'Removed old idempotency records')
   if (env.NODE_ENV === 'production') void checkPublicUrl(env.PUBLIC_API_URL, logger)
+  const stranded = strandedPhonesWarning(
+    env.WEB_ORIGIN[0] ?? env.PUBLIC_API_URL,
+    env.PUBLIC_API_URL,
+  )
+  if (stranded) logger.warn(stranded)
 
   const shutdown = () => {
     server.close(() => void database.close().finally(() => process.exit(0)))

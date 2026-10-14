@@ -12,26 +12,8 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="AnyPay" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <script>
-      // Applies the saved theme before first paint, so the page never flashes the wrong colours.
-      // Mirrors src/lib/theme.ts (storage key and colours); tokens.test.ts checks they match.
-      ;(function () {
-        var mode = 'system'
-        try {
-          mode = localStorage.getItem('anypay.theme') || 'system'
-        } catch (e) {}
-        var dark =
-          mode === 'dark' ||
-          (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-        // The landing page is a full-bleed dark screen in both themes (see useDarkChrome).
-        var landing = location.pathname === '/'
-        if (landing) document.documentElement.dataset.chrome = 'dark'
-        document.documentElement.classList.toggle('dark', dark)
-        document
-          .querySelector('meta[name="theme-color"]')
-          .setAttribute('content', dark || landing ? '#0f1211' : '#f5f2ea')
-      })()
-    </script>
+    <!-- Blocking on purpose: sets the theme before first paint. -->
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>

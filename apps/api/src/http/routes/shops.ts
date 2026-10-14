@@ -21,6 +21,8 @@ export interface ShopRouteDeps {
   idempotency: IdempotencyRepository
   /** Rate limit for routes that create things or call out to wallets. */
   limit: RequestHandler
+  /** Caps open live streams (see limitStreams). */
+  streams: RequestHandler
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -40,7 +42,14 @@ function bearerToken(header: string | undefined, query: unknown): string | undef
   return typeof token === 'string' ? token : undefined
 }
 
-export function shopRoutes({ shops, payments, events, idempotency, limit }: ShopRouteDeps): Router {
+export function shopRoutes({
+  shops,
+  payments,
+  events,
+  idempotency,
+  limit,
+  streams,
+}: ShopRouteDeps): Router {
   const router = Router()
 
   /** Onboarding step 1: check a wallet address and see its currency before creating the shop. */
@@ -90,7 +99,7 @@ export function shopRoutes({ shops, payments, events, idempotency, limit }: Shop
   })
 
   /** Live feed: a snapshot first (also after every reconnect), then each change as it happens. */
-  router.get('/shops/:shopId/events', merchant, async (req, res) => {
+  router.get('/shops/:shopId/events', streams, merchant, async (req, res) => {
     const shop = res.locals.shop as ShopRecord
     const since = sinceOf(req.query)
     let unsubscribe = () => undefined as void

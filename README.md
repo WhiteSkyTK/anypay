@@ -7,6 +7,10 @@ Spaza shops take digital payments with no card machine, very little data and tol
 or no signal, using [Open Payments](https://openpayments.dev/) so customers can pay from any
 compatible wallet.
 
+> **Live demo (test money only):** <https://anypay-web.onrender.com> · API
+> <https://anypay-api.onrender.com/health>. The free API instance sleeps when idle, so the first
+> request after a quiet spell can take about a minute.
+>
 > Status: Phase 2. Shops set up in under two minutes, print a QR poster and see payments arrive
 > live (with a spoken "Payment received"); customers pay from their own wallet after seeing the
 > exact price. The offline Digital Tab is Phase 3. See [ROADMAP.md](ROADMAP.md).
@@ -114,7 +118,8 @@ docs/
 ## Deploy
 
 [render.yaml](render.yaml) deploys the API and the web app to Render; Postgres runs on Neon. Steps,
-settings and costs are in [docs/deploy.md](docs/deploy.md). Live URLs: _coming with Phase 2_.
+settings, costs and the security checklist are in [docs/deploy.md](docs/deploy.md). Live:
+<https://anypay-web.onrender.com>.
 
 Locally, no database setup is needed: without `DATABASE_URL` the API keeps its data in an embedded
 Postgres (PGlite) under `.data/`. Delete that folder to start fresh.

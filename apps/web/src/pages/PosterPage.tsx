@@ -1,11 +1,16 @@
 import { Printer } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate } from 'react-router'
+import { Navigate, useLocation, useNavigate } from 'react-router'
+import { BackButton } from '@/components/BackButton'
 import { LogoMark } from '@/components/LogoMark'
 import { DocumentTitle } from '@/components/Page'
 import { QrCode } from '@/components/QrCode'
 import { Button } from '@/components/ui/button'
 import { useMerchantSession } from '@/hooks/useMerchantSession'
+
+/** New codes are 8 characters: printed in two groups of 4, easy to read out and type. */
+const printable = (code: string) =>
+  /^[2-9A-Z]{8}$/.test(code) ? `${code.slice(0, 4)} ${code.slice(4)}` : code
 
 /**
  * Feature 1's output: an A5 poster the shop prints once. The QR opens the shop's pay page in any
@@ -15,13 +20,21 @@ import { useMerchantSession } from '@/hooks/useMerchantSession'
 export function Component() {
   const { t } = useTranslation()
   const session = useMerchantSession()
+  const navigate = useNavigate()
+  // Opened from the shop's feed: going "to my shop" is going back, so history doesn't pile up.
+  const fromFeed = (useLocation().state as { from?: string } | null)?.from === 'feed'
   if (!session) return <Navigate to="/merchant/new" replace />
 
+  const toShop = () => {
+    if (fromFeed) void navigate(-1)
+    else void navigate('/merchant', { replace: true })
+  }
   const payUrl = `${window.location.origin}/shop/${session.shopId}/pay`
   return (
-    <div className="mx-auto w-full max-w-xl px-4 pt-[max(2rem,env(safe-area-inset-top))] pb-10 print:max-w-none print:p-0">
+    <div className="mx-auto w-full max-w-xl px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-10 print:max-w-none print:p-0">
       <DocumentTitle title={t('poster.title')} />
       <div className="print:hidden">
+        <BackButton fallback="/merchant" className="mb-2" />
         <h1 tabIndex={-1} className="text-title font-bold tracking-title focus:outline-none">
           {t('poster.title')}
         </h1>
@@ -47,6 +60,12 @@ export function Component() {
           <p className="mt-1 break-all text-neutral-700">
             {t('poster.orOpen')} {payUrl.replace(/^https?:\/\//, '')}
           </p>
+          <p className="mt-2 text-neutral-700">
+            {t('poster.code')}{' '}
+            <strong className="text-base tracking-widest text-black">
+              {printable(session.shopId)}
+            </strong>
+          </p>
         </div>
       </article>
 
@@ -55,8 +74,8 @@ export function Component() {
           <Printer aria-hidden="true" />
           {t('poster.print')}
         </Button>
-        <Button asChild size="lg" variant="ghost">
-          <Link to="/merchant">{t('poster.done')}</Link>
+        <Button size="lg" variant="ghost" onClick={toShop}>
+          {t('poster.done')}
         </Button>
       </div>
     </div>

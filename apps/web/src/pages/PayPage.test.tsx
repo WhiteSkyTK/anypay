@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { apiError, fakeApi, payment, renderPage, SHOP, setUpPageTests } from '@/testing/fakes'
@@ -140,5 +140,60 @@ describe('PayPage', () => {
     openPayPage()
     await user.click(await screen.findByRole('button', { name: 'Try again' }))
     expect(await screen.findByRole('heading', { level: 1, name: SHOP.name })).toBeTruthy()
+  })
+})
+
+describe('PayPage, leaving and coming back', () => {
+  it('shows the price again after Back from the wallet, instead of a frozen "Opening…" screen', async () => {
+    const user = userEvent.setup()
+    fakeApi({
+      [`GET /api/shops/${SHOP.id}`]: { body: SHOP },
+      [`POST /api/shops/${SHOP.id}/payments`]: QUOTED,
+    })
+    vi.spyOn(window.location, 'assign').mockImplementation(() => undefined)
+    openPayPage()
+    await enterPayment(user)
+    const sheet = await screen.findByRole('dialog', { name: 'Confirm payment' })
+    await user.click(within(sheet).getByRole('button', { name: 'Approve in my wallet' }))
+    expect(within(sheet).getByRole('button', { name: /Opening your wallet/ })).toHaveProperty(
+      'disabled',
+      true,
+    )
+
+    // The browser restores this page from its back-forward cache.
+    act(() => {
+      window.dispatchEvent(Object.assign(new Event('pageshow'), { persisted: true }))
+    })
+    expect(within(sheet).getByRole('button', { name: 'Approve in my wallet' })).toHaveProperty(
+      'disabled',
+      false,
+    )
+  })
+
+  it('never sends the customer to an approval link that is not https', async () => {
+    const user = userEvent.setup()
+    fakeApi({
+      [`GET /api/shops/${SHOP.id}`]: { body: SHOP },
+      [`POST /api/shops/${SHOP.id}/payments`]: {
+        status: 201,
+        body: { ...QUOTED.body, consentUrl: 'javascript:alert(1)' },
+      },
+    })
+    openPayPage()
+    await enterPayment(user)
+    expect((await screen.findByRole('alert')).textContent).toMatch(/Something went wrong/)
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('goes to "Pay a shop" on Back when the QR code opened it', async () => {
+    fakeApi({ [`GET /api/shops/${SHOP.id}`]: { body: SHOP } })
+    renderPage(PayPage, {
+      pattern: '/shop/:shopId/pay',
+      path: `/shop/${SHOP.id}/pay`,
+      stubs: ['/pay'],
+    })
+    await screen.findByRole('heading', { level: 1, name: SHOP.name })
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }))
+    expect(await screen.findByText('Stub page /pay')).toBeTruthy()
   })
 })

@@ -27,7 +27,8 @@
       "qr": "Yi-QR code kuphela",
       "anyWallet": "Nayiphi na iwalethi",
       "offline": "Isebenza ngaphandle kwe-intanethi"
-    }
+    },
+    "openShop": "Vula i-{{shop}}"
   },
   "language": {
     "label": "Ulwimi"
@@ -44,7 +45,13 @@
     "nameLabel": "Igama levenkile",
     "nameHint": "Abathengi bayalibona eli gama xa behlawula.",
     "create": "Yenza ivenkile yam",
-    "creating": "Iyenza…"
+    "creating": "Iyenza…",
+    "existing": {
+      "title": "Le fowuni sele isebenzisa i-{{shop}}",
+      "description": "Ivenkile entsha iya kuyithatha indawo kule fowuni, kwaye le fowuni ayisayi kuphinda ivule endala.",
+      "open": "Vula i-{{shop}}",
+      "replace": "Lungiselela ivenkile entsha"
+    }
   },
   "wallet": {
     "nameHint": "Igama lewalethi yakho kuphela: inxalenye emva kwe-/.",
@@ -61,7 +68,8 @@
     "orOpen": "Okanye uvule",
     "qrLabel": "Ikhowudi ye-QR yokuhlawula i-{{shop}}",
     "print": "Printa iphosta",
-    "done": "Yiya kwivenkile yam"
+    "done": "Yiya kwivenkile yam",
+    "code": "Ikhowudi yevenkile"
   },
   "connect": {
     "title": "Iqhagamshela ivenkile yakho",
@@ -92,6 +100,14 @@
       "approve": "Vuma kwiwalethi yam",
       "redirecting": "Ivula iwalethi yakho…"
     }
+  },
+  "customer": {
+    "title": "Hlawula ivenkile",
+    "scan": "Jolisa ikhamera yefowuni yakho kwikhowudi ye-QR yevenkile. Ivula iphepha lokuhlawula, akukho app ifunekayo.",
+    "or": "okanye",
+    "codeLabel": "Ikhowudi yevenkile",
+    "codeHint": "Iprintwe kwiphosta yevenkile, phantsi kwekhowudi ye-QR.",
+    "go": "Yiya evenkileni"
   },
   "receipt": {
     "title": "Intlawulo",
@@ -227,7 +243,8 @@
     },
     "shopName": {
       "tooShort": "Sebenzisa ubuncinci oonobumba aba-2",
-      "tooLong": "Sebenzisa ubuninzi boonobumba abangama-60"
+      "tooLong": "Sebenzisa ubuninzi boonobumba abangama-60",
+      "characters": "Susa oonobumba abafihliweyo okanye abakhethekileyo"
     },
     "idempotencyKey": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona.",
     "api": {
