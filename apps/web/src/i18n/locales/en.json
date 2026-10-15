@@ -107,7 +107,8 @@
     "or": "or",
     "codeLabel": "Shop code",
     "codeHint": "It's printed on the shop's poster, under the QR code.",
-    "go": "Go to the shop"
+    "go": "Go to the shop",
+    "scanHere": "Scan with AnyPay"
   },
   "receipt": {
     "title": "Payment",

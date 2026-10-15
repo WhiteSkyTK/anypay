@@ -107,7 +107,8 @@
     "or": "okanye",
     "codeLabel": "Ikhowudi yevenkile",
     "codeHint": "Iprintwe kwiphosta yevenkile, phantsi kwekhowudi ye-QR.",
-    "go": "Yiya evenkileni"
+    "go": "Yiya evenkileni",
+    "scanHere": "Skena nge-AnyPay"
   },
   "receipt": {
     "title": "Intlawulo",

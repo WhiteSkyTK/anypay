@@ -107,7 +107,8 @@
     "or": "noma",
     "codeLabel": "Ikhodi yesitolo",
     "codeHint": "Iphrintiwe kuphosta yesitolo, ngaphansi kwekhodi ye-QR.",
-    "go": "Iya esitolo"
+    "go": "Iya esitolo",
+    "scanHere": "Skena nge-AnyPay"
   },
   "receipt": {
     "title": "Inkokhelo",

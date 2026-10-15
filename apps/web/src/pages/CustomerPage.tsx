@@ -1,7 +1,7 @@
 import { ArrowRight, ScanLine } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { Field } from '@/components/Field'
 import { Page } from '@/components/Page'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,13 @@ export function Component() {
         </span>
         <p className="text-lg">{t('customer.scan')}</p>
       </div>
+      {/* Installed apps can't receive the camera app's links: scan inside AnyPay instead. */}
+      <Button asChild size="lg" variant="secondary" className="mt-4 w-full">
+        <Link to="/scan">
+          <ScanLine aria-hidden="true" />
+          {t('customer.scanHere')}
+        </Link>
+      </Button>
 
       <p className="my-6 text-center text-sm font-semibold text-muted-foreground uppercase">
         {t('customer.or')}

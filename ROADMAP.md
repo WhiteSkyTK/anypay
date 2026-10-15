@@ -97,15 +97,16 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 **Team:** hosting accounts and production env vars. Book the optional mid-project mentor check-in.
 
 ## Phase 3 — Offline Digital Tab · target 25 Oct · Status: In progress
-- [ ] Tab opening: interval-capped outgoing-payment grant + device key registration (server done 2026-10-14; web screens next)
-- [ ] Two-QR voucher exchange
-- [ ] Dexie outbox + SyncManager with per-item sync states
+- [x] Tab opening: interval-capped outgoing-payment grant + device key registration (the test wallet accepts the weekly limit, 2026-10-15)
+- [x] Two-QR voucher exchange
+- [x] Dexie outbox + SyncManager with per-item sync states
 - [x] Server verification + settlement
 - [x] Rotate expired tab grant tokens (`token.rotate`); stored tokens encrypted at rest
-- [ ] Tests: valid voucher, tampered amount, reused nonce, cap exceeded, idempotent re-sync from both phones
-- [ ] DEMO_MODE "Simulate offline" toggle
-- [ ] In-app QR scanner (qr-scanner, lazy-loaded): vouchers need it, and "Pay a shop" can use it too (installed apps can't hand off to the camera app)
-- [ ] Budget headroom is ~10 KB and Dexie is ~25 KB: move the web's zod to `zod/mini` (or validate less in the browser) before adding it
+- [x] Tests: valid voucher, tampered amount, reused nonce, cap exceeded, idempotent re-sync from both phones
+- [x] DEMO_MODE "Simulate offline" toggle
+- [x] In-app QR scanner (qr-scanner, lazy-loaded): vouchers need it, and "Pay a shop" can use it too (installed apps can't hand off to the camera app)
+- [x] Budget: Dexie (30 KB) and the scanner (16 KB) load lazily, so every first load stays under 200 KB (heaviest 195.6 KB). Headroom is now 4.4 KB: `zod/mini` moves to Phase 4
+- [x] SonarCloud security rating C on `main`: the seed script's `--api` could send requests anywhere (S8703); now `--target local|deployed`
 
 **Done when**
 - [ ] Two phones in airplane mode complete a sale, and after reconnecting it settles exactly once
@@ -113,7 +114,8 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 **Team:** usability test with 2–3 spaza owners; note what changed.
 
 ## Phase 4 — Polish & submission · target 1 Nov (freeze 2 Nov) · Status: Not started
-- [ ] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues
+- [ ] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues (24 minor code smells on main, 2026-10-15)
+- [ ] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB
 - [ ] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
 - [ ] Test on a budget Android phone outdoors in sunlight, and on an iPhone
 - [ ] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
@@ -160,3 +162,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 - 2026-10-14 · Team tested on phones and on Render: the deployed two-phone payment works (Phase 2 "Done when" ticked). Fixed what testing found: navigation dead ends and the Back button (incl. installed iPhone app), accidental shop replacement, no customer start page, frozen price sheet after Back from the wallet. Security pass: rate limits everywhere, live-feed caps, https-only approval links, CSP and Permissions-Policy, stricter names/amounts, readable shop codes; `npm audit` clean. Local `.env` pointed at the production database (flagged; see .env.example). · Next: merge `phase-2-hardening`, Manual sync the Blueprint, test the new checklist section, decide on a paid API instance, then close Phase 2 and plan Phase 3. · Blockers: none in code; the paid-tier decision is the team's.
 - 2026-10-14 · Phase 2 closed: hardening merged and live (headers checked on Render), deploy item done by team decision (free API plan), short links + API root redirect, shop profile and today's feed cached on the phone. · Next: Phase 3 (Offline Digital Tab). · Blockers: none.
 - 2026-10-14 · Phase 3 server done on `phase-3-offline-tab` (47e4a89): shared voucher protocol (P-256 sign/verify, links), tabs with weekly-capped grants, cap measured in shop currency (verified live), vouchers claimed by nonce and settled once with the stored grant, token rotation, routes and 11 flow tests. · Next: web side: Dexie outbox + SyncManager, device keys, open-tab / my tabs / approve-sale (/t/) / receive-voucher (/v/) screens, merchant tab-sale screen, in-app QR scanner, Simulate offline toggle, i18n x4. · Blockers: none.
+- 2026-10-15 · SonarCloud security C fixed (seed script SSRF) on `phase-2-wrap-up`, merged into Phase 3. Phase 3 web side built on `phase-3-offline-tab`: Dexie offline store (lazy), outbox SyncManager, Simulate offline, open tab / my tabs / tab detail / approve sale / tab sale / receive voucher / in-app scanner, feed integration, four languages. Real test wallet accepts the weekly-limit grant; device key stored non-extractable. 554+ tests; budget 195.6 KB. · Next: you push `phase-2-wrap-up` (Sonar, /start live), then test Phase 3 with two phones (docs/testing.md) for its "Done when"; then Phase 4. · Blockers: the wallet approval and two real phones are the team's.

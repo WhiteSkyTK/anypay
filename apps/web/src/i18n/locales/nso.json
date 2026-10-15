@@ -107,7 +107,8 @@
     "or": "goba",
     "codeLabel": "Khoutu ya lebenkele",
     "codeHint": "E gatišitšwe phosetareng ya lebenkele, ka tlase ga khoutu ya QR.",
-    "go": "Eya lebenkeleng"
+    "go": "Eya lebenkeleng",
+    "scanHere": "Sekena ka AnyPay"
   },
   "receipt": {
     "title": "Tefelo",
