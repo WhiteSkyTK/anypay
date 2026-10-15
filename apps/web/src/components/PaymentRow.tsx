@@ -20,7 +20,14 @@ export function PaymentRow({ payment }: Readonly<{ payment: PaymentSummary }>) {
         >
           {formatTime(payment.completedAt ?? payment.createdAt)}
         </time>
-        <StatusChip status={payment.status} />
+        <span className="flex flex-wrap items-center gap-1.5">
+          <StatusChip status={payment.status} />
+          {payment.tabId && (
+            <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
+              {t('merchant.tab')}
+            </span>
+          )}
+        </span>
       </div>
       <div className="flex flex-col items-end text-right">
         <Amount money={payment.amount} className="text-2xl" />

@@ -96,39 +96,87 @@ are the real approvals in the test wallet, the voice, printing and a real phone.
 
 Or simply test on the deployed app (<https://anypay-web.onrender.com>): no setup at all.
 
-- [ ] Phone camera scans the poster QR and opens the pay screen
-- [ ] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
-- [ ] After approving in the wallet on the phone, it comes back to the receipt
-- [ ] The PC (shop) announces the payment out loud
+- [x] Phone camera scans the poster QR and opens the pay screen
+- [x] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
+- [x] After approving in the wallet on the phone, it comes back to the receipt
+- [x] The PC (shop) announces the payment out loud
 - [ ] Phone with the shop feed open: lock the screen for a minute, unlock, pay again: the
       feed reconnects (**Live**) and shows the new payment
-- [ ] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
+- [x] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
 
 ### Phase 2: getting around and safety (2026-10-14)
 
 Best on a phone, and once more with the app **installed** (browser menu → Add to Home screen),
 because an installed app on iPhone has no browser Back button.
 
-- [ ] **Back everywhere**: set-up, poster, Pay a shop, the pay screen and the "connecting" page
+- [x] **Back everywhere**: set-up, poster, Pay a shop, the pay screen and the "connecting" page
       all have **‹ Back** at the top. Opened from a QR code or link, Back goes somewhere sensible
       (Pay a shop, your shop, the start page) instead of leaving the app
-- [ ] **Start page knows your shop**: on a phone that runs a shop it says **Open <shop>**, not
+- [x] **Start page knows your shop**: on a phone that runs a shop it says **Open <shop>**, not
       "Set up my shop". The installed app opens straight into the live feed
-- [ ] **No accidental second shop**: go to set-up on the shop's phone. It says "This phone already
+- [x] **No accidental second shop**: go to set-up on the shop's phone. It says "This phone already
       runs …" with **Open** as the main button; the old shop is only replaced if you choose
       **Set up a new shop instead** and finish
-- [ ] **I'm a customer** opens **Pay a shop**: camera instructions, plus a box for the shop code.
+- [x] **I'm a customer** opens **Pay a shop**: camera instructions, plus a box for the shop code.
       Typing the code from the poster (any case, with or without the space) opens the pay screen
-- [ ] **Poster shows the shop code** under the QR (new shops get codes like `7KQM 4XPA`: no 0/O
+- [x] **Poster shows the shop code** under the QR (new shops get codes like `7KQM 4XPA`: no 0/O
       or 1/I/L mix-ups). Shops made before today keep their old code
-- [ ] **Poster → Go to my shop → Back** doesn't bounce between the poster and the feed
-- [ ] **Back from the wallet**: tap **Approve in my wallet**, then the phone's Back button before
+- [x] **Poster → Go to my shop → Back** doesn't bounce between the poster and the feed
+- [x] **Back from the wallet**: tap **Approve in my wallet**, then the phone's Back button before
       approving. The price sheet is usable again (not stuck on "Opening your wallet…")
-- [ ] **Receipt**: after paying there is **Done** (to Pay a shop) and **Pay again**
-- [ ] **Hidden characters**: copy a name with an invisible character (e.g. from a web page) into
+- [x] **Receipt**: after paying there is **Done** (to Pay a shop) and **Pay again**
+- [x] **Hidden characters**: copy a name with an invisible character (e.g. from a web page) into
       the shop name: it says to remove hidden or special characters
-- [ ] **Deployed site still works** after this update is live (the new security policy blocks
+- [x] **Deployed site still works** after this update is live (the new security policy blocks
       anything not from AnyPay itself; a blank page or "No connection" would mean it's too strict)
+
+### Phase 2 wrap-up: short links and remembering (2026-10-14)
+
+- [x] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
+- [ ] <https://anypay-web.onrender.com/start> opens shop set-up
+- [ ] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
+      (`…/shop/<code>/pay`) still work
+- [ ] Pay at a shop once, then turn on airplane mode and scan its poster again: the pay screen
+      still opens (paying itself needs signal, and says so)
+- [ ] Open the shop feed, close the app, turn off data, open it again: today's payments and total
+      are still there while it says **Connecting…**
+
+### Phase 3: the Offline Digital Tab (2026-10-15)
+
+You need two phones (or a phone and the PC): one runs the shop, one is the customer. Use the live
+app once `phase-3-offline-tab` is merged, or `npm run dev:lan` (see "on a real phone" above).
+Claude checked in a browser: opening a tab reaches the test wallet's approval (the wallet accepts
+the weekly limit), the key is stored on the phone, tab sale, scanner fallback and Simulate offline.
+**The approvals, real cameras and the two-phone sale are yours.**
+
+**Open a tab (online, once)**
+
+- [ ] Customer phone: open the shop's poster link → **Open a tab at this shop** → wallet name
+      (`southtest`), your name for the shop, a weekly limit (in rand) → **Approve in my wallet**
+      → approve in the test wallet. You land on the tab: **Left this week** shows the limit in the
+      shop's currency
+- [ ] Shop phone: **Tab sale** says **Customer tabs on this phone: 1**
+
+**The sale, both phones offline** (airplane mode, or Settings → **Simulate offline (demo)**)
+
+- [ ] Shop: **Tab sale** → type an amount → **Show QR to customer**
+- [ ] Customer: **My tabs** → the tab → **Scan the shop's QR** (or the phone's camera app) → it
+      shows the shop and amount → **Approve** → a QR appears
+- [ ] Shop: **Scan the customer's QR** → **Saved – settles when online**; the feed shows it
+      under **Tab sales waiting to settle**
+- [ ] Turn signal back on (or Simulate offline off) on **either** phone: within seconds it says
+      **Settled**, the payment joins the feed with a **Tab** label and is read out loud
+- [ ] Then the other phone too: it also shows **Settled**, and the shop got paid **once**
+      (check the feed and the merchant wallet) — this is Phase 3's "Done when"
+
+**Things that must be refused**
+
+- [ ] Scan the same customer QR twice: **Already saved: this sale won't be paid twice**
+- [ ] A sale bigger than what's left this week: refused on the customer's phone
+- [ ] Customer phone with no tab at that shop: "You don't have a tab at this shop…"
+
+**Good to know:** an installed app on iPhone can't receive links from the camera app (they open
+in Safari, which doesn't have the tab's key): use the in-app scanner there.
 
 ## Problems found
 

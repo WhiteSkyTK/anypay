@@ -173,7 +173,7 @@ describe('PosterPage', () => {
     renderPage(PosterPage, { pattern: '/merchant/poster', path: '/merchant/poster' })
 
     expect(await screen.findByRole('img', { name: `QR code to pay ${SHOP.name}` })).toBeTruthy()
-    expect(document.body.textContent).toContain(`/shop/${SHOP.id}/pay`)
+    expect(document.body.textContent).toContain(`/s/${SHOP.id}`)
     await userEvent.click(screen.getByRole('button', { name: 'Print poster' }))
     expect(print).toHaveBeenCalledOnce()
   })

@@ -146,3 +146,26 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
   to a file so the policy can forbid every inline script.
 - **The wallet's approval link must be https**, checked on the server and again in the app: it is
   input from an outside server, and the customer's browser is sent there.
+
+## Phase 3: the Offline Digital Tab (2026-10-15)
+
+- **One protocol module, shared by both phones and the server.** The voucher message, the links
+  and ECDSA P-256 signing live in packages/shared and use WebCrypto everywhere, so a voucher the
+  shop's phone accepts offline is exactly one the server accepts (P1363 signatures on both sides).
+- **Both QR codes are ordinary AnyPay links** (/t/… and /v/…): the in-app scanner reads them, and
+  so does a phone's own camera app, so neither phone strictly needs to install anything.
+- **The customer supplies the tab id.** The shop's request QR carries shop, amount, nonce and
+  time; the customer's phone adds its own tab id when signing, so the shop never has to pick the
+  customer from a list. The signature still binds all six fields.
+- **The weekly cap is approved in the customer's currency and checked in the shop's.** The grant
+  limit is what the customer sees in their wallet (rand); a fixed-send quote into an open-amount
+  incoming payment converts it once (R200 -> COP 38 416,62 on the test wallet), so the shop's
+  phone can compare vouchers offline. The wallet's own limit remains the hard stop.
+- **"Settle at most once" is a primary key.** Vouchers are keyed by nonce and claimed with one
+  atomic insert, so two phones syncing the same voucher at the same moment can't both pay it.
+- **The offline store loads only when needed.** Dexie (30 KB) and the scanner (16 KB) are their own
+  chunks; a customer who only scans and pays never downloads them, and every page's first load
+  stays under 200 KB (heaviest: the shop feed, 195.6 KB).
+- **Sync is ours, not the Background Sync API** (iOS Safari lacks it): flush on online, on
+  returning to the app, and on a 2 s → 5 min backoff, with each voucher's own Idempotency-Key.
+- **The seed script can't be pointed at any server** (SonarCloud S8703): `--target local|deployed`.

@@ -38,6 +38,8 @@ export const PaymentSummarySchema = z.object({
   amount: MoneySchema,
   /** What the customer pays, fees and exchange included (once quoted). */
   debitAmount: MoneySchema.optional(),
+  /** Set when the payment settles a voucher from this tab (an offline sale), not a scan-and-pay. */
+  tabId: z.string().optional(),
   createdAt: z.iso.datetime({ offset: true }),
   completedAt: z.iso.datetime({ offset: true }).optional(),
 })

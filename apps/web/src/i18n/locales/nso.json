@@ -107,7 +107,8 @@
     "or": "goba",
     "codeLabel": "Khoutu ya lebenkele",
     "codeHint": "E gatišitšwe phosetareng ya lebenkele, ka tlase ga khoutu ya QR.",
-    "go": "Eya lebenkeleng"
+    "go": "Eya lebenkeleng",
+    "scanHere": "Sekena ka AnyPay"
   },
   "receipt": {
     "title": "Tefelo",
@@ -162,7 +163,8 @@
     "actions": {
       "poster": "Phosetara",
       "export": "Romela CSV",
-      "exporting": "E a romela…"
+      "exporting": "E a romela…",
+      "tabSale": "Thekišo ya akhaonte"
     },
     "unauthorized": {
       "title": "Mogala wo o tšwile lebenkeleng",
@@ -170,7 +172,8 @@
       "reset": "Beakanya gape"
     },
     "paidWith": "Moreki o lefile {{amount}}",
-    "newPayment": "Tefelo e amogetšwe: {{amount}}"
+    "newPayment": "Tefelo e amogetšwe: {{amount}}",
+    "tab": "Akhaonte"
   },
   "status": {
     "created": "E thomile",
@@ -196,6 +199,41 @@
     "empty": {
       "title": "Ga go na diakhaonte tše di bulegilego",
       "description": "Bula akhaonte spazeng ya gago gatee fela, ke moka o lefe ka go kgoma, le ge netweke e se gona."
+    },
+    "howToOpen": "Sekena khoutu ya QR ya lebenkele, ke moka o kgethe Bula akhaonte lebenkeleng le.",
+    "leftThisWeek": "Tše di šetšego beke ye",
+    "upTo": "Go fihla go {{amount}} ka beke",
+    "resets": "Moedi o thoma gape ka {{date}}",
+    "status": {
+      "awaiting-consent": "E letile tumelelo ya gago",
+      "active": "E a šoma",
+      "failed": "Ga se ya bulwa"
+    },
+    "openHere": "Bula akhaonte lebenkeleng le",
+    "open": {
+      "title": "Bula akhaonte",
+      "intro": "Lefela {{shop}} ka go kgoma, le ge mogala o tee o se na netweke. O dumela moedi wa beke gatee fela, ka wolete ya gago.",
+      "labelLabel": "Leina la gago la lebenkele",
+      "labelHint": "Lebenkele le bona leina le kgauswi le akhaonte ya gago.",
+      "capLabel": "Moedi wa beke",
+      "capHint": "Bontši bjo akhaonte ye e ka bo tšeago ka beke. Wolete ya gago e e swara moo.",
+      "customLabel": "Palo ye nngwe",
+      "continue": "Tšwela pele",
+      "approve": "Dumela ka wolete ya ka",
+      "checking": "E lekola wolete ya gago…",
+      "redirecting": "E bula wolete ya gago…",
+      "offline": "Go bula akhaonte go nyaka netweke gatee. Ka morago e šoma ntle le yona."
+    },
+    "detail": {
+      "waiting": "Dumela moedi wa beke ka wolete ya gago gore o thome go šomiša akhaonte ye.",
+      "failed": "Akhaonte ye ga se ya bulwa. Ga go tšhelete yeo e tšerwego.",
+      "callbackError": "Ga re a kgona go netefatša tumelelo ya gago. Lekola wolete ya gago, ke moka o leke go bula akhaonte gape.",
+      "openAgain": "Bula akhaonte ye mpsha",
+      "otherPhone": "Akhaonte ye e butšwe mogaleng o mongwe, ka gona ke mogala woo fela wo o ka lefelago ka yona.",
+      "howToPay": "Go lefela, kgopela lebenkele thekišo ya akhaonte gomme o sekene khoutu ya QR yeo ba go bontšhago yona.",
+      "scan": "Sekena QR ya lebenkele",
+      "payments": "Ditefelo tša akhaonte",
+      "noPayments": "Ga go sa na ditefelo akhaonteng ye."
     }
   },
   "settings": {
@@ -207,7 +245,9 @@
       "dark": "Leswiswi"
     },
     "about": "Ka ga",
-    "version": "Phetolelo {{version}}"
+    "version": "Phetolelo {{version}}",
+    "simulateOffline": "Ekiša go se be le netweke (pontšho)",
+    "simulateOfflineHint": "E bontšha go šoma ga akhaonte ntle le netweke ntle le go tima mogala. Ga go selo seo se fihlago sebeleng go fihlela o e tima."
   },
   "demo": {
     "banner": "Mokgwa wa pontšho · tšhelete ya teko fela"
@@ -259,7 +299,81 @@
       "open_payments_not_configured": "Ditefelo ga di so bulwe sebeleng se sa AnyPay.",
       "merchant_unauthorized": "Mogala wo ga o a tsena lebenkeleng.",
       "invalid_amount": "Tsenya palo ye e fetago lefela.",
-      "unknown": "Go na le seo se sa šomego gabotse. Hle leka gape."
+      "unknown": "Go na le seo se sa šomego gabotse. Hle leka gape.",
+      "voucher_invalid": "Vocha ye ga se ya saenwa ke mogala wa moreki.",
+      "tab_not_found": "Akhaonte ga e hwetšwe."
+    },
+    "tabLabel": {
+      "required": "Tsenya leina leo lebenkele le tla go tseba ka lona",
+      "tooLong": "Šomiša ditlhaka tše di sa fetego 30"
     }
+  },
+  "sale": {
+    "title": "Thekišo ya akhaonte",
+    "hint": "Bakeng sa bareki bao ba nago le akhaonte lebenkeleng la gago. E šoma ntle le netweke.",
+    "showQr": "Bontšha moreki QR",
+    "qrLabel": "Khoutu ya QR ya thekišo ya akhaonte ya {{amount}}",
+    "askCustomer": "Moreki o sekena se, o a dumela, gomme o go bontšha QR ya gagwe.",
+    "scanVoucher": "Sekena QR ya moreki",
+    "newSale": "Thekišo ye mpsha",
+    "tabsOnPhone": "Diakhaonte tša bareki mogaleng wo: {{count}}",
+    "syncFailed": "Ga re a kgona go mpshafatša diakhaonte tša bareki. Re šomiša tše di lego mogaleng wo.",
+    "noTabs": {
+      "title": "Ga go sa na diakhaonte",
+      "description": "Ge moreki a bula akhaonte lebenkeleng la gago, o ka mo rekišetša mo, le ge go se na netweke."
+    }
+  },
+  "approve": {
+    "title": "Lefela ka akhaonte ya gago",
+    "asks": "{{shop}} e kgopela",
+    "left": "Tše di šetšego beke ye: {{amount}}",
+    "approve": "Dumela",
+    "showShop": "Bontšha lebenkele se",
+    "voucherLabel": "Khoutu ya QR ya tumelelo ya gago ya {{amount}}",
+    "noTab": "Ga o na akhaonte lebenkeleng le mogaleng wo. Bula ye nngwe ge o na le netweke.",
+    "capReached": "Se se feta seo se šetšego akhaonteng ya gago beke ye.",
+    "expired": "Kgopelo ye ke ya kgale kudu. Kgopela lebenkele ye mpsha.",
+    "invalid": "Ye ga se thekišo ya AnyPay ye e nepagetšego."
+  },
+  "voucher": {
+    "title": "Tefelo ya akhaonte",
+    "saved": "E bolokilwe – e tla lefelwa ge go na le netweke",
+    "from": "Go tšwa akhaonteng ya {{label}}",
+    "states": {
+      "saved": "E bolokilwe ntle le netweke",
+      "sending": "E a romelwa",
+      "settled": "E lefetšwe",
+      "failed": "E paletšwe"
+    },
+    "reasons": {
+      "expired": "Ke ya kgale kudu go lefelwa (go feta diiri tše 72)",
+      "cap_reached": "E feta moedi wa beke wa akhaonte",
+      "tab_inactive": "Akhaonte ga e sa šoma",
+      "grant_limit": "Wolete ya moreki e ganne: e feta moedi wa beke",
+      "insufficient_funds": "Ga go tšhelete ye e lekanego ka wolete ya moreki",
+      "payment_failed": "Tefelo e paletšwe",
+      "timeout": "Tefelo e tšere nako ye telele kudu",
+      "invalid": "Ga se ya saenwa ke mogala wa moreki"
+    },
+    "check": {
+      "other_shop": "QR ye ke ya lebenkele le lengwe.",
+      "unknown_tab": "Akhaonte ya moreki yo ga e eso be mogaleng wo. Kgokagana gatee go mpshafatša diakhaonte, ke moka o sekene gape.",
+      "invalid": "QR ye ga se ya saenwa ke mogala wa moreki.",
+      "expired": "Tumelelo ye ke ya kgale kudu (go feta diiri tše 72).",
+      "cap_reached": "Se se feta seo se šetšego akhaonteng ya moreki beke ye.",
+      "duplicate": "E šetše e bolokilwe: thekišo ye e ka se lefelwe gabedi."
+    },
+    "tryNow": "Leka bjale",
+    "waiting": "Dithekišo tša akhaonte tše di letilego go lefelwa",
+    "backToShop": "Boela lebenkeleng la ka"
+  },
+  "scan": {
+    "title": "Sekena khoutu ya QR",
+    "hint": "Lebiša khamera go khoutu ya QR.",
+    "starting": "E thoma khamera…",
+    "noCamera": "Khamera ga e gona. Kgomaretša kgokagano go e na le moo.",
+    "notAnyPay": "Ye ga se khoutu ya AnyPay.",
+    "pasteLabel": "Goba kgomaretša kgokagano",
+    "open": "Bula"
   }
 }

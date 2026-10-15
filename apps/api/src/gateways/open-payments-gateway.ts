@@ -299,7 +299,12 @@ export class OpenPaymentsGateway implements OpenPaymentsPort {
       toQuoteInfo(
         await client.quote.create(
           { url: resourceServer, accessToken },
-          { walletAddress: args.walletAddress, receiver: args.receiver, method: 'ilp' },
+          {
+            walletAddress: args.walletAddress,
+            receiver: args.receiver,
+            method: 'ilp',
+            ...(args.debitAmount && { debitAmount: args.debitAmount }),
+          },
         ),
       ),
     )

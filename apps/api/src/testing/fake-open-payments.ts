@@ -31,6 +31,9 @@ export const merchantWallet: WalletAddressInfo = {
 
 export const ALLOWED_HOSTS = ['interledger-test.dev']
 
+/** COP cents per ZAR cent in fake fixed-send quotes (R 1,00 ≈ COP 185,00). */
+export const FAKE_RATE = 185
+
 export const access = (token: string): GrantedAccess => ({
   accessToken: { value: token, manage: `https://auth.interledger-test.dev/token/${token}` },
   continuation: {
@@ -76,11 +79,18 @@ export function createFakeOpenPayments(): {
     })),
     createIncomingPayment: vi.fn<OpenPaymentsPort['createIncomingPayment']>(
       async (resourceServer, _token, args) => {
+        // An open amount (no incomingAmount) receives in the wallet's own currency.
+        const wallet = wallets.get(args.walletAddress) ?? merchantWallet
+        const asset = args.incomingAmount ?? {
+          value: '0',
+          assetCode: wallet.assetCode,
+          assetScale: wallet.assetScale,
+        }
         const payment: IncomingPaymentInfo = {
           id: `${resourceServer}/incoming-payments/ip-${incoming.size + 1}`,
           walletAddress: args.walletAddress,
           incomingAmount: args.incomingAmount,
-          receivedAmount: { ...args.incomingAmount, value: '0' },
+          receivedAmount: { ...asset, value: '0' },
           completed: false,
           expiresAt: args.expiresAt,
         }
@@ -95,14 +105,23 @@ export function createFakeOpenPayments(): {
     }),
     createQuote: vi.fn<OpenPaymentsPort['createQuote']>(async (resourceServer, _token, args) => {
       const receiver = incoming.get(args.receiver)
-      if (!receiver?.incomingAmount) throw new Error(`Unknown receiver ${args.receiver}`)
+      if (!receiver) throw new Error(`Unknown receiver ${args.receiver}`)
+      // Fixed send into an open amount: 1 ZAR cent buys FAKE_RATE COP cents, fees included.
+      // Otherwise a ZAR debit of 105 for whatever COP the shop asked for.
+      const receiveAmount =
+        args.debitAmount && !receiver.incomingAmount
+          ? {
+              ...receiver.receivedAmount,
+              value: String(BigInt(args.debitAmount.value) * BigInt(FAKE_RATE)),
+            }
+          : receiver.incomingAmount
+      if (!receiveAmount) throw new Error(`Nothing to quote for ${args.receiver}`)
       const quote: QuoteInfo = {
         id: `${resourceServer}/quotes/q-${quotes.size + 1}`,
         walletAddress: args.walletAddress,
         receiver: args.receiver,
-        // A ZAR debit for the COP the shop asked for, fees included.
-        debitAmount: { value: '105', assetCode: 'ZAR', assetScale: 2 },
-        receiveAmount: receiver.incomingAmount,
+        debitAmount: args.debitAmount ?? { value: '105', assetCode: 'ZAR', assetScale: 2 },
+        receiveAmount,
         expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
       }
       quotes.set(quote.id, quote)

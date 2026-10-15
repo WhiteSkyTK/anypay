@@ -14,6 +14,8 @@ const KNOWN_CODES = new Set([
   'open_payments_not_configured',
   'merchant_unauthorized',
   'invalid_amount',
+  'voucher_invalid',
+  'tab_not_found',
 ])
 
 /**

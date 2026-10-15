@@ -56,4 +56,39 @@ export const MIGRATIONS: readonly Migration[] = [
     name: '0002_clear_plaintext_idempotency_responses',
     statements: ['DELETE FROM idempotency_keys'],
   },
+  {
+    name: '0003_tabs_vouchers',
+    statements: [
+      `CREATE TABLE tabs (
+        id text PRIMARY KEY,
+        shop_id text NOT NULL REFERENCES shops(id),
+        status text NOT NULL,
+        failure text,
+        label text NOT NULL,
+        cap_value text NOT NULL,
+        cap_asset_code text NOT NULL,
+        cap_asset_scale integer NOT NULL,
+        shop_cap_value text,
+        interval_start timestamptz NOT NULL,
+        public_key jsonb NOT NULL,
+        session_ciphertext text NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT now(),
+        updated_at timestamptz NOT NULL DEFAULT now()
+      )`,
+      'CREATE INDEX tabs_shop_status_idx ON tabs (shop_id, status)',
+      `CREATE TABLE vouchers (
+        nonce text PRIMARY KEY,
+        tab_id text NOT NULL REFERENCES tabs(id),
+        amount_value text NOT NULL,
+        signed_at timestamptz NOT NULL,
+        signature text NOT NULL,
+        status text NOT NULL,
+        reason text,
+        payment_id uuid REFERENCES payments(id),
+        created_at timestamptz NOT NULL DEFAULT now()
+      )`,
+      'CREATE INDEX vouchers_tab_signed_idx ON vouchers (tab_id, signed_at)',
+      'ALTER TABLE payments ADD COLUMN tab_id text REFERENCES tabs(id)',
+    ],
+  },
 ]

@@ -107,7 +107,8 @@
     "or": "okanye",
     "codeLabel": "Ikhowudi yevenkile",
     "codeHint": "Iprintwe kwiphosta yevenkile, phantsi kwekhowudi ye-QR.",
-    "go": "Yiya evenkileni"
+    "go": "Yiya evenkileni",
+    "scanHere": "Skena nge-AnyPay"
   },
   "receipt": {
     "title": "Intlawulo",
@@ -162,7 +163,8 @@
     "actions": {
       "poster": "Iphosta",
       "export": "Thumela i-CSV",
-      "exporting": "Iyathumela…"
+      "exporting": "Iyathumela…",
+      "tabSale": "Intengiso yethebhu"
     },
     "unauthorized": {
       "title": "Le fowuni iphumile kwivenkile",
@@ -170,7 +172,8 @@
       "reset": "Lungiselela kwakhona"
     },
     "paidWith": "Umthengi uhlawule {{amount}}",
-    "newPayment": "Intlawulo ifunyenwe: {{amount}}"
+    "newPayment": "Intlawulo ifunyenwe: {{amount}}",
+    "tab": "Ithebhu"
   },
   "status": {
     "created": "Iqalile",
@@ -196,6 +199,41 @@
     "empty": {
       "title": "Akukho thebhu zivuliweyo",
       "description": "Vula ithebhu kwispaza sakho kanye, uze uhlawule ngokuchukumisa, nokuba akukho nethiwekhi."
+    },
+    "howToOpen": "Skena ikhowudi ye-QR yevenkile, uze ukhethe Vula ithebhu kule venkile.",
+    "leftThisWeek": "Okuseleyo kule veki",
+    "upTo": "Ukuya kuthi ga ku-{{amount}} ngeveki",
+    "resets": "Umda uqala kwakhona ngo-{{date}}",
+    "status": {
+      "awaiting-consent": "Ilindele imvume yakho",
+      "active": "Iyasebenza",
+      "failed": "Ayivulwanga"
+    },
+    "openHere": "Vula ithebhu kule venkile",
+    "open": {
+      "title": "Vula ithebhu",
+      "intro": "Hlawula i-{{shop}} ngokuchukumisa, nokuba akukho fowuni inenethiwekhi. Uvuma umda weveki kanye, kwiwalethi yakho.",
+      "labelLabel": "Igama lakho levenkile",
+      "labelHint": "Ivenkile ibona eli gama ecaleni kwethebhu yakho.",
+      "capLabel": "Umda weveki",
+      "capHint": "Esona sixa sikhulu le thebhu enokusithatha ngeveki. Iwalethi yakho iyibamba kuloo mda.",
+      "customLabel": "Esinye isixa",
+      "continue": "Qhubeka",
+      "approve": "Vuma kwiwalethi yam",
+      "checking": "Ikhangela iwalethi yakho…",
+      "redirecting": "Ivula iwalethi yakho…",
+      "offline": "Ukuvula ithebhu kufuna inethiwekhi kanye. Emva koko isebenza ngaphandle kwayo."
+    },
+    "detail": {
+      "waiting": "Vuma umda weveki kwiwalethi yakho ukuze uqalise ukusebenzisa le thebhu.",
+      "failed": "Le thebhu ayivulwanga. Akukho mali ithathiweyo.",
+      "callbackError": "Asikwazanga ukuqinisekisa imvume yakho. Khangela iwalethi yakho, uze uzame ukuvula ithebhu kwakhona.",
+      "openAgain": "Vula ithebhu entsha",
+      "otherPhone": "Le thebhu ivulwe kwenye ifowuni, ngoko yiloo fowuni kuphela enokuhlawula ngayo.",
+      "howToPay": "Ukuhlawula, cela ivenkile intengiso yethebhu uze uskene ikhowudi ye-QR abakubonisa yona.",
+      "scan": "Skena i-QR yevenkile",
+      "payments": "Iintlawulo zethebhu",
+      "noPayments": "Akukabikho ntlawulo kule thebhu."
     }
   },
   "settings": {
@@ -207,7 +245,9 @@
       "dark": "Ubumnyama"
     },
     "about": "Malunga",
-    "version": "Uguqulelo {{version}}"
+    "version": "Uguqulelo {{version}}",
+    "simulateOffline": "Linganisa ukungabikho kwenethiwekhi (umboniso)",
+    "simulateOfflineHint": "Ibonisa ukusebenza kwethebhu ngaphandle kwenethiwekhi ngaphandle kokuvala ifowuni. Akukho nto ifika kwiseva de uyicime."
   },
   "demo": {
     "banner": "Imowudi yokubonisa · imali yovavanyo kuphela"
@@ -259,7 +299,81 @@
       "open_payments_not_configured": "Iintlawulo azikavulwa kule seva ye-AnyPay.",
       "merchant_unauthorized": "Le fowuni ayingenanga kwivenkile.",
       "invalid_amount": "Faka isixa esingaphezulu kweqanda.",
-      "unknown": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona."
+      "unknown": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona.",
+      "voucher_invalid": "Le vawutsha ayityikitywanga yifowuni yomthengi.",
+      "tab_not_found": "Ithebhu ayifumanekanga."
+    },
+    "tabLabel": {
+      "required": "Faka igama ivenkile eya kukwazi ngalo",
+      "tooLong": "Sebenzisa ubuninzi boonobumba abangama-30"
     }
+  },
+  "sale": {
+    "title": "Intengiso yethebhu",
+    "hint": "Kubathengi abanethebhu kwivenkile yakho. Isebenza ngaphandle kwenethiwekhi.",
+    "showQr": "Bonisa umthengi i-QR",
+    "qrLabel": "Ikhowudi ye-QR yentengiso yethebhu ye-{{amount}}",
+    "askCustomer": "Umthengi uyayiskena, uyavuma, aze akubonise i-QR yakhe.",
+    "scanVoucher": "Skena i-QR yomthengi",
+    "newSale": "Intengiso entsha",
+    "tabsOnPhone": "Iithebhu zabathengi kule fowuni: {{count}}",
+    "syncFailed": "Asikwazanga ukuhlaziya iithebhu zabathengi. Sisebenzisa ezo zikule fowuni.",
+    "noTabs": {
+      "title": "Akukabikho thebhu",
+      "description": "Xa umthengi evula ithebhu kwivenkile yakho, ungamthengisela apha, nokuba akukho nethiwekhi."
+    }
+  },
+  "approve": {
+    "title": "Hlawula ngethebhu yakho",
+    "asks": "I-{{shop}} icela",
+    "left": "Okuseleyo kule veki: {{amount}}",
+    "approve": "Vuma",
+    "showShop": "Bonisa ivenkile oku",
+    "voucherLabel": "Ikhowudi ye-QR yemvume yakho ye-{{amount}}",
+    "noTab": "Akunathebhu kule venkile kule fowuni. Vula enye xa unenethiwekhi.",
+    "capReached": "Oku kungaphezulu koko kuseleyo kwithebhu yakho kule veki.",
+    "expired": "Esi sicelo sindala kakhulu. Cela ivenkile esitsha.",
+    "invalid": "Le ayisiyontengiso ye-AnyPay esebenzayo."
+  },
+  "voucher": {
+    "title": "Intlawulo yethebhu",
+    "saved": "Igciniwe – iza kuhlawulwa xa kukho inethiwekhi",
+    "from": "Ivela kwithebhu ka-{{label}}",
+    "states": {
+      "saved": "Igcinwe ngaphandle kwenethiwekhi",
+      "sending": "Iyathunyelwa",
+      "settled": "Ihlawulwe",
+      "failed": "Ayiphumelelanga"
+    },
+    "reasons": {
+      "expired": "Indala kakhulu ukuba ihlawulwe (ngaphezu kweeyure ezingama-72)",
+      "cap_reached": "Ingaphezulu komda weveki wethebhu",
+      "tab_inactive": "Ithebhu ayisasebenzi",
+      "grant_limit": "Iwalethi yomthengi yalile: ingaphezulu komda weveki",
+      "insufficient_funds": "Akukho mali yaneleyo kwiwalethi yomthengi",
+      "payment_failed": "Intlawulo ayiphumelelanga",
+      "timeout": "Intlawulo ithathe ixesha elide kakhulu",
+      "invalid": "Ayityikitywanga yifowuni yomthengi"
+    },
+    "check": {
+      "other_shop": "Le QR yeyenye ivenkile.",
+      "unknown_tab": "Ithebhu yalo mthengi ayikabikho kule fowuni. Qhagamshela kanye ukuhlaziya iithebhu zakho, uze uskene kwakhona.",
+      "invalid": "Le QR ayityikitywanga yifowuni yomthengi.",
+      "expired": "Le mvume indala kakhulu (ngaphezu kweeyure ezingama-72).",
+      "cap_reached": "Oku kungaphezulu koko kuseleyo kwithebhu yomthengi kule veki.",
+      "duplicate": "Sele igciniwe: le ntengiso ayizukuhlawulwa kabini."
+    },
+    "tryNow": "Zama ngoku",
+    "waiting": "Iintengiso zethebhu ezilindele ukuhlawulwa",
+    "backToShop": "Buyela kwivenkile yam"
+  },
+  "scan": {
+    "title": "Skena ikhowudi ye-QR",
+    "hint": "Jolisa ikhamera kwikhowudi ye-QR.",
+    "starting": "Iqalisa ikhamera…",
+    "noCamera": "Ikhamera ayifumaneki. Ncamathisela ikhonkco endaweni yoko.",
+    "notAnyPay": "Le ayisiyokhowudi ye-AnyPay.",
+    "pasteLabel": "Okanye ncamathisela ikhonkco",
+    "open": "Vula"
   }
 }

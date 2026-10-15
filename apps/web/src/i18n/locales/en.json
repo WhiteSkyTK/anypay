@@ -107,7 +107,8 @@
     "or": "or",
     "codeLabel": "Shop code",
     "codeHint": "It's printed on the shop's poster, under the QR code.",
-    "go": "Go to the shop"
+    "go": "Go to the shop",
+    "scanHere": "Scan with AnyPay"
   },
   "receipt": {
     "title": "Payment",
@@ -162,7 +163,8 @@
     "actions": {
       "poster": "Poster",
       "export": "Export CSV",
-      "exporting": "Exporting…"
+      "exporting": "Exporting…",
+      "tabSale": "Tab sale"
     },
     "unauthorized": {
       "title": "This phone is signed out of the shop",
@@ -170,7 +172,8 @@
       "reset": "Set up again"
     },
     "paidWith": "Customer paid {{amount}}",
-    "newPayment": "Payment received: {{amount}}"
+    "newPayment": "Payment received: {{amount}}",
+    "tab": "Tab"
   },
   "status": {
     "created": "Started",
@@ -196,6 +199,41 @@
     "empty": {
       "title": "No open tabs",
       "description": "Open a tab at your local spaza once, then pay with a tap, even when there's no signal."
+    },
+    "howToOpen": "Scan a shop's QR code, then choose Open a tab at this shop.",
+    "leftThisWeek": "Left this week",
+    "upTo": "Up to {{amount}} a week",
+    "resets": "The limit starts again on {{date}}",
+    "status": {
+      "awaiting-consent": "Waiting for your approval",
+      "active": "Active",
+      "failed": "Not opened"
+    },
+    "openHere": "Open a tab at this shop",
+    "open": {
+      "title": "Open a tab",
+      "intro": "Pay {{shop}} with a tap, even when neither phone has signal. You approve a weekly limit once, in your own wallet.",
+      "labelLabel": "Your name for the shop",
+      "labelHint": "The shop sees this next to your tab.",
+      "capLabel": "Weekly limit",
+      "capHint": "The most this tab can take in a week. Your wallet holds it to that.",
+      "customLabel": "Other amount",
+      "continue": "Continue",
+      "approve": "Approve in my wallet",
+      "checking": "Checking your wallet…",
+      "redirecting": "Opening your wallet…",
+      "offline": "Opening a tab needs signal once. After that it works offline."
+    },
+    "detail": {
+      "waiting": "Approve the weekly limit in your wallet to start using this tab.",
+      "failed": "This tab wasn't opened. No money was taken.",
+      "callbackError": "We couldn't confirm your approval. Check your wallet, then try opening the tab again.",
+      "openAgain": "Open a new tab",
+      "otherPhone": "This tab was opened on another phone, so only that phone can pay with it.",
+      "howToPay": "To pay, ask the shop for a tab sale and scan the QR code they show you.",
+      "scan": "Scan the shop's QR",
+      "payments": "Tab payments",
+      "noPayments": "No payments on this tab yet."
     }
   },
   "settings": {
@@ -207,7 +245,9 @@
       "dark": "Dark"
     },
     "about": "About",
-    "version": "Version {{version}}"
+    "version": "Version {{version}}",
+    "simulateOffline": "Simulate offline (demo)",
+    "simulateOfflineHint": "Shows the offline tab flow without airplane mode. Nothing reaches the server until you switch it off."
   },
   "demo": {
     "banner": "Demo mode · test money only"
@@ -259,7 +299,81 @@
       "open_payments_not_configured": "Payments aren't switched on for this AnyPay server yet.",
       "merchant_unauthorized": "This phone isn't signed in to the shop.",
       "invalid_amount": "Enter an amount more than zero.",
-      "unknown": "Something went wrong. Please try again."
+      "unknown": "Something went wrong. Please try again.",
+      "voucher_invalid": "This voucher wasn't signed by the customer's phone.",
+      "tab_not_found": "Tab not found."
+    },
+    "tabLabel": {
+      "required": "Enter a name the shop will know you by",
+      "tooLong": "Use at most 30 characters"
     }
+  },
+  "sale": {
+    "title": "Tab sale",
+    "hint": "For customers with a tab at your shop. Works with no signal.",
+    "showQr": "Show QR to customer",
+    "qrLabel": "Tab sale QR code for {{amount}}",
+    "askCustomer": "The customer scans this, approves, and shows you their QR.",
+    "scanVoucher": "Scan the customer's QR",
+    "newSale": "New sale",
+    "tabsOnPhone": "Customer tabs on this phone: {{count}}",
+    "syncFailed": "Couldn't update your customers' tabs. Using the ones on this phone.",
+    "noTabs": {
+      "title": "No tabs yet",
+      "description": "When a customer opens a tab at your shop, you can sell to them here, even with no signal."
+    }
+  },
+  "approve": {
+    "title": "Pay with your tab",
+    "asks": "{{shop}} asks for",
+    "left": "Left this week: {{amount}}",
+    "approve": "Approve",
+    "showShop": "Show this to the shop",
+    "voucherLabel": "Your approval QR code for {{amount}}",
+    "noTab": "You don't have a tab at this shop on this phone. Open one while you have signal.",
+    "capReached": "This is more than what's left on your tab this week.",
+    "expired": "This request is too old. Ask the shop for a new one.",
+    "invalid": "This isn't a valid AnyPay sale."
+  },
+  "voucher": {
+    "title": "Tab payment",
+    "saved": "Saved – settles when online",
+    "from": "From {{label}}'s tab",
+    "states": {
+      "saved": "Saved offline",
+      "sending": "Sending",
+      "settled": "Settled",
+      "failed": "Failed"
+    },
+    "reasons": {
+      "expired": "Too old to settle (over 72 hours)",
+      "cap_reached": "Over the tab's weekly limit",
+      "tab_inactive": "The tab is no longer active",
+      "grant_limit": "The customer's wallet refused: over the weekly limit",
+      "insufficient_funds": "Not enough money in the customer's wallet",
+      "payment_failed": "The payment failed",
+      "timeout": "The payment took too long",
+      "invalid": "Not signed by the customer's phone"
+    },
+    "check": {
+      "other_shop": "This QR is for another shop.",
+      "unknown_tab": "This customer's tab isn't on this phone yet. Connect once to update your tabs, then scan again.",
+      "invalid": "This QR wasn't signed by the customer's phone.",
+      "expired": "This approval is too old (over 72 hours).",
+      "cap_reached": "This is more than what's left on the customer's tab this week.",
+      "duplicate": "Already saved: this sale won't be paid twice."
+    },
+    "tryNow": "Try now",
+    "waiting": "Tab sales waiting to settle",
+    "backToShop": "Back to my shop"
+  },
+  "scan": {
+    "title": "Scan a QR code",
+    "hint": "Point the camera at the QR code.",
+    "starting": "Starting the camera…",
+    "noCamera": "The camera isn't available. Paste the link instead.",
+    "notAnyPay": "That isn't an AnyPay code.",
+    "pasteLabel": "Or paste the link",
+    "open": "Open"
   }
 }

@@ -3,6 +3,7 @@ import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { setMerchantSession } from '@/lib/merchant-session'
+import { startOfToday } from '@/lib/format'
 import {
   apiError,
   FakeEventSource,
@@ -174,5 +175,36 @@ describe('MerchantPage', () => {
     stream()
     await userEvent.click(screen.getByRole('button', { name: 'Export CSV' }))
     expect((await screen.findByRole('alert')).textContent).toMatch(/Too many tries/)
+  })
+})
+
+describe('MerchantPage, remembered feed', () => {
+  const cacheFor = (day: string) =>
+    localStorage.setItem(
+      `anypay.cache.feed.${SHOP.id}`,
+      JSON.stringify({ day, payments: [COMPLETED], total: COMPLETED.amount }),
+    )
+
+  it('shows today’s payments from the phone at once, before the live feed connects', () => {
+    cacheFor(startOfToday().toISOString())
+    openShop()
+    expect(screen.getAllByRole('listitem')).toHaveLength(1)
+    expect(screen.getByRole('region', { name: 'Taken today' }).textContent).toMatch(/COP\s25,00/)
+    expect(screen.getByRole('status').textContent).toContain('Connecting')
+  })
+
+  it('forgets yesterday’s feed', () => {
+    cacheFor(new Date(startOfToday().getTime() - 86_400_000).toISOString())
+    openShop()
+    expect(screen.queryAllByRole('listitem')).toHaveLength(0)
+    expect(screen.queryByText('No payments yet')).toBeNull() // skeleton until the snapshot
+  })
+
+  it('keeps the phone’s copy up to date', () => {
+    openShop()
+    const source = stream()
+    act(() => source.emit('snapshot', { payments: [COMPLETED], total: COMPLETED.amount }))
+    const saved = JSON.parse(localStorage.getItem(`anypay.cache.feed.${SHOP.id}`) ?? '{}')
+    expect(saved.payments).toHaveLength(1)
   })
 })

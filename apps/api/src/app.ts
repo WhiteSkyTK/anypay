@@ -11,6 +11,7 @@ import { CORRELATION_HEADER, requestLogger } from './http/request-logger'
 import { healthRouter } from './http/routes/health'
 import { paymentRoutes } from './http/routes/payments'
 import { shopRoutes } from './http/routes/shops'
+import { tabRoutes } from './http/routes/tabs'
 
 // Payment requests are small JSON bodies; a low limit blunts abuse.
 const BODY_LIMIT = '16kb'
@@ -45,6 +46,8 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
   app.use(express.json({ limit: BODY_LIMIT }))
 
   app.use(healthRouter(container.version))
+  // People who open the API's own address (a shared link, the GitHub page) land on the app.
+  app.get('/', (_req, res) => res.redirect(302, env.WEB_ORIGIN[0] ?? '/health'))
   app.get('/api/config', (_req, res) => {
     const body: ConfigResponse = { demoMode: env.DEMO_MODE, version: container.version }
     res.json(body)
@@ -60,8 +63,18 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       payments: container.paymentService,
       events: container.paymentEvents,
       idempotency: container.idempotency,
+      tabs: container.tabService,
       limit,
       streams,
+    }),
+  )
+  app.use(
+    '/api',
+    tabRoutes({
+      tabs: container.tabService,
+      idempotency: container.idempotency,
+      limit,
+      webOrigin: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
     }),
   )
   app.use(

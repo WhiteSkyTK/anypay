@@ -22,6 +22,8 @@ describe('migrate', () => {
       'payments',
       'schema_migrations',
       'shops',
+      'tabs',
+      'vouchers',
     ])
   })
 

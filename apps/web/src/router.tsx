@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router'
 import { AppShell } from '@/app/AppShell'
 import { RouteError } from '@/app/RouteError'
 import { withTabBar } from '@/app/route-handle'
+import { shortLinkRoutes } from '@/app/short-links'
 
 // Every page is its own lazy chunk: the first visit downloads only the screen it shows, and
 // the service worker precaches the rest for offline use.
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
     HydrateFallback: () => <div aria-busy="true" className="min-h-dvh" />,
     children: [
       { index: true, lazy: () => import('@/pages/OnboardingPage') },
+      ...shortLinkRoutes,
       // Customer screens: reached from a QR code, so no tab bar to distract from paying.
       { path: 'pay', lazy: () => import('@/pages/CustomerPage') },
       { path: 'shop/:shopId/pay', lazy: () => import('@/pages/PayPage') },
@@ -23,6 +25,16 @@ export const router = createBrowserRouter([
       { path: 'merchant/poster', lazy: () => import('@/pages/PosterPage') },
       { path: 'merchant/connect', lazy: () => import('@/pages/MerchantConnectPage') },
       { path: 'tab', handle: withTabBar, lazy: () => import('@/pages/TabPage') },
+      // Offline Digital Tab (Feature 4). /t/ and /v/ are what the two QR codes of a sale open.
+      { path: 'tab/:tabId', lazy: () => import('@/pages/TabDetailPage') },
+      { path: 'shop/:shopId/tab', lazy: () => import('@/pages/OpenTabPage') },
+      { path: 't/:shopId/:amount/:nonce/:ts', lazy: () => import('@/pages/ApproveSalePage') },
+      {
+        path: 'v/:tabId/:shopId/:amount/:nonce/:ts/:signature',
+        lazy: () => import('@/pages/ReceiveVoucherPage'),
+      },
+      { path: 'merchant/tab-sale', lazy: () => import('@/pages/TabSalePage') },
+      { path: 'scan', lazy: () => import('@/pages/ScanPage') },
       { path: 'settings', handle: withTabBar, lazy: () => import('@/pages/SettingsPage') },
       { path: '*', lazy: () => import('@/pages/NotFoundPage') },
     ],

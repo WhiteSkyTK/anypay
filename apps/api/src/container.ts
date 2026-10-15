@@ -10,6 +10,8 @@ import type { OpenPaymentsPort } from './open-payments/port'
 import { IdempotencyRepository } from './repositories/idempotency-repository'
 import { PaymentRepository } from './repositories/payment-repository'
 import { ShopRepository } from './repositories/shop-repository'
+import { TabRepository } from './repositories/tab-repository'
+import { VoucherRepository } from './repositories/voucher-repository'
 import { GrantService } from './services/grant-service'
 import { PaymentEvents } from './services/payment-events'
 import { PaymentOrchestrator } from './services/payment-orchestrator'
@@ -115,12 +117,24 @@ export function createContainer(env: Env, db: Database, options: CoreOptions = {
     publicApiUrl: env.PUBLIC_API_URL,
     webOrigin: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
   })
+  const tabService = new TabService({
+    shops: shopService,
+    tabs: new TabRepository(db, cipher),
+    vouchers: new VoucherRepository(db),
+    wallets: core.walletAddressResolver,
+    grants: core.grantService,
+    orchestrator: core.paymentOrchestrator,
+    payments: paymentService,
+    logger: core.logger,
+    publicApiUrl: env.PUBLIC_API_URL,
+    webOrigin: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
+  })
   return {
     ...core,
     shopService,
     paymentService,
     paymentEvents,
     idempotency: new IdempotencyRepository(db, cipher),
-    tabService: new TabService(),
+    tabService,
   }
 }
