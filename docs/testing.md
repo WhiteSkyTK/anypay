@@ -133,7 +133,7 @@ because an installed app on iPhone has no browser Back button.
 ### Phase 2 wrap-up: short links and remembering (2026-10-14)
 
 - [x] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
-- [ ] <https://anypay-web.onrender.com/start> opens shop set-up
+- [x] <https://anypay-web.onrender.com/start> opens shop set-up
 - [ ] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
       (`…/shop/<code>/pay`) still work
 - [ ] Pay at a shop once, then turn on airplane mode and scan its poster again: the pay screen

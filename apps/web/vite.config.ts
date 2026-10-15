@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import { cspPlugin } from './csp'
+import { cspPlugin } from './csp.ts'
 
 const fromHere = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 const { version } = JSON.parse(readFileSync(fromHere('./package.json'), 'utf8')) as {

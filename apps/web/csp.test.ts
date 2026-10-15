@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { contentSecurityPolicy } from './csp'
+import { contentSecurityPolicy } from './csp.ts'
 
 describe('contentSecurityPolicy', () => {
   it('allows scripts only from this site and data only to this site and the API', () => {
