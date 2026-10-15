@@ -131,7 +131,11 @@
     },
     "callbackError": "Ga re so kgone go netefatša tumelelo ya gago. Lekola wolete ya gago pele o leka gape.",
     "payAgain": "Lefela gape",
-    "notFound": "Ga re a hwetša rasiti ye."
+    "notFound": "Ga re a hwetša rasiti ye.",
+    "unreachable": {
+      "title": "Ga re kgone go fihlelela AnyPay bjale",
+      "description": "Tefelo ya gago e bolokegile ka wolete ya gago. Re tšwela pele re leka, gomme letlakala le le tla mpshafala ka bolona."
+    }
   },
   "merchant": {
     "title": "Lebenkele la gago",
@@ -247,7 +251,69 @@
     "about": "Ka ga",
     "version": "Phetolelo {{version}}",
     "simulateOffline": "Ekiša go se be le netweke (pontšho)",
-    "simulateOfflineHint": "E bontšha go šoma ga akhaonte ntle le netweke ntle le go tima mogala. Ga go selo seo se fihlago sebeleng go fihlela o e tima."
+    "simulateOfflineHint": "E bontšha go šoma ga akhaonte ntle le netweke ntle le go tima mogala. Ga go selo seo se fihlago sebeleng go fihlela o e tima.",
+    "shop": "Lebenkele la gago",
+    "otherPhones": "Šomiša mogaleng wo mongwe"
+  },
+  "privacy": {
+    "title": "Boinotšhi",
+    "intro": "AnyPay e fetiša ditefelo magareng ga diwolete. E boloka tše nnyane ka mo e kgonago, gomme ga e bone phasewete goba tšhelete yeo e lego ka woleteng ya gago.",
+    "shop": {
+      "heading": "Ge o hloma lebenkele",
+      "details": "Leina la lebenkele la gago, aterese ya wolete le mohuta wa tšhelete.",
+      "key": "Senotlelo sa go tsena sa lebenkele la gago se dula mogaleng wa gago. Re boloka fela kgatišo ya sona, yeo e sa kgonego go fetošwa gore e be senotlelo."
+    },
+    "payment": {
+      "heading": "Ge motho a lefa",
+      "amounts": "Tšhelete, seo moreki a se lefilego go akaretšwa ditefelo, maemo le nako.",
+      "encrypted": "Aterese ya wolete ya moreki le tumelelo yeo a e dumeletšego, di bolokilwe di notletšwe (AES-256-GCM).",
+      "shopSees": "Lebenkele le bona tšhelete le dinako, le ka mohla ga le bone aterese ya wolete ya gago.",
+      "tab": "Go akhaonte: leina leo o e fago lona (lebenkele le a le bona), moedi wa yona wa beke le senotlelo sa setšhaba sa mogala wa gago, seo se hlahlobago dithekišo tša ntle le inthanete."
+    },
+    "phone": {
+      "heading": "Mogaleng wa gago fela",
+      "settings": "Polelo ya gago, ponagalo le dipeakanyo tša lentšu, le aterese ya wolete yeo o lefilego ka yona la mafelelo.",
+      "offline": "Mabenkele ao o lefilego go ona le dithekišo tša lehono, gore a bulege le ge go se na netweke.",
+      "tab": "Senotlelo sa akhaonte ya gago, seo se ka se kopollwego go tšwa mogaleng, le dithekišo tša ntle le inthanete tšeo di letetšego go romelwa."
+    },
+    "never": {
+      "heading": "Seo re sa se kgoboketšego le ka mohla",
+      "items": "Nomoro ya gago ya boitsebišo, nomoro ya mogala, lefelo goba dikgokagano. Ga go na dipapatšo, dilatedi goba dikhukhi tša tshekatsheko."
+    },
+    "others": {
+      "heading": "Ba bangwe bao ba amegago",
+      "wallet": "Mofani wa wolete ya gago o kgopela tumelelo ya gago gomme o šuthiša tšhelete. Melawana ya gagwe ya boinotšhi e a šoma.",
+      "hosting": "Diseba le polokelo ya rena di Yuropa (Render le Neon).",
+      "logs": "Direkoto tša rena di ngwala dikgopelo le diphošo fela: ga go na diaterese tša wolete, dinotlelo goba diaterese tša IP."
+    },
+    "keep": {
+      "heading": "Re di boloka nako ye kae",
+      "demo": "Ye ke pontšho ka tšhelete ya teko fela. Ditefelo di bolokwa go fihlela pontšho e thongwa lefsa. Direkoto tšeo di dirago gore go leka gape go bolokege di phumolwa ka morago ga letšatši."
+    },
+    "rights": {
+      "heading": "Ditokelo tša gago (POPIA)",
+      "body": "O ka botšiša seo re se swerego ka wena, wa kgopela gore re se lokiše goba re se phumole.",
+      "contact": "Ikgokaganye le sehlopha sa AnyPay go GitHub"
+    }
+  },
+  "phones": {
+    "title": "Lebenkele la gago go megala ye mengwe",
+    "add": {
+      "heading": "Oketša mogala",
+      "description": "Skena khoutu ye ka khamera ya mogala wo mongwe. E bula {{shop}} moo, gomme ditefelo di tšwelela gona ka nako yeo di tlago.",
+      "warning": "Mang le mang yo a e skenago a ka bona dithekišo tša gago. E bontšhe fela batho bao o ba tshepago.",
+      "show": "Bontšha khoutu ya go tsena",
+      "hide": "Uta khoutu",
+      "qrLabel": "Khoutu ya go tsena ya {{shop}}"
+    },
+    "signOut": {
+      "heading": "O lahlegetšwe ke mogala?",
+      "description": "Ntšha megala ka moka ye mengwe. Mogala wo o dula o tsene; ye mengwe e hloka khoutu ye mpsha ya go tsena.",
+      "action": "Ntšha megala ye mengwe",
+      "confirmTitle": "Ntšha megala ye mengwe?",
+      "confirmDescription": "E tla emiša go bona dithekišo tša gago gona bjale, gomme dikhoutu tša go tsena tšeo di bontšhitšwego pele di tla emiša go šoma.",
+      "done": "Megala ye mengwe e ntšhitšwe. Ke mogala wo fela wo o šomišago lebenkele bjale."
+    }
   },
   "demo": {
     "banner": "Mokgwa wa pontšho · tšhelete ya teko fela"

@@ -96,6 +96,12 @@ export function Component() {
               <Link to="/pay">{t('onboarding.imCustomer')}</Link>
             </Button>
           </div>
+          <Link
+            to="/privacy"
+            className="mt-4 inline-flex min-h-12 items-center text-sm text-muted-foreground underline underline-offset-4"
+          >
+            {t('privacy.title')}
+          </Link>
         </div>
       </div>
     </div>

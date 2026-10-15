@@ -1,5 +1,5 @@
 import { formatMoney, type PaymentSummary } from '@anypay/shared'
-import { CircleX, Clock, LoaderCircle } from 'lucide-react'
+import { CircleX, Clock, CloudOff, LoaderCircle } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
@@ -96,8 +96,9 @@ export function Component() {
   const { t } = useTranslation()
   const { paymentId = '' } = useParams()
   const [params] = useSearchParams()
-  const { payment, stream } = usePaymentStatus(paymentId)
-  const notFound = !payment && stream === 'closed'
+  const { payment, stream, notFound } = usePaymentStatus(paymentId)
+  // The stream gave up but the payment exists (or we can't tell yet): AnyPay is unreachable.
+  const unreachable = !payment && !notFound && stream === 'closed'
   const final = payment?.status === 'completed' || payment?.status === 'failed'
 
   return (
@@ -107,7 +108,19 @@ export function Component() {
         {payment && (
           <Outcome payment={payment} callbackError={params.get('error') === 'callback'} />
         )}
-        {!payment && !notFound && <Frame icon={spinner} title={t('receipt.loading')} />}
+        {!payment && !notFound && !unreachable && (
+          <Frame icon={spinner} title={t('receipt.loading')} />
+        )}
+        {unreachable && (
+          <Frame
+            icon={<CloudOff aria-hidden="true" className="size-20 text-muted-foreground" />}
+            title={t('receipt.unreachable.title')}
+          >
+            <p className="mt-3 max-w-sm text-muted-foreground">
+              {t('receipt.unreachable.description')}
+            </p>
+          </Frame>
+        )}
         {notFound && (
           <Frame
             icon={<CircleX aria-hidden="true" className="size-20 text-muted-foreground" />}

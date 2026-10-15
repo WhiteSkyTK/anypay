@@ -1,6 +1,7 @@
 import {
   CreatePaymentRequestSchema,
   CreateShopRequestSchema,
+  ReplaceMerchantTokenRequestSchema,
   WalletLookupRequestSchema,
 } from '@anypay/shared'
 import { type RequestHandler, Router } from 'express'
@@ -93,6 +94,17 @@ export function shopRoutes({
     res.json({ tabs: await tabs.listForShop(res.locals.shop as ShopRecord) })
   })
 
+  /**
+   * "Sign out other phones": the phone sends the token it will use from now on (it chose it, so a
+   * lost response can't lock the shop out: it retries with the new token). Every other phone,
+   * and every open feed, is signed out at once.
+   */
+  router.put('/shops/:shopId/merchant-token', limit, merchant, async (req, res) => {
+    const { token } = parse(ReplaceMerchantTokenRequestSchema, req.body)
+    await shops.replaceMerchantToken(res.locals.shop as ShopRecord, token)
+    res.status(204).end()
+  })
+
   router.get('/shops/:shopId/payments', merchant, async (req, res) => {
     res.json(await payments.listForShop(res.locals.shop as ShopRecord, sinceOf(req.query)))
   })
@@ -112,7 +124,14 @@ export function shopRoutes({
     const since = sinceOf(req.query)
     let unsubscribe = () => undefined as void
     const stream = openEventStream(req, res, () => unsubscribe())
-    unsubscribe = events.onShop(shop.id, (payment) => stream.send('payment', payment))
+    const offPayments = events.onShop(shop.id, (payment) => stream.send('payment', payment))
+    // Other phones were signed out: end this feed. Its reconnect with the old token is refused,
+    // and the phone that made the change reconnects with its new one.
+    const offSignOut = events.onShopSignOut(shop.id, () => stream.close())
+    unsubscribe = () => {
+      offPayments()
+      offSignOut()
+    }
     stream.send('snapshot', await payments.listForShop(shop, since))
   })
 

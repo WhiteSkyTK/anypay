@@ -32,8 +32,16 @@ async function main(): Promise<void> {
   })
   const resumed = await container.paymentService.resumeWatching()
   if (resumed > 0) logger.info({ resumed }, 'Resumed watching payments in flight')
-  const purged = await container.idempotency.purgeOlderThan(new Date(Date.now() - DAY_MS))
-  if (purged > 0) logger.info({ purged }, 'Removed old idempotency records')
+  // Retry records are only needed for a day (the privacy page promises this), and a paid server
+  // may run for weeks without a restart: purge at start and every few hours.
+  const purgeIdempotency = async () => {
+    const purged = await container.idempotency.purgeOlderThan(new Date(Date.now() - DAY_MS))
+    if (purged > 0) logger.info({ purged }, 'Removed old idempotency records')
+  }
+  await purgeIdempotency()
+  setInterval(() => {
+    purgeIdempotency().catch((error: unknown) => logger.error({ err: error }, 'Purge failed'))
+  }, DAY_MS / 4).unref()
   if (env.NODE_ENV === 'production') void checkPublicUrl(env.PUBLIC_API_URL, logger)
   const stranded = strandedPhonesWarning(
     env.WEB_ORIGIN[0] ?? env.PUBLIC_API_URL,

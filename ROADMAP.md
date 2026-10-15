@@ -96,7 +96,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 
 **Team:** hosting accounts and production env vars. Book the optional mid-project mentor check-in.
 
-## Phase 3 — Offline Digital Tab · target 25 Oct · Status: In progress
+## Phase 3 — Offline Digital Tab · target 25 Oct · Status: Done
 - [x] Tab opening: interval-capped outgoing-payment grant + device key registration (the test wallet accepts the weekly limit, 2026-10-15)
 - [x] Two-QR voucher exchange
 - [x] Dexie outbox + SyncManager with per-item sync states
@@ -109,20 +109,24 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 - [x] SonarCloud security rating C on `main`: the seed script's `--api` could send requests anywhere (S8703); now `--target local|deployed`
 
 **Done when**
-- [ ] Two phones in airplane mode complete a sale, and after reconnecting it settles exactly once
+- [x] Two phones in airplane mode complete a sale, and after reconnecting it settles exactly once
 
 **Team:** usability test with 2–3 spaza owners; note what changed.
 
 ## Phase 4 — Polish & submission · target 1 Nov (freeze 2 Nov) · Status: In progress
 - [ ] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues (24 minor code smells on main, 2026-10-15)
-- [ ] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB
+  - [x] Lighthouse mobile on the production build (median of 3, 2026-10-15): start 93, Pay a shop 94, pay screen 92, set-up 94; accessibility, best practices and SEO 100 on all four (robots.txt, zod CSP probe, shop prefetch, launch mark, Motion only on the receipt)
+  - [ ] Sonar code smells, 200% text and reduced-motion pass
+- [x] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB (now 18.5 KB: shared schemas are zod/mini, 24 → 8 KB gz)
 - [ ] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
 - [ ] Test on a budget Android phone outdoors in sunlight, and on an iPhone
 - [ ] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
 - [ ] Summarise docs/decisions.md into slide-ready bullets
-- [ ] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
-- [ ] Privacy notice page (what is stored: shop name, wallet address, amounts; customer wallets only encrypted) and how long payments are kept (POPIA)
-- [ ] "Use this shop on another phone" (show the sign-in link as a QR) and "sign out other phones" (rotate the merchant token)
+- [x] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
+- [x] Privacy notice page (what is stored: shop name, wallet address, amounts; customer wallets only encrypted) and how long payments are kept (POPIA): `/privacy`, linked from the start page and Settings
+- [ ] Team: confirm the Neon project is in Europe (the privacy page says servers and database are in Europe)
+- [ ] Retention: payments are kept until the demo is reset; a real launch needs a schedule that deletes or anonymises old payments (then update the privacy page)
+- [x] "Use this shop on another phone" (show the sign-in link as a QR) and "sign out other phones" (rotate the merchant token): Settings → Use on another phone; the phone picks its new token, so a lost answer never locks it out, and open feeds on other phones end at once
 - [ ] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket
 
 **Done when**
@@ -163,3 +167,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 - 2026-10-14 · Phase 2 closed: hardening merged and live (headers checked on Render), deploy item done by team decision (free API plan), short links + API root redirect, shop profile and today's feed cached on the phone. · Next: Phase 3 (Offline Digital Tab). · Blockers: none.
 - 2026-10-14 · Phase 3 server done on `phase-3-offline-tab` (47e4a89): shared voucher protocol (P-256 sign/verify, links), tabs with weekly-capped grants, cap measured in shop currency (verified live), vouchers claimed by nonce and settled once with the stored grant, token rotation, routes and 11 flow tests. · Next: web side: Dexie outbox + SyncManager, device keys, open-tab / my tabs / approve-sale (/t/) / receive-voucher (/v/) screens, merchant tab-sale screen, in-app QR scanner, Simulate offline toggle, i18n x4. · Blockers: none.
 - 2026-10-15 · SonarCloud security C fixed (seed script SSRF) on `phase-2-wrap-up`, merged into Phase 3. Phase 3 web side built on `phase-3-offline-tab`: Dexie offline store (lazy), outbox SyncManager, Simulate offline, open tab / my tabs / tab detail / approve sale / tab sale / receive voucher / in-app scanner, feed integration, four languages. Real test wallet accepts the weekly-limit grant; device key stored non-extractable. 554+ tests; budget 195.6 KB. · Next: you push `phase-2-wrap-up` (Sonar, /start live), then test Phase 3 with two phones (docs/testing.md) for its "Done when"; then Phase 4. · Blockers: the wallet approval and two real phones are the team's.
+- 2026-10-15 · Phase 3 closed (two-phone airplane-mode sale settled once, tested by the team). Phase 4 on `phase-4-polish`: Lighthouse mobile ≥ 90 on the four main pages (92–94; a11y, best practices, SEO 100) via shop prefetch, launch mark, zod/mini (24 → 8 KB), Motion only on the receipt and robots.txt; CSP issue fixed (zod's eval probe); receipt tells "can't reach AnyPay" from "not found"; privacy page (POPIA); "Use on another phone" QR and "Sign out other phones" (token rotation that can't lock a shop out, open feeds ended). 593 tests; heaviest first load 191.5 KB. · Next: stream ticket instead of `?token=`, Sonar smells, 200% text / reduced-motion pass, slide bullets; team: native-speaker review, budget-phone and iPhone test, confirm the Neon region, the Phase 4 checklist in docs/testing.md. · Blockers: none.

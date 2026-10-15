@@ -23,9 +23,11 @@ import { Component as OnboardingPage } from './pages/OnboardingPage'
 import { Component as OpenTabPage } from './pages/OpenTabPage'
 import { Component as PayPage } from './pages/PayPage'
 import { Component as PosterPage } from './pages/PosterPage'
+import { Component as PrivacyPage } from './pages/PrivacyPage'
 import { Component as ReceiptPage } from './pages/ReceiptPage'
 import { Component as ScanPage } from './pages/ScanPage'
 import { Component as SettingsPage } from './pages/SettingsPage'
+import { Component as ShopPhonesPage } from './pages/ShopPhonesPage'
 import { Component as TabPage } from './pages/TabPage'
 import { Component as TabSalePage } from './pages/TabSalePage'
 
@@ -241,6 +243,20 @@ describe('accessibility (axe)', () => {
     scan.unmount()
     renderScreen(NotFoundPage, '*', '/nowhere')
     await screen.findByRole('heading', { level: 1 })
+    await expectAccessible()
+  })
+
+  it('your shop on other phones, with the sign-in code', async () => {
+    setMerchantSession(SESSION)
+    renderScreen(ShopPhonesPage, '/merchant/phones', '/merchant/phones')
+    await userEvent.click(screen.getByRole('button', { name: 'Show sign-in code' }))
+    await screen.findByRole('img', { name: `Sign-in code for ${SHOP.name}` })
+    await expectAccessible()
+  })
+
+  it('privacy notice', async () => {
+    renderScreen(PrivacyPage, '/privacy', '/privacy')
+    await screen.findByRole('heading', { level: 1, name: 'Privacy' })
     await expectAccessible()
   })
 })

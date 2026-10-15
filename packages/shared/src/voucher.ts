@@ -8,6 +8,7 @@
  *    and shows the voucher:           /v/<tabId>/<shopId>/<amount>/<nonce>/<ts>/<signature>
  * Both are paths on the AnyPay web app, so a phone's own camera app opens them too.
  */
+import { fromBase64url, randomBase64url, toBase64url } from './base64url'
 
 export const VOUCHER_VERSION = 'v1'
 /** A voucher must reach the server within 72 hours (CLAUDE.md). */
@@ -102,7 +103,7 @@ export function parseVoucher(input: string): Voucher | null {
 
 /** A fresh random nonce: 12 base64url characters (72 bits). */
 export function newNonce(): string {
-  return toBase64url(crypto.getRandomValues(new Uint8Array(9)))
+  return randomBase64url(9)
 }
 
 /** Too old to settle, or from too far in the future to trust. */
@@ -146,18 +147,4 @@ export async function verifyVoucher(publicKey: PublicKeyJwk, voucher: Voucher): 
   } catch {
     return false
   }
-}
-
-function toBase64url(bytes: Uint8Array): string {
-  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('')
-  const base64 = btoa(binary)
-  const padding = base64.indexOf('=') // base64url has no padding
-  return (padding === -1 ? base64 : base64.slice(0, padding))
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-}
-
-function fromBase64url(text: string): Uint8Array<ArrayBuffer> {
-  const binary = atob(text.replaceAll('-', '+').replaceAll('_', '/'))
-  return Uint8Array.from(binary, (char) => char.charCodeAt(0))
 }

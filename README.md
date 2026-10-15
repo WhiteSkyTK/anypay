@@ -223,6 +223,9 @@ docs/
 - **Wallet addresses are untrusted input:** an allowlist of hosts, no IP literals or private
   ranges (no SSRF). Rate limits on every route, a Content-Security-Policy, and only `https`
   approval pages are ever opened. Details: [docs/deploy.md](docs/deploy.md#security-checklist).
+- **Privacy (POPIA):** the app's `/privacy` page says in plain words what is stored, what is
+  encrypted, what stays on the phone, and what is never collected (no ID or phone numbers, no
+  trackers). Shops see amounts and times, never a customer's wallet address.
 - **Accessible:** semantic landmarks, labelled inputs, managed focus, status never shown by colour
   alone, usable at 200% text size, reduced motion respected, voice confirmation.
 - **Languages:** English, Sepedi, isiXhosa and isiZulu; every string exists in every language
@@ -233,6 +236,8 @@ docs/
 - **Test money only.** The API allows wallets on `interledger-test.dev`; other Open Payments
   providers work by adding their host to `ALLOWED_WALLET_HOSTS`.
 - **Free hosting sleeps.** The first request after a quiet spell takes about a minute.
+- **No retention schedule yet.** Payments are kept until the demo database is reset; a real
+  launch would delete or anonymise old payments on a schedule.
 - **One API instance.** The live feed and rate limits are held in memory, which is fine for a
   pilot; more instances need a shared bus (e.g. Postgres LISTEN/NOTIFY) and a shared rate-limit
   store.

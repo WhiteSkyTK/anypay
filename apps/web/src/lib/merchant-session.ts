@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/mini'
 
 const STORAGE_KEY = 'anypay.merchant'
 
@@ -8,7 +8,9 @@ const MerchantSessionSchema = z.object({
   name: z.string(),
   token: z.string(),
   assetCode: z.string(),
-  assetScale: z.number().int(),
+  assetScale: z.int(),
+  /** Set while "sign out other phones" is under way: the token this phone asked to switch to. */
+  nextToken: z.optional(z.string()),
 })
 
 export type MerchantSession = z.infer<typeof MerchantSessionSchema>

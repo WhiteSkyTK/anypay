@@ -1,4 +1,5 @@
 export * from './api'
+export { randomBase64url } from './base64url'
 export * from './money'
 export * from './schemas'
 export * from './voucher'

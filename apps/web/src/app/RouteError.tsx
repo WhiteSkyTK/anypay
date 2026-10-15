@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useRouteError } from 'react-router'
 import { DocumentTitle } from '@/components/Page'
 import { Button } from '@/components/ui/button'
+import { useHideSplash } from './useHideSplash'
 
 /** Last-resort screen if a route crashes or its code can't load. */
 export function RouteError() {
   const error = useRouteError()
   const { t } = useTranslation()
+  useHideSplash()
 
   useEffect(() => {
     console.error(error)

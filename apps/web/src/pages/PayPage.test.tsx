@@ -2,6 +2,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { prefetchShop } from '@/lib/shop-prefetch'
 import { apiError, fakeApi, payment, renderPage, SHOP, setUpPageTests } from '@/testing/fakes'
 import { Component as PayPage } from './PayPage'
 
@@ -140,6 +141,18 @@ describe('PayPage', () => {
     openPayPage()
     await user.click(await screen.findByRole('button', { name: 'Try again' }))
     expect(await screen.findByRole('heading', { level: 1, name: SHOP.name })).toBeTruthy()
+  })
+
+  it('uses the shop request its route started early, and asks afresh on retry', async () => {
+    const user = userEvent.setup()
+    const calls = fakeApi({
+      [`GET /api/shops/${SHOP.id}`]: [{ networkError: true }, { body: SHOP }],
+    })
+    prefetchShop(SHOP.id) // what the route's loader does while the page's code downloads
+    openPayPage()
+    await user.click(await screen.findByRole('button', { name: 'Try again' }))
+    expect(await screen.findByRole('heading', { level: 1, name: SHOP.name })).toBeTruthy()
+    expect(calls).toHaveLength(2)
   })
 })
 

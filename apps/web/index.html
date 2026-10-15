@@ -17,6 +17,20 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Shown while the first screen loads on a slow connection; removed as it paints (useHideSplash). -->
+    <div id="splash" class="splash" aria-hidden="true">
+      <svg viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="120" fill="#1f4d3a" />
+        <path
+          d="M160 376 256 136l96 240M196 296h120"
+          fill="none"
+          stroke="#f5f2ea"
+          stroke-width="52"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
     <noscript>AnyPay needs JavaScript turned on.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -105,8 +105,12 @@ function createCipher(env: Env, logger: Logger): TokenCipher {
 export function createContainer(env: Env, db: Database, options: CoreOptions = {}): Container {
   const core = createCore(env, options)
   const cipher = createCipher(env, core.logger)
-  const shopService = new ShopService(new ShopRepository(db), core.walletAddressResolver)
   const paymentEvents = new PaymentEvents()
+  const shopService = new ShopService(
+    new ShopRepository(db),
+    core.walletAddressResolver,
+    paymentEvents,
+  )
   const paymentService = new PaymentService({
     shops: shopService,
     payments: new PaymentRepository(db, cipher),

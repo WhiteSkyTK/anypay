@@ -24,6 +24,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": [".claude/preview.mjs"],
       "port": 5199
+    },
+    {
+      "name": "claude-preview-build",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [".claude/preview.mjs", "build"],
+      "port": 4199
     }
   ]
 }

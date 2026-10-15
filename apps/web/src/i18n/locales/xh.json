@@ -131,7 +131,11 @@
     },
     "callbackError": "Asikakwazi ukuqinisekisa imvume yakho. Khangela iwalethi yakho phambi kokuzama kwakhona.",
     "payAgain": "Hlawula kwakhona",
-    "notFound": "Asiyifumananga le risithi."
+    "notFound": "Asiyifumananga le risithi.",
+    "unreachable": {
+      "title": "Asikwazi ukufikelela i-AnyPay ngoku",
+      "description": "Intlawulo yakho ikhuselekile kwiwalethi yakho. Siyaqhubeka sizama, kwaye eli phepha liza kuzihlaziya."
+    }
   },
   "merchant": {
     "title": "Ivenkile yakho",
@@ -247,7 +251,69 @@
     "about": "Malunga",
     "version": "Uguqulelo {{version}}",
     "simulateOffline": "Linganisa ukungabikho kwenethiwekhi (umboniso)",
-    "simulateOfflineHint": "Ibonisa ukusebenza kwethebhu ngaphandle kwenethiwekhi ngaphandle kokuvala ifowuni. Akukho nto ifika kwiseva de uyicime."
+    "simulateOfflineHint": "Ibonisa ukusebenza kwethebhu ngaphandle kwenethiwekhi ngaphandle kokuvala ifowuni. Akukho nto ifika kwiseva de uyicime.",
+    "shop": "Ivenkile yakho",
+    "otherPhones": "Sebenzisa kwenye ifowuni"
+  },
+  "privacy": {
+    "title": "Ubumfihlo",
+    "intro": "I-AnyPay idlulisa iintlawulo phakathi kweewalethi. Igcina okuncinci kangangoko inako, kwaye ayiyiboni iphasiwedi okanye ibhalansi yewalethi yakho.",
+    "shop": {
+      "heading": "Xa usungula ivenkile",
+      "details": "Igama levenkile yakho, idilesi yewalethi kunye nohlobo lwemali.",
+      "key": "Isitshixo sokungena sevenkile yakho sihlala kwifowuni yakho. Sigcina kuphela uphawu lwaso, olungenakuguqulwa lube sisitshixo kwakhona."
+    },
+    "payment": {
+      "heading": "Xa umntu ehlawula",
+      "amounts": "Isixa, oko umthengi akuhlawulileyo kubandakanya iifizi, imeko kunye nexesha.",
+      "encrypted": "Idilesi yewalethi yomthengi kunye nemvume ayivumileyo, zigcinwe zifihliwe (AES-256-GCM).",
+      "shopSees": "Ivenkile ibona izixa namaxesha, ayiyiboni idilesi yewalethi yakho.",
+      "tab": "Kwithebhu: igama oyinika lona (ivenkile iyalibona), umda wayo weveki kunye nesitshixo sikawonke-wonke sefowuni yakho, esijonga iintengiso ezingaphandle kwe-intanethi."
+    },
+    "phone": {
+      "heading": "Kwifowuni yakho kuphela",
+      "settings": "Ulwimi lwakho, imbonakalo neesetingi zelizwi, kunye nedilesi yewalethi ohlawule ngayo okokugqibela.",
+      "offline": "Iivenkile ozihlawulileyo kunye neentengiso zanamhlanje, ukuze zivuleke nokuba akukho nethiwekhi.",
+      "tab": "Isitshixo sethebhu yakho, esingenakukhutshelwa ngaphandle kwefowuni, kunye neentengiso ezingaphandle kwe-intanethi ezilindele ukuthunyelwa."
+    },
+    "never": {
+      "heading": "Esingaze sikuqokelele",
+      "items": "Inombolo yesazisi sakho, inombolo yefowuni, indawo okanye abafowunelwa. Akukho zintengiso, akukho zilandeli, akukho kuki zohlalutyo."
+    },
+    "others": {
+      "heading": "Abanye ababandakanyekayo",
+      "wallet": "Umboneleli wewalethi yakho ucela imvume yakho aze ahambise imali. Imigaqo yakhe yobumfihlo iyasebenza.",
+      "hosting": "Iiseva zethu kunye nogcino-lwazi zise-Yurophu (Render kunye ne-Neon).",
+      "logs": "Iirekhodi zethu zibhala izicelo neempazamo kuphela: akukho dilesi zewalethi, zitshixo okanye iidilesi ze-IP."
+    },
+    "keep": {
+      "heading": "Siyigcina ixesha elingakanani",
+      "demo": "Lo ngumboniso onemali yovavanyo kuphela. Iintlawulo zigcinwa de umboniso uqalwe kwakhona. Iirekhodi ezenza ukuzama kwakhona kukhuseleke zicinywa emva kosuku."
+    },
+    "rights": {
+      "heading": "Amalungelo akho (POPIA)",
+      "body": "Ungabuza ukuba yintoni esinayo ngawe, kwaye ucele ukuba siyilungise okanye siyicime.",
+      "contact": "Qhagamshelana neqela le-AnyPay kwi-GitHub"
+    }
+  },
+  "phones": {
+    "title": "Ivenkile yakho kwezinye iifowuni",
+    "add": {
+      "heading": "Yongeza ifowuni",
+      "description": "Skena le khowudi ngekhamera yenye ifowuni. Ivula i-{{shop}} apho, neentlawulo ezifika ngoko nangoko.",
+      "warning": "Nabani na oyiskenayo angazibona iintengiso zakho. Yibonise kuphela abantu obathembayo.",
+      "show": "Bonisa ikhowudi yokungena",
+      "hide": "Fihla ikhowudi",
+      "qrLabel": "Ikhowudi yokungena ye-{{shop}}"
+    },
+    "signOut": {
+      "heading": "Ulahlekelwe yifowuni?",
+      "description": "Khupha zonke ezinye iifowuni. Le fowuni ihlala ingene; ezinye zifuna ikhowudi entsha yokungena.",
+      "action": "Khupha ezinye iifowuni",
+      "confirmTitle": "Khupha ezinye iifowuni?",
+      "confirmDescription": "Ziyayeka ukubona iintengiso zakho kwangoko, kwaye iikhowudi zokungena ezabonisiwe ngaphambili ziyayeka ukusebenza.",
+      "done": "Ezinye iifowuni zikhutshiwe. Yile fowuni kuphela eqhuba ivenkile ngoku."
+    }
   },
   "demo": {
     "banner": "Imowudi yokubonisa · imali yovavanyo kuphela"

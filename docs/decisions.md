@@ -169,3 +169,35 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **Sync is ours, not the Background Sync API** (iOS Safari lacks it): flush on online, on
   returning to the app, and on a 2 s → 5 min backoff, with each voucher's own Idempotency-Key.
 - **The seed script can't be pointed at any server** (SonarCloud S8703): `--target local|deployed`.
+
+## Phase 4: polish (2026-10-15)
+
+- **zod/mini for the shared contract.** The web app checks every response against the shared
+  schemas, so classic zod (24 KB gz) sat on every first load. zod/mini has the same rules with
+  functional checks: 8 KB, and the heaviest first load fell from 196 KB to 181.5 KB. The API's own
+  schemas stay classic; both run on zod's shared core.
+- **zod's fast parser is off in the browser** (`jitless`). It compiles with `new Function`, which
+  our CSP forbids; leaving it on made Chrome log a CSP violation on every page.
+- **The pay screen asks for the shop while its code downloads.** The route's loader starts the
+  request in parallel with the lazy page chunk, so a first scan waits for one round trip, not two.
+- **A launch mark instead of a blank screen.** index.html shows the AnyPay mark until the first
+  screen paints, then a layout effect removes it in the same frame (no flash, no layout shift).
+  On a slow connection the page shows something at once instead of a blank cream screen.
+- **"Can't reach AnyPay" is not "receipt not found".** A receipt whose live stream gives up asks
+  once over plain HTTP: 404 means not found; anything else (asleep, 502 behind a proxy) shows a
+  calm "your payment is safe in your wallet" and keeps retrying.
+- **A privacy page that says only what the code does.** What's stored (and what's encrypted), what
+  stays on the phone, what's never collected, who else is involved, and POPIA rights. Payments
+  aren't deleted automatically yet, so the page says the demo keeps them until it's reset; retry
+  records really are purged after a day (now every six hours, not only at start-up).
+- **Motion only where it moves.** The success tick was the only animation, yet `LazyMotion` wrapped
+  every page, so every first load carried the motion core and fetched the feature pack. It now
+  lives in the tick (the receipt's chunk): the app shell fell to 162 KB and the pay screen's
+  Lighthouse score from 86 to 92.
+- **"Sign out other phones" with a token the phone picks.** The phone saves a fresh 32-byte token,
+  then asks the API to switch to it. If the answer is lost, the old token is refused next time
+  and the new one confirms the change, so a shop can't lock itself out. The switch also ends
+  every open live feed, so a lost phone stops seeing sales at once.
+- **Adding a phone is a QR code, hidden until asked for.** It's the existing sign-in link (token in
+  the URL fragment, never sent to a server); the screen warns that anyone who scans it sees the
+  shop's sales.

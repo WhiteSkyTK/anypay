@@ -18,6 +18,10 @@ export class ShopRepository {
     return created
   }
 
+  async updateTokenHash(id: string, merchantTokenHash: string): Promise<void> {
+    await this.#db.update(shops).set({ merchantTokenHash }).where(eq(shops.id, id))
+  }
+
   async findById(id: string): Promise<ShopRecord | undefined> {
     const [shop] = await this.#db.select().from(shops).where(eq(shops.id, id))
     return shop

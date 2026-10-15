@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/mini'
 import { DecimalAmountSchema } from './api'
 import { MoneySchema, WalletAddressInputSchema } from './schemas'
 
@@ -8,8 +8,8 @@ import { MoneySchema, WalletAddressInputSchema } from './schemas'
 export const PublicKeyJwkSchema = z.object({
   kty: z.literal('EC'),
   crv: z.literal('P-256'),
-  x: z.string().regex(/^[\w-]{43}$/),
-  y: z.string().regex(/^[\w-]{43}$/),
+  x: z.string().check(z.regex(/^[\w-]{43}$/)),
+  y: z.string().check(z.regex(/^[\w-]{43}$/)),
 })
 
 export const TabStatusSchema = z.enum(['awaiting-consent', 'active', 'failed'])
@@ -23,9 +23,11 @@ export const OpenTabRequestSchema = z.object({
   /** The name the shop sees for this tab, e.g. "Thabo". */
   label: z
     .string()
-    .trim()
-    .min(1, { error: 'errors.tabLabel.required' })
-    .max(30, { error: 'errors.tabLabel.tooLong' }),
+    .check(
+      z.trim(),
+      z.minLength(1, { error: 'errors.tabLabel.required' }),
+      z.maxLength(30, { error: 'errors.tabLabel.tooLong' }),
+    ),
   publicKey: PublicKeyJwkSchema,
 })
 
@@ -36,13 +38,13 @@ export const TabSummarySchema = z.object({
   shopName: z.string(),
   label: z.string(),
   status: TabStatusSchema,
-  failure: TabFailureSchema.optional(),
+  failure: z.optional(TabFailureSchema),
   /** The weekly cap the customer approved, in their currency. */
   cap: MoneySchema,
   /** The same cap in the shop's currency (fees and exchange included), once the tab is active. */
-  shopCap: MoneySchema.optional(),
+  shopCap: z.optional(MoneySchema),
   /** What is left this week, in the shop's currency. */
-  remaining: MoneySchema.optional(),
+  remaining: z.optional(MoneySchema),
   /** When the current week started; the cap resets every 7 days from here. */
   weekStartedAt: z.iso.datetime({ offset: true }),
 })
@@ -50,7 +52,7 @@ export const TabSummarySchema = z.object({
 export const OpenTabResponseSchema = z.object({
   tab: TabSummarySchema,
   /** Where the customer approves the weekly cap in their own wallet. */
-  consentUrl: z.url().optional(),
+  consentUrl: z.optional(z.url()),
 })
 
 /** What a shop's phone keeps so it can check vouchers with no signal. */
@@ -67,11 +69,11 @@ export const ShopTabsResponseSchema = z.object({ tabs: z.array(ShopTabSchema) })
 
 /** A voucher as either phone sends it (the tab id is in the URL). */
 export const VoucherSubmissionSchema = z.object({
-  shopId: z.string().regex(/^[\w-]{1,32}$/),
-  amount: z.string().regex(/^[1-9]\d{0,17}$/),
-  nonce: z.string().regex(/^[\w-]{12,32}$/),
-  ts: z.number().int().positive(),
-  signature: z.string().regex(/^[\w-]{86}$/),
+  shopId: z.string().check(z.regex(/^[\w-]{1,32}$/)),
+  amount: z.string().check(z.regex(/^[1-9]\d{0,17}$/)),
+  nonce: z.string().check(z.regex(/^[\w-]{12,32}$/)),
+  ts: z.int().check(z.positive()),
+  signature: z.string().check(z.regex(/^[\w-]{86}$/)),
 })
 
 export const VoucherRejectionSchema = z.enum([
@@ -90,8 +92,8 @@ export const VoucherStatusSchema = z.object({
   amount: MoneySchema,
   /** settling: being paid; settled: the shop has the money; rejected: never will (see reason). */
   status: z.enum(['settling', 'settled', 'rejected']),
-  reason: VoucherRejectionSchema.optional(),
-  paymentId: z.uuid().optional(),
+  reason: z.optional(VoucherRejectionSchema),
+  paymentId: z.optional(z.uuid()),
 })
 
 export type PublicKeyJwkInput = z.infer<typeof PublicKeyJwkSchema>

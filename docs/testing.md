@@ -134,11 +134,11 @@ because an installed app on iPhone has no browser Back button.
 
 - [x] <https://anypay-api.onrender.com/> (the API's own address) opens the app instead of an error
 - [x] <https://anypay-web.onrender.com/start> opens shop set-up
-- [ ] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
+- [x] A newly printed poster's QR opens `…/s/<code>` and lands on the pay screen; old posters
       (`…/shop/<code>/pay`) still work
-- [ ] Pay at a shop once, then turn on airplane mode and scan its poster again: the pay screen
+- [x] Pay at a shop once, then turn on airplane mode and scan its poster again: the pay screen
       still opens (paying itself needs signal, and says so)
-- [ ] Open the shop feed, close the app, turn off data, open it again: today's payments and total
+- [x] Open the shop feed, close the app, turn off data, open it again: today's payments and total
       are still there while it says **Connecting…**
 
 ### Phase 3: the Offline Digital Tab (2026-10-15)
@@ -151,32 +151,53 @@ the weekly limit), the key is stored on the phone, tab sale, scanner fallback an
 
 **Open a tab (online, once)**
 
-- [ ] Customer phone: open the shop's poster link → **Open a tab at this shop** → wallet name
+- [x] Customer phone: open the shop's poster link → **Open a tab at this shop** → wallet name
       (`southtest`), your name for the shop, a weekly limit (in rand) → **Approve in my wallet**
       → approve in the test wallet. You land on the tab: **Left this week** shows the limit in the
       shop's currency
-- [ ] Shop phone: **Tab sale** says **Customer tabs on this phone: 1**
+- [x] Shop phone: **Tab sale** says **Customer tabs on this phone: 1**
 
 **The sale, both phones offline** (airplane mode, or Settings → **Simulate offline (demo)**)
 
-- [ ] Shop: **Tab sale** → type an amount → **Show QR to customer**
-- [ ] Customer: **My tabs** → the tab → **Scan the shop's QR** (or the phone's camera app) → it
+- [x] Shop: **Tab sale** → type an amount → **Show QR to customer**
+- [x] Customer: **My tabs** → the tab → **Scan the shop's QR** (or the phone's camera app) → it
       shows the shop and amount → **Approve** → a QR appears
-- [ ] Shop: **Scan the customer's QR** → **Saved – settles when online**; the feed shows it
+- [x] Shop: **Scan the customer's QR** → **Saved – settles when online**; the feed shows it
       under **Tab sales waiting to settle**
-- [ ] Turn signal back on (or Simulate offline off) on **either** phone: within seconds it says
+- [x] Turn signal back on (or Simulate offline off) on **either** phone: within seconds it says
       **Settled**, the payment joins the feed with a **Tab** label and is read out loud
-- [ ] Then the other phone too: it also shows **Settled**, and the shop got paid **once**
+- [x] Then the other phone too: it also shows **Settled**, and the shop got paid **once**
       (check the feed and the merchant wallet) — this is Phase 3's "Done when"
 
 **Things that must be refused**
 
-- [ ] Scan the same customer QR twice: **Already saved: this sale won't be paid twice**
-- [ ] A sale bigger than what's left this week: refused on the customer's phone
-- [ ] Customer phone with no tab at that shop: "You don't have a tab at this shop…"
+- [x] Scan the same customer QR twice: **Already saved: this sale won't be paid twice**
+- [x] A sale bigger than what's left this week: refused on the customer's phone
+- [x] Customer phone with no tab at that shop: "You don't have a tab at this shop…"
 
 **Good to know:** an installed app on iPhone can't receive links from the camera app (they open
 in Safari, which doesn't have the tab's key): use the in-app scanner there.
+
+### Phase 4: polish (2026-10-15)
+
+**Your shop on another phone** (two phones; the first already runs a shop)
+
+- [ ] Shop phone: **Settings → Use on another phone → Show sign-in code**; scan it with the
+      second phone's camera: the second phone opens the shop's live feed
+- [ ] Take a test payment: it appears on **both** phones
+- [ ] First phone: **Sign out other phones** → confirm. Within seconds the second phone says
+      **This phone is signed out of the shop**; the first keeps its feed (it reconnects by
+      itself) and the next payment still appears there
+- [ ] The sign-in code shown before no longer works on a third phone; a newly shown one does
+
+**Calmer edges**
+
+- [ ] Receipt with the API asleep or down (stop it, or wait for Render to sleep): **Can't reach
+      AnyPay right now**, not "receipt not found"; it updates by itself once the API is back
+- [ ] On a slow connection (Chrome DevTools → Network → Slow 4G) the AnyPay mark shows at once
+      instead of a blank screen, and disappears as the page appears (no jump)
+- [ ] Start page and **Settings → Privacy** open the privacy notice; it reads well in every
+      language (drafts need the native-speaker review)
 
 ## Problems found
 
