@@ -113,7 +113,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 
 **Team:** usability test with 2–3 spaza owners; note what changed.
 
-## Phase 4 — Polish & submission · target 1 Nov (freeze 2 Nov) · Status: Not started
+## Phase 4 — Polish & submission · target 1 Nov (freeze 2 Nov) · Status: In progress
 - [ ] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues (24 minor code smells on main, 2026-10-15)
 - [ ] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB
 - [ ] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
