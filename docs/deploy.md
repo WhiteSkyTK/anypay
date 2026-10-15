@@ -67,10 +67,11 @@ instead of during a payment.
 
 `npm run seed` creates a demo shop (on `DEMO_MERCHANT_WALLET`) through a running API and prints a
 private sign-in link for the shop phone plus the customer's pay link. For the deployed app, run it
-from your PC with both addresses:
+from your PC with `--target deployed` (the addresses are fixed in the script, so it can only ever talk to
+AnyPay's own servers):
 
 ```bash
-npm run seed -- --api https://anypay-api.onrender.com --web https://anypay-web.onrender.com
+npm run seed -- --target deployed
 ```
 
 ## Notes

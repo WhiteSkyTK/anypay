@@ -1,5 +1,5 @@
-// npm run seed [-- --name "Demo Spaza"]   (with `npm run dev` running)
-// npm run seed -- --api https://<api>.onrender.com --web https://<web>.onrender.com   (deployed)
+// npm run seed [-- --name "Demo Spaza"]                  (local: with `npm run dev` running)
+// npm run seed -- --target deployed [--name "Demo Spaza"] (the live app on Render)
 //
 // Creates a demo shop on the shop wallet from DEMO_MERCHANT_WALLET and prints the two links a
 // demo needs: one to open on the shop's phone (live feed) and one for the customer (pay screen).
@@ -7,8 +7,32 @@
 import { CreateShopResponseSchema } from '@anypay/shared'
 import { randomUUID } from 'node:crypto'
 import { parseArgs } from 'node:util'
-import { parseEnv } from '../config/env'
+import { type Env, parseEnv } from '../config/env'
 import { loadDotEnv } from '../config/repo-root'
+
+interface Target {
+  api: string
+  web: string
+}
+
+// Where the seed may send its request: a fixed list, never an address from the command line,
+// so the script can't be pointed at an arbitrary server (server-side request forgery).
+const TARGETS: Record<string, (env: Env) => Target> = {
+  local: (env) => ({
+    api: `http://localhost:${env.PORT}`,
+    web: env.WEB_ORIGIN[0] ?? 'http://localhost:5173',
+  }),
+  deployed: () => ({
+    api: 'https://anypay-api.onrender.com',
+    web: 'https://anypay-web.onrender.com',
+  }),
+}
+
+function targetFor(name: string, env: Env): Target {
+  const target = Object.hasOwn(TARGETS, name) ? TARGETS[name] : undefined
+  if (!target) throw new Error(`--target must be one of: ${Object.keys(TARGETS).join(', ')}`)
+  return target(env)
+}
 
 async function main(): Promise<void> {
   loadDotEnv()
@@ -16,14 +40,13 @@ async function main(): Promise<void> {
   const { values } = parseArgs({
     options: {
       name: { type: 'string', default: 'Demo Spaza' },
-      api: { type: 'string', default: `http://localhost:${env.PORT}` },
-      web: { type: 'string', default: env.WEB_ORIGIN[0] ?? 'http://localhost:5173' },
+      target: { type: 'string', default: 'local' },
     },
   })
   const walletAddress = env.DEMO_MERCHANT_WALLET
   if (!walletAddress) throw new Error('Set DEMO_MERCHANT_WALLET in .env first')
 
-  const api = new URL(values.api).origin
+  const { api, web } = targetFor(values.target, env)
   const res = await fetch(`${api}/api/shops`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Idempotency-Key': randomUUID() },
@@ -34,7 +57,6 @@ async function main(): Promise<void> {
   if (!res.ok) throw new Error(`The API refused the demo shop (${res.status}): ${await res.text()}`)
   const { shop, merchantToken } = CreateShopResponseSchema.parse(await res.json())
 
-  const web = new URL(values.web).origin
   // The token travels in the URL fragment, which browsers never send to a server or log.
   const merchantLink = `${web}/merchant/connect#shop=${shop.id}&token=${merchantToken}`
   console.log(
@@ -45,7 +67,7 @@ async function main(): Promise<void> {
   console.log(`  ${merchantLink}`)
   console.log()
   console.log('Customer phone (pay screen), or print the poster from the shop phone:')
-  console.log(`  ${web}/shop/${shop.id}/pay`)
+  console.log(`  ${web}/s/${shop.id}`)
 }
 
 main().catch((error: unknown) => {
