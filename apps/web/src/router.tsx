@@ -3,6 +3,7 @@ import { AppShell } from '@/app/AppShell'
 import { RouteError } from '@/app/RouteError'
 import { withTabBar } from '@/app/route-handle'
 import { shortLinkRoutes } from '@/app/short-links'
+import { prefetchShop } from '@/lib/shop-prefetch'
 
 // Every page is its own lazy chunk: the first visit downloads only the screen it shows, and
 // the service worker precaches the rest for offline use.
@@ -17,13 +18,22 @@ export const router = createBrowserRouter([
       ...shortLinkRoutes,
       // Customer screens: reached from a QR code, so no tab bar to distract from paying.
       { path: 'pay', lazy: () => import('@/pages/CustomerPage') },
-      { path: 'shop/:shopId/pay', lazy: () => import('@/pages/PayPage') },
+      {
+        path: 'shop/:shopId/pay',
+        // Runs alongside the lazy import, so the shop and the page download at the same time.
+        loader: ({ params }) => {
+          if (params.shopId) prefetchShop(params.shopId)
+          return null
+        },
+        lazy: () => import('@/pages/PayPage'),
+      },
       { path: 'receipt/:paymentId', lazy: () => import('@/pages/ReceiptPage') },
       // Merchant screens.
       { path: 'merchant', handle: withTabBar, lazy: () => import('@/pages/MerchantPage') },
       { path: 'merchant/new', lazy: () => import('@/pages/MerchantSetupPage') },
       { path: 'merchant/poster', lazy: () => import('@/pages/PosterPage') },
       { path: 'merchant/connect', lazy: () => import('@/pages/MerchantConnectPage') },
+      { path: 'merchant/phones', lazy: () => import('@/pages/ShopPhonesPage') },
       { path: 'tab', handle: withTabBar, lazy: () => import('@/pages/TabPage') },
       // Offline Digital Tab (Feature 4). /t/ and /v/ are what the two QR codes of a sale open.
       { path: 'tab/:tabId', lazy: () => import('@/pages/TabDetailPage') },
@@ -36,6 +46,7 @@ export const router = createBrowserRouter([
       { path: 'merchant/tab-sale', lazy: () => import('@/pages/TabSalePage') },
       { path: 'scan', lazy: () => import('@/pages/ScanPage') },
       { path: 'settings', handle: withTabBar, lazy: () => import('@/pages/SettingsPage') },
+      { path: 'privacy', lazy: () => import('@/pages/PrivacyPage') },
       { path: '*', lazy: () => import('@/pages/NotFoundPage') },
     ],
   },

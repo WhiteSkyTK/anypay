@@ -7,6 +7,7 @@ import type {
 import { createHash, randomBytes, randomInt, timingSafeEqual } from 'node:crypto'
 import { AppError } from '../lib/errors'
 import type { ShopRecord, ShopRepository } from '../repositories/shop-repository'
+import type { PaymentEvents } from './payment-events'
 import type { WalletAddressResolver } from './wallet-address-resolver'
 
 const hashToken = (token: string) => createHash('sha256').update(token).digest()
@@ -39,10 +40,16 @@ export function newShopCode(): string {
 export class ShopService {
   readonly #shops: ShopRepository
   readonly #wallets: Pick<WalletAddressResolver, 'resolve'>
+  readonly #events: Pick<PaymentEvents, 'signOutShop'>
 
-  constructor(shops: ShopRepository, wallets: Pick<WalletAddressResolver, 'resolve'>) {
+  constructor(
+    shops: ShopRepository,
+    wallets: Pick<WalletAddressResolver, 'resolve'>,
+    events: Pick<PaymentEvents, 'signOutShop'>,
+  ) {
     this.#shops = shops
     this.#wallets = wallets
+    this.#events = events
   }
 
   /** Step 1 of onboarding: is this a real, allowed wallet address, and in what currency? */
@@ -88,5 +95,16 @@ export class ShopService {
       throw new AppError('merchant_unauthorized', 'This phone is not signed in to the shop', 401)
     }
     return shop
+  }
+
+  /**
+   * Makes `token` the shop's only merchant token, signing out every other phone and ending
+   * their live feeds. Setting the token it already has changes nothing (a retried request).
+   */
+  async replaceMerchantToken(shop: ShopRecord, token: string): Promise<void> {
+    const hash = hashToken(token).toString('hex')
+    if (hash === shop.merchantTokenHash) return
+    await this.#shops.updateTokenHash(shop.id, hash)
+    this.#events.signOutShop(shop.id)
   }
 }

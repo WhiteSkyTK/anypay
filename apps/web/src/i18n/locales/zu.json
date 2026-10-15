@@ -131,7 +131,11 @@
     },
     "callbackError": "Asikakwazi ukuqinisekisa imvume yakho. Hlola iwalethi yakho ngaphambi kokuzama futhi.",
     "payAgain": "Khokha futhi",
-    "notFound": "Asiyitholanga le risidi."
+    "notFound": "Asiyitholanga le risidi.",
+    "unreachable": {
+      "title": "Asikwazi ukufinyelela i-AnyPay manje",
+      "description": "Inkokhelo yakho iphephile ku-wallet yakho. Siyaqhubeka sizama, futhi leli khasi lizozibuyekeza."
+    }
   },
   "merchant": {
     "title": "Isitolo sakho",
@@ -247,7 +251,69 @@
     "about": "Mayelana",
     "version": "Inguqulo {{version}}",
     "simulateOffline": "Lingisa ukungabi nesiginali (umbukiso)",
-    "simulateOfflineHint": "Ikhombisa ukusebenza kwethebhu ngaphandle kwesiginali ngaphandle kokuvala ifoni. Akukho okufika kuseva uze uyicishe."
+    "simulateOfflineHint": "Ikhombisa ukusebenza kwethebhu ngaphandle kwesiginali ngaphandle kokuvala ifoni. Akukho okufika kuseva uze uyicishe.",
+    "shop": "Isitolo sakho",
+    "otherPhones": "Sebenzisa kwenye ifoni"
+  },
+  "privacy": {
+    "title": "Ubumfihlo",
+    "intro": "I-AnyPay idlulisa izinkokhelo phakathi kwamawalethi. Igcina okuncane ngangokunokwenzeka, futhi ayiyiboni iphasiwedi noma ibhalansi yewalethi yakho.",
+    "shop": {
+      "heading": "Uma usetha isitolo",
+      "details": "Igama lesitolo sakho, ikheli lewalethi nohlobo lwemali.",
+      "key": "Ukhiye wokungena wesitolo sakho uhlala efonini yakho. Sigcina kuphela uphawu lwawo, olungeke lubuyiselwe lube ukhiye."
+    },
+    "payment": {
+      "heading": "Uma othile ekhokha",
+      "amounts": "Inani, lokho ikhasimende elikukhokhile kuhlanganise nezimali ezengeziwe, isimo nesikhathi.",
+      "encrypted": "Ikheli lewalethi lekhasimende nemvume elivume yona, kugcinwe kubethelwe (AES-256-GCM).",
+      "shopSees": "Isitolo sibona amanani nezikhathi, asiliboni ikheli lewalethi yakho.",
+      "tab": "Ethebhu: igama oyinika lona (isitolo siyalibona), umkhawulo wayo wesonto nokhiye womphakathi wefoni yakho, ohlola ukuthengisa okungaxhunyiwe ku-inthanethi."
+    },
+    "phone": {
+      "heading": "Efonini yakho kuphela",
+      "settings": "Ulimi lwakho, ukubukeka nezilungiselelo zezwi, nekheli lewalethi okhokhe ngalo ekugcineni.",
+      "offline": "Izitolo okhokhele kuzo nokuthengisa kwanamuhla, ukuze zivuleke noma ingekho isiginali.",
+      "tab": "Ukhiye wethebhu yakho, ongeke ukopishwe uphume efonini, nokuthengisa okungaxhunyiwe okulinde ukuthunyelwa."
+    },
+    "never": {
+      "heading": "Esingakuqoqi neze",
+      "items": "Inombolo kamazisi wakho, inombolo yefoni, indawo noma oxhumana nabo. Azikho izikhangiso, azikho izilandeli, awekho ama-cookie okuhlaziya."
+    },
+    "others": {
+      "heading": "Abanye ababandakanyekayo",
+      "wallet": "Umhlinzeki wewalethi yakho ucela imvume yakho bese edlulisa imali. Imigomo yakhe yobumfihlo iyasebenza.",
+      "hosting": "Amaseva ethu nesizindalwazi kuseYurophu (Render ne-Neon).",
+      "logs": "Amarekhodi ethu abhala izicelo namaphutha kuphela: awekho amakheli ewalethi, okhiye noma amakheli e-IP."
+    },
+    "keep": {
+      "heading": "Sikugcina isikhathi esingakanani",
+      "demo": "Lokhu kuwumbukiso onemali yokuhlola kuphela. Izinkokhelo zigcinwa kuze kuqalwe kabusha umbukiso. Amarekhodi enza ukuzama futhi kuphephe asuswa ngemuva kosuku."
+    },
+    "rights": {
+      "heading": "Amalungelo akho (POPIA)",
+      "body": "Ungabuza ukuthi yini esinayo ngawe, futhi ucele ukuthi siyilungise noma siyisuse.",
+      "contact": "Xhumana nethimba le-AnyPay ku-GitHub"
+    }
+  },
+  "phones": {
+    "title": "Isitolo sakho kwamanye amafoni",
+    "add": {
+      "heading": "Engeza ifoni",
+      "description": "Skena le khodi ngekhamera yenye ifoni. Ivula i-{{shop}} lapho, nezinkokhelo ezifika ngaso leso sikhathi.",
+      "warning": "Noma ubani oyiskenayo angakubona ukuthengisa kwakho. Yikhombise kuphela abantu obathembayo.",
+      "show": "Khombisa ikhodi yokungena",
+      "hide": "Fihla ikhodi",
+      "qrLabel": "Ikhodi yokungena ye-{{shop}}"
+    },
+    "signOut": {
+      "heading": "Ulahlekelwe yifoni?",
+      "description": "Khipha wonke amanye amafoni. Le foni ihlala ingenile; amanye adinga ikhodi entsha yokungena.",
+      "action": "Khipha amanye amafoni",
+      "confirmTitle": "Khipha amanye amafoni?",
+      "confirmDescription": "Ayayeka ukubona ukuthengisa kwakho ngokushesha, futhi amakhodi okungena akhonjiswe ngaphambili ayayeka ukusebenza.",
+      "done": "Amanye amafoni akhishiwe. Yile foni kuphela esebenzisa isitolo manje."
+    }
   },
   "demo": {
     "banner": "Imodi yokubonisa · imali yokuhlola kuphela"

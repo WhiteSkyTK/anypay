@@ -101,6 +101,27 @@
       backdrop-filter: saturate(1.8) blur(1.25rem);
     }
   }
+
+  /* The app's mark instead of a blank page while the first screen loads on a slow connection,
+     like an installed app's launch screen (index.html; useHideSplash removes it). */
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background);
+  }
+
+  html[data-chrome='dark'] .splash {
+    background-color: #0f1211;
+  }
+
+  .splash svg {
+    width: 4rem;
+    height: 4rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

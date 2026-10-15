@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type { z } from 'zod/mini'
 
 const PREFIX = 'anypay.cache.'
 
@@ -7,7 +7,7 @@ const PREFIX = 'anypay.cache.'
  * screen can show them at once and still has them when the signal drops. Storage is untrusted, so
  * reads are checked against the schema; anything unreadable counts as "not cached".
  */
-export function readCache<S extends z.ZodType>(key: string, schema: S): z.infer<S> | undefined {
+export function readCache<S extends z.ZodMiniType>(key: string, schema: S): z.infer<S> | undefined {
   try {
     const raw = localStorage.getItem(PREFIX + key)
     if (raw === null) return undefined

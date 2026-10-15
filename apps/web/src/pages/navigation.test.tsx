@@ -6,7 +6,9 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { getMerchantSession, setMerchantSession } from '@/lib/merchant-session'
 import {
+  apiError,
   FakeEventSource,
+  fakeApi,
   payment,
   renderPage,
   SESSION,
@@ -28,6 +30,7 @@ describe('start page', () => {
     renderPage(OnboardingPage, { pattern: '/', path: '/' })
     expect(link(/Set up my shop/).getAttribute('href')).toBe('/merchant/new')
     expect(link("I'm a customer").getAttribute('href')).toBe('/pay')
+    expect(link('Privacy').getAttribute('href')).toBe('/privacy')
   })
 
   it('opens the shop this phone already runs, instead of setting up another', () => {
@@ -143,9 +146,10 @@ describe('receipt', () => {
     expect(link('Done').getAttribute('href')).toBe('/pay')
   })
 
-  it('never leaves a missing receipt as a dead end', () => {
+  it('never leaves a missing receipt as a dead end', async () => {
+    fakeApi({ [`GET /api/payments/${payment().id}`]: apiError(404, 'payment_not_found') })
     const source = openReceipt()
     act(() => source.giveUp())
-    expect(link('Done').getAttribute('href')).toBe('/pay')
+    expect((await screen.findByRole('link', { name: 'Done' })).getAttribute('href')).toBe('/pay')
   })
 })

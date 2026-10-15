@@ -1,13 +1,14 @@
-import type { z } from 'zod'
+import { z } from 'zod'
 import { AppError } from '../lib/errors'
 
 /**
  * Parses untrusted input (body, query, params) with a shared zod schema. The error message is the
  * schema's i18n key (e.g. 'errors.walletAddress.format'), so the web app shows it in the user's
- * language.
+ * language. Takes any zod schema: the shared ones are zod/mini (small for the browser), the API's
+ * own are classic zod, and both run on the same core.
  */
-export function parse<S extends z.ZodType>(schema: S, input: unknown): z.infer<S> {
-  const result = schema.safeParse(input)
+export function parse<S extends z.core.$ZodType>(schema: S, input: unknown): z.infer<S> {
+  const result = z.safeParse(schema, input)
   if (result.success) return result.data
   const issue = result.error.issues[0]
   const field = issue?.path.join('.')

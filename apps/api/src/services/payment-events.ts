@@ -31,7 +31,16 @@ export class PaymentEvents {
     return this.#subscribe(`payment:${paymentId}`, listener)
   }
 
-  #subscribe(channel: string, listener: Listener): () => void {
+  /** The shop's merchant token changed: every feed opened with the old one must end. */
+  signOutShop(shopId: string): void {
+    this.#emitter.emit(`sign-out:${shopId}`)
+  }
+
+  onShopSignOut(shopId: string, listener: () => void): () => void {
+    return this.#subscribe(`sign-out:${shopId}`, listener)
+  }
+
+  #subscribe(channel: string, listener: Listener | (() => void)): () => void {
     this.#emitter.on(channel, listener)
     return () => this.#emitter.off(channel, listener)
   }

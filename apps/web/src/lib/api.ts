@@ -16,7 +16,7 @@ import {
   type VoucherSubmission,
   WalletLookupResponseSchema,
 } from '@anypay/shared'
-import type { z } from 'zod'
+import type { z } from 'zod/mini'
 import { isSimulatedOffline } from './simulated-offline'
 
 // Empty in development: Vite proxies /api to the API, so the browser stays same-origin.
@@ -36,7 +36,7 @@ export class ApiRequestError extends Error {
 }
 
 interface RequestOptions {
-  method?: 'GET' | 'POST'
+  method?: 'GET' | 'POST' | 'PUT'
   body?: unknown
   /** Merchant token for the shop's own data. */
   token?: string
@@ -70,7 +70,7 @@ async function send(path: string, options: RequestOptions = {}): Promise<Respons
 }
 
 /** Every response is checked against the shared contract, so a mismatch fails loudly. */
-async function request<S extends z.ZodType>(
+async function request<S extends z.ZodMiniType>(
   path: string,
   schema: S,
   options?: RequestOptions,
@@ -111,6 +111,15 @@ export const api = {
       ShopPaymentsResponseSchema,
       { token },
     ),
+
+  /** Signs out every other phone: from now on only `next` (chosen by this phone) works. */
+  replaceMerchantToken: async (shopId: string, token: string, next: string): Promise<void> => {
+    await send(`/api/shops/${enc(shopId)}/merchant-token`, {
+      method: 'PUT',
+      token,
+      body: { token: next },
+    })
+  },
 
   exportCsv: async (shopId: string, token: string, since: Date): Promise<Blob> => {
     const response = await send(

@@ -5,7 +5,7 @@ import {
   ShopPaymentsResponseSchema,
 } from '@anypay/shared'
 import type { Express } from 'express'
-import { randomUUID } from 'node:crypto'
+import { randomBytes, randomUUID } from 'node:crypto'
 import type { AddressInfo } from 'node:net'
 import request from 'supertest'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
@@ -313,6 +313,47 @@ describe('merchant feed', () => {
   })
 })
 
+const newToken = () => randomBytes(32).toString('base64url')
+
+async function replaceToken(shopId: string, bearer: string, token: string) {
+  return request(app)
+    .put(`/api/shops/${shopId}/merchant-token`)
+    .set('Authorization', `Bearer ${bearer}`)
+    .send({ token })
+}
+
+describe('signing out other phones', () => {
+  const feedWith = (shopId: string, token: string) =>
+    request(app).get(`/api/shops/${shopId}/payments`).set('Authorization', `Bearer ${token}`)
+
+  it('keeps only the token this phone chose', async () => {
+    const { shop, merchantToken } = await createShop()
+    const next = newToken()
+    expect((await replaceToken(shop.id, merchantToken, next)).status).toBe(204)
+    await feedWith(shop.id, merchantToken).expect(401)
+    await feedWith(shop.id, next).expect(200)
+  })
+
+  it('lets a phone whose response got lost confirm the change with its new token', async () => {
+    const { shop, merchantToken } = await createShop()
+    const next = newToken()
+    await replaceToken(shop.id, merchantToken, next)
+    expect((await replaceToken(shop.id, merchantToken, next)).status).toBe(401)
+    expect((await replaceToken(shop.id, next, next)).status).toBe(204)
+  })
+
+  it('refuses a new token that is not 32 random bytes', async () => {
+    const { shop, merchantToken } = await createShop()
+    expect((await replaceToken(shop.id, merchantToken, 'short')).status).toBe(400)
+    await feedWith(shop.id, merchantToken).expect(200)
+  })
+
+  it('needs the current token', async () => {
+    const { shop } = await createShop()
+    expect((await replaceToken(shop.id, newToken(), newToken())).status).toBe(401)
+  })
+})
+
 /** Reads Server-Sent Events from a real socket until `done` says stop. */
 type SseEvent = { event: string; data: unknown }
 
@@ -367,6 +408,19 @@ describe('live updates (SSE)', () => {
       shopId: shop.id,
       amount: { value: '700' },
     })
+  })
+
+  it('ends open feeds once other phones are signed out', async () => {
+    const { shop, merchantToken } = await createShop()
+    // Never "done": reads until the server ends the stream.
+    const events = await readEvents(
+      `/api/shops/${shop.id}/events?token=${merchantToken}`,
+      () => false,
+      (event) => {
+        if (event.event === 'snapshot') void replaceToken(shop.id, merchantToken, newToken())
+      },
+    )
+    expect(events.map((event) => event.event)).toEqual(['snapshot'])
   })
 
   it('refuses the merchant stream without the token', async () => {

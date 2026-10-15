@@ -1,5 +1,6 @@
-// Claude's own preview of the app, next to the team's `npm run dev`: web on 5199, API on 3199,
-// local data in .data/claude and never the hosted database. Started via .claude/launch.json.
+// Claude's own preview of the app, next to the team's `npm run dev`: web on 5199 (dev) or 4199
+// (`build`: the production build, for Lighthouse), API on 3199, local data in .data/claude and
+// never the hosted database. Started via .claude/launch.json.
 import { spawn } from 'node:child_process'
 
 const api = {
@@ -18,7 +19,9 @@ const run = (command, env) =>
 
 const children = [
   run('npm run dev -w @anypay/api', api),
-  run('npm run dev -w @anypay/web -- --port 5199 --strictPort', web),
+  process.argv[2] === 'build'
+    ? run('npm run preview -w @anypay/web -- --port 4199 --strictPort', web)
+    : run('npm run dev -w @anypay/web -- --port 5199 --strictPort', web),
 ]
 const stop = () => children.forEach((child) => child.kill())
 process.on('SIGINT', stop)

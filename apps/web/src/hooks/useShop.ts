@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '@/lib/api'
 import { readCache, writeCache } from '@/lib/cache'
 import { errorMessageKey } from '@/lib/error-message'
+import { takePrefetchedShop } from '@/lib/shop-prefetch'
 
 export type ShopState =
   | { kind: 'loading' }
@@ -25,7 +26,9 @@ export function useShop(shopId: string): { state: ShopState; retry: () => void }
 
   useEffect(() => {
     let active = true
-    api.getShop(shopId).then(
+    // A retry always asks again; only the first request can use the prefetched one.
+    const shop = (attempt === 0 && takePrefetchedShop(shopId)) || api.getShop(shopId)
+    shop.then(
       (shop) => {
         writeCache(cacheKey(shopId), shop)
         if (active) setResult({ request, state: { kind: 'ready', shop } })
@@ -45,7 +48,7 @@ export function useShop(shopId: string): { state: ShopState; retry: () => void }
     return () => {
       active = false
     }
-  }, [shopId, request, cached])
+  }, [shopId, attempt, request, cached])
 
   const fallback: ShopState = cached ? { kind: 'ready', shop: cached } : { kind: 'loading' }
   const state = result?.request === request ? result.state : fallback

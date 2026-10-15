@@ -1,7 +1,15 @@
 // @vitest-environment happy-dom
-import { act, screen } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { FakeEventSource, payment, renderPage, SHOP, setUpPageTests } from '@/testing/fakes'
+import {
+  apiError,
+  FakeEventSource,
+  fakeApi,
+  payment,
+  renderPage,
+  SHOP,
+  setUpPageTests,
+} from '@/testing/fakes'
 import { Component as ReceiptPage } from './ReceiptPage'
 
 setUpPageTests()
@@ -60,9 +68,25 @@ describe('ReceiptPage', () => {
     expect(document.body.textContent).toContain("We couldn't confirm your approval yet.")
   })
 
-  it('says so when the receipt does not exist', () => {
+  it('says so when the receipt does not exist', async () => {
+    fakeApi({ [`GET /api/payments/${ID}`]: apiError(404, 'payment_not_found') })
     const source = openReceipt()
     act(() => source.giveUp())
-    expect(heading()).toBe("We couldn't find this receipt.")
+    await waitFor(() => expect(heading()).toBe("We couldn't find this receipt."))
+  })
+
+  it('says AnyPay is unreachable, not that the receipt is missing, when the server is down', async () => {
+    fakeApi({ [`GET /api/payments/${ID}`]: { status: 502, body: 'Bad gateway' } })
+    const source = openReceipt()
+    act(() => source.giveUp())
+    await waitFor(() => expect(heading()).toBe("Can't reach AnyPay right now"))
+    expect(document.body.textContent).toContain('Your payment is safe in your wallet.')
+  })
+
+  it('shows the payment when the stream fails but a plain request works', async () => {
+    fakeApi({ [`GET /api/payments/${ID}`]: { body: payment({ status: 'sending' }) } })
+    const source = openReceipt()
+    act(() => source.giveUp())
+    await waitFor(() => expect(heading()).toBe('Confirming payment…'))
   })
 })

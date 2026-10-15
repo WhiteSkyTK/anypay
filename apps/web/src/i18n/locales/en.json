@@ -131,7 +131,11 @@
     },
     "callbackError": "We couldn't confirm your approval yet. Check your wallet before trying again.",
     "payAgain": "Pay again",
-    "notFound": "We couldn't find this receipt."
+    "notFound": "We couldn't find this receipt.",
+    "unreachable": {
+      "title": "Can't reach AnyPay right now",
+      "description": "Your payment is safe in your wallet. We keep trying, and this page updates by itself."
+    }
   },
   "merchant": {
     "title": "Your shop",
@@ -247,7 +251,69 @@
     "about": "About",
     "version": "Version {{version}}",
     "simulateOffline": "Simulate offline (demo)",
-    "simulateOfflineHint": "Shows the offline tab flow without airplane mode. Nothing reaches the server until you switch it off."
+    "simulateOfflineHint": "Shows the offline tab flow without airplane mode. Nothing reaches the server until you switch it off.",
+    "shop": "Your shop",
+    "otherPhones": "Use on another phone"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "intro": "AnyPay passes payments between wallets. It keeps as little as it can, and never sees your wallet's password or balance.",
+    "shop": {
+      "heading": "When you set up a shop",
+      "details": "Your shop's name, wallet address and currency.",
+      "key": "Your shop's sign-in key stays on your phone. We keep only a fingerprint of it, which can't be turned back into the key."
+    },
+    "payment": {
+      "heading": "When someone pays",
+      "amounts": "The amount, what the customer paid including fees, the status and the time.",
+      "encrypted": "The customer's wallet address and the permission they approved, stored encrypted (AES-256-GCM).",
+      "shopSees": "The shop sees amounts and times, never your wallet address.",
+      "tab": "For a tab: the name you give it (the shop sees it), its weekly limit and your phone's public key, which checks offline sales."
+    },
+    "phone": {
+      "heading": "On your phone only",
+      "settings": "Your language, theme and voice settings, and the last wallet address you paid from.",
+      "offline": "Shops you've paid and today's sales, so they open without signal.",
+      "tab": "Your tab key, which can't be copied off the phone, and offline sales waiting to send."
+    },
+    "never": {
+      "heading": "What we never collect",
+      "items": "Your ID number, phone number, location or contacts. No ads, no trackers, no analytics cookies."
+    },
+    "others": {
+      "heading": "Who else is involved",
+      "wallet": "Your wallet provider asks for your approval and moves the money. Its own privacy terms apply.",
+      "hosting": "Our servers and database are in Europe (Render and Neon).",
+      "logs": "Our logs record requests and errors only: no wallet addresses, keys or IP addresses."
+    },
+    "keep": {
+      "heading": "How long we keep it",
+      "demo": "This is a demo with test money only. Payments are kept until the demo is reset. Records that make retries safe are deleted after a day."
+    },
+    "rights": {
+      "heading": "Your rights (POPIA)",
+      "body": "You can ask what we hold about you, and ask us to correct or delete it.",
+      "contact": "Contact the AnyPay team on GitHub"
+    }
+  },
+  "phones": {
+    "title": "Your shop on other phones",
+    "add": {
+      "heading": "Add a phone",
+      "description": "Scan this code with the other phone's camera. It opens {{shop}} there, with the same live feed.",
+      "warning": "Anyone who scans it can see your sales. Only show it to people you trust.",
+      "show": "Show sign-in code",
+      "hide": "Hide the code",
+      "qrLabel": "Sign-in code for {{shop}}"
+    },
+    "signOut": {
+      "heading": "Lost a phone?",
+      "description": "Sign out every other phone. This phone stays signed in; the others need a new sign-in code.",
+      "action": "Sign out other phones",
+      "confirmTitle": "Sign out other phones?",
+      "confirmDescription": "They stop seeing your sales straight away, and sign-in codes shown before stop working.",
+      "done": "Other phones are signed out. Only this phone runs the shop now."
+    }
   },
   "demo": {
     "banner": "Demo mode · test money only"

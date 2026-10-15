@@ -6,11 +6,12 @@ import {
   zeroMoney,
 } from '@anypay/shared'
 import { useEffect, useMemo, useState } from 'react'
-import { z } from 'zod'
+import { z } from 'zod/mini'
 import { api, ApiRequestError } from '@/lib/api'
 import { readCache, writeCache } from '@/lib/cache'
 import { startOfToday } from '@/lib/format'
 import type { MerchantSession } from '@/lib/merchant-session'
+import { signOutOtherPhones } from '@/lib/merchant-token'
 import { type StreamState, useEventSource } from './useEventSource'
 
 export type FeedState = StreamState | 'loading' | 'unauthorized'
@@ -24,7 +25,7 @@ export interface LiveFeed {
 }
 
 // Today's feed on this phone: shown at once when the feed opens, before the live connection is up.
-const CachedFeedSchema = ShopPaymentsResponseSchema.extend({ day: z.string() })
+const CachedFeedSchema = z.extend(ShopPaymentsResponseSchema, { day: z.string() })
 type CachedFeed = z.infer<typeof CachedFeedSchema>
 
 function cachedToday(shopId: string, day: string): CachedFeed | undefined {
@@ -82,10 +83,16 @@ export function useLiveFeed(
   useEffect(() => {
     if (stream !== 'closed') return
     api.shopPayments(session.shopId, session.token, since).catch((error: unknown) => {
-      if (error instanceof ApiRequestError && [401, 404].includes(error.status))
-        setUnauthorized(true)
+      if (!(error instanceof ApiRequestError && [401, 404].includes(error.status))) return
+      // "Sign out other phones" went through but this phone never heard back: finish it with the
+      // token it chose (the new session reconnects the feed), rather than signing itself out.
+      if (error.status === 401 && session.nextToken) {
+        signOutOtherPhones(session).catch(() => setUnauthorized(true))
+        return
+      }
+      setUnauthorized(true)
     })
-  }, [stream, session.shopId, session.token, since])
+  }, [stream, session, since])
 
   // Totals change on completion, which arrives as a 'payment' event: recompute from the list.
   const liveTotal = useMemo(() => {

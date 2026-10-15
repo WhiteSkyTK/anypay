@@ -178,6 +178,14 @@ export function setUpPageTests() {
   })
   beforeEach(() => {
     vi.stubGlobal('EventSource', FakeEventSource)
+    // Screens render as with "reduce motion" on: the success tick appears still. happy-dom's Web
+    // Animations reject when a test unmounts a screen mid-animation, and no test checks motion.
+    const matchMedia = window.matchMedia.bind(window)
+    vi.spyOn(window, 'matchMedia').mockImplementation((query) => {
+      const list = matchMedia(query)
+      if (!query.includes('prefers-reduced-motion')) return list
+      return Object.defineProperty(list, 'matches', { value: true })
+    })
   })
   afterEach(() => {
     cleanup()
