@@ -5,12 +5,19 @@ import {
   CreatePaymentResponseSchema,
   type CreateShopRequest,
   CreateShopResponseSchema,
+  type OpenTabRequest,
+  OpenTabResponseSchema,
   PaymentSummarySchema,
   ShopPaymentsResponseSchema,
   ShopSchema,
+  ShopTabsResponseSchema,
+  TabSummarySchema,
+  VoucherStatusSchema,
+  type VoucherSubmission,
   WalletLookupResponseSchema,
 } from '@anypay/shared'
 import type { z } from 'zod'
+import { isSimulatedOffline } from './simulated-offline'
 
 // Empty in development: Vite proxies /api to the API, so the browser stays same-origin.
 const BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
@@ -42,6 +49,8 @@ async function send(path: string, options: RequestOptions = {}): Promise<Respons
   if (options.body !== undefined) headers['Content-Type'] = 'application/json'
   if (options.token) headers.Authorization = `Bearer ${options.token}`
   if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey
+  // Demo mode's "Simulate offline" fails every request exactly like a dead connection.
+  if (isSimulatedOffline()) throw new ApiRequestError('network_error', 'No connection', 0)
   let response: Response
   try {
     response = await fetch(`${BASE_URL}${path}`, {
@@ -110,6 +119,30 @@ export const api = {
     )
     return response.blob()
   },
+
+  // --- Offline Digital Tab ---
+
+  openTab: (shopId: string, body: OpenTabRequest, idempotencyKey: string) =>
+    request(`/api/shops/${enc(shopId)}/tabs`, OpenTabResponseSchema, {
+      method: 'POST',
+      body,
+      idempotencyKey,
+    }),
+
+  getTab: (tabId: string) => request(`/api/tabs/${enc(tabId)}`, TabSummarySchema),
+
+  /** The shop's active tabs with keys and caps, so its phone can check vouchers offline. */
+  shopTabs: (shopId: string, token: string) =>
+    request(`/api/shops/${enc(shopId)}/tabs`, ShopTabsResponseSchema, { token }),
+
+  submitVoucher: (tabId: string, body: VoucherSubmission, idempotencyKey: string) =>
+    request(`/api/tabs/${enc(tabId)}/vouchers`, VoucherStatusSchema, {
+      method: 'POST',
+      body,
+      idempotencyKey,
+    }),
+
+  getVoucher: (nonce: string) => request(`/api/vouchers/${enc(nonce)}`, VoucherStatusSchema),
 
   /** SSE: EventSource can't send headers, so the token rides in the query (never logged). */
   shopEventsUrl: (shopId: string, token: string, since: Date) =>
