@@ -1,5 +1,12 @@
 import { formatMoney, type PaymentSummary } from '@anypay/shared'
-import { Download, LoaderCircle, QrCode as QrIcon, ReceiptText, Store } from 'lucide-react'
+import {
+  BookOpen,
+  Download,
+  LoaderCircle,
+  QrCode as QrIcon,
+  ReceiptText,
+  Store,
+} from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
@@ -9,6 +16,7 @@ import { LiveIndicator } from '@/components/LiveIndicator'
 import { Page } from '@/components/Page'
 import { PaymentRow } from '@/components/PaymentRow'
 import { Switch } from '@/components/Switch'
+import { WaitingTabSales } from '@/components/WaitingTabSales'
 import { Button } from '@/components/ui/button'
 import { useErrorText } from '@/hooks/useErrorText'
 import { useLiveFeed } from '@/hooks/useLiveFeed'
@@ -19,6 +27,7 @@ import { api } from '@/lib/api'
 import { errorMessageKey } from '@/lib/error-message'
 import { downloadBlob, startOfToday } from '@/lib/format'
 import { type MerchantSession, setMerchantSession } from '@/lib/merchant-session'
+import { usesOfflineTabs } from '@/lib/offline-flag'
 
 const quickAction =
   'flex flex-col items-center gap-2 text-sm font-semibold disabled:opacity-50 [&>span]:grid [&>span]:size-14 [&>span]:place-items-center [&>span]:rounded-full [&>span]:bg-card [&>span]:text-card-foreground [&>span]:shadow-sm'
@@ -95,7 +104,13 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
         )}
       </section>
 
-      <div className="flex justify-center gap-10">
+      <div className="flex justify-center gap-8">
+        <Link to="/merchant/tab-sale" className={quickAction}>
+          <span>
+            <BookOpen aria-hidden="true" className="size-6" />
+          </span>
+          {t('merchant.actions.tabSale')}
+        </Link>
         <Link to="/merchant/poster" state={{ from: 'feed' }} className={quickAction}>
           <span>
             <QrIcon aria-hidden="true" className="size-6" />
@@ -132,6 +147,8 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
           disabled={!voice.supported}
         />
       </div>
+
+      {usesOfflineTabs() && <WaitingTabSales shopId={session.shopId} />}
 
       <section aria-labelledby="payments-heading" className="mt-10">
         <h2 id="payments-heading" className="section-label mb-3">

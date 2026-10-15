@@ -3,7 +3,7 @@ import { LoaderCircle, Store } from 'lucide-react'
 import { lazy, Suspense, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { EmptyState } from '@/components/EmptyState'
 import { Keypad } from '@/components/Keypad'
 import { BackButton } from '@/components/BackButton'
@@ -57,7 +57,15 @@ function PayForm({ shop }: Readonly<{ shop: Shop }>) {
 
   return (
     <Page title={shop.name} back="/pay">
-      <p className="mt-1 text-muted-foreground">{t('pay.subtitle')}</p>
+      <p className="mt-1 text-muted-foreground">
+        {t('pay.subtitle')} ·{' '}
+        <Link
+          to={`/shop/${shop.id}/tab`}
+          className="font-semibold text-primary underline-offset-4 hover:underline"
+        >
+          {t('tab.openHere')}
+        </Link>
+      </p>
 
       <section className="my-8 text-center">
         <label htmlFor="amount" className="section-label">

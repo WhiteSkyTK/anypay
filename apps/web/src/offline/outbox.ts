@@ -136,3 +136,10 @@ export function localRemaining(cap: SyncedCap, outbox: OutboxRow[], at: number):
   const left = base - used
   return { ...cap.shopCap, value: (left > 0n ? left : 0n).toString() }
 }
+
+let stopSync: (() => void) | undefined
+
+/** Starts the SyncManager once per page load; screens that use tabs call this on mount. */
+export function ensureSync(refresh?: () => Promise<void>): void {
+  stopSync ??= startSync(refresh)
+}

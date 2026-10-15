@@ -25,6 +25,16 @@ export const router = createBrowserRouter([
       { path: 'merchant/poster', lazy: () => import('@/pages/PosterPage') },
       { path: 'merchant/connect', lazy: () => import('@/pages/MerchantConnectPage') },
       { path: 'tab', handle: withTabBar, lazy: () => import('@/pages/TabPage') },
+      // Offline Digital Tab (Feature 4). /t/ and /v/ are what the two QR codes of a sale open.
+      { path: 'tab/:tabId', lazy: () => import('@/pages/TabDetailPage') },
+      { path: 'shop/:shopId/tab', lazy: () => import('@/pages/OpenTabPage') },
+      { path: 't/:shopId/:amount/:nonce/:ts', lazy: () => import('@/pages/ApproveSalePage') },
+      {
+        path: 'v/:tabId/:shopId/:amount/:nonce/:ts/:signature',
+        lazy: () => import('@/pages/ReceiveVoucherPage'),
+      },
+      { path: 'merchant/tab-sale', lazy: () => import('@/pages/TabSalePage') },
+      { path: 'scan', lazy: () => import('@/pages/ScanPage') },
       { path: 'settings', handle: withTabBar, lazy: () => import('@/pages/SettingsPage') },
       { path: '*', lazy: () => import('@/pages/NotFoundPage') },
     ],

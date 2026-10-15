@@ -1,4 +1,5 @@
 import { LazyMotion, MotionConfig } from 'motion/react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, ScrollRestoration, useMatches } from 'react-router'
 import { DemoBanner } from '@/components/DemoBanner'
@@ -7,6 +8,7 @@ import { TabBar } from '@/components/TabBar'
 import { UpdatePrompt } from '@/components/UpdatePrompt'
 import { useRouteFocus } from '@/hooks/useRouteFocus'
 import { useTheme } from '@/hooks/useTheme'
+import { loadOffline, usesOfflineTabs } from '@/lib/offline-flag'
 import { cn } from '@/lib/utils'
 import type { RouteHandle } from './route-handle'
 
@@ -21,6 +23,12 @@ export function AppShell() {
 
   useTheme()
   useRouteFocus()
+
+  // Phones that use tabs keep their vouchers moving in the background from the moment the app
+  // opens; everyone else never downloads the offline store.
+  useEffect(() => {
+    if (usesOfflineTabs()) void loadOffline().then((offline) => offline.startOfflineSync())
+  }, [])
 
   return (
     // reducedMotion="user": springs become instant when the phone asks for less motion.

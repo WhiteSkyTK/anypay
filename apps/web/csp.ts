@@ -17,7 +17,8 @@ export function contentSecurityPolicy(apiUrl: string | undefined): string {
     "font-src 'self'",
     ['connect-src', "'self'", api].filter(Boolean).join(' '),
     "manifest-src 'self'",
-    "worker-src 'self'",
+    // The QR scanner runs its decoder in a worker made from a blob: URL (only same-origin script can make one).
+    "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
