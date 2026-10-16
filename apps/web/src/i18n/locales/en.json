@@ -177,7 +177,8 @@
     },
     "paidWith": "Customer paid {{amount}}",
     "newPayment": "Payment received: {{amount}}",
-    "tab": "Tab"
+    "tab": "Tab",
+    "keepAwake": "Keep the screen on"
   },
   "status": {
     "created": "Started",
@@ -319,7 +320,14 @@
     "banner": "Demo mode · test money only"
   },
   "offline": {
-    "banner": "You're offline. AnyPay keeps working and syncs when you're back."
+    "banner": "You're offline. AnyPay keeps working and syncs when you're back.",
+    "unavailableTitle": "Offline tabs can't work here"
+  },
+  "slow": {
+    "notice": "Still working… If AnyPay was asleep, waking up can take up to a minute."
+  },
+  "clock": {
+    "warning": "This phone's clock is about {{minutes}} minutes off. AnyPay corrects for it, but set the date and time to automatic."
   },
   "update": {
     "ready": "A new version is ready",
@@ -367,11 +375,18 @@
       "invalid_amount": "Enter an amount more than zero.",
       "unknown": "Something went wrong. Please try again.",
       "voucher_invalid": "This voucher wasn't signed by the customer's phone.",
-      "tab_not_found": "Tab not found."
+      "tab_not_found": "Tab not found.",
+      "timeout": "AnyPay took too long to answer. Check your signal and try again.",
+      "unavailable": "AnyPay is waking up or restarting. Try again in a minute."
     },
     "tabLabel": {
       "required": "Enter a name the shop will know you by",
       "tooLong": "Use at most 30 characters"
+    },
+    "offline": {
+      "insecure": "Offline tabs need a secure connection. Open AnyPay from its https:// address, like the link on the shop's poster.",
+      "storage": "This browser won't let AnyPay keep offline sales (private browsing, or site storage turned off). Open AnyPay in a normal browser tab.",
+      "full": "This phone is out of storage space, so the sale wasn't saved. Free up some space and try again."
     }
   },
   "sale": {

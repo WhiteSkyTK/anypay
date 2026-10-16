@@ -177,7 +177,8 @@
     },
     "paidWith": "Ikhasimende likhokhe {{amount}}",
     "newPayment": "Inkokhelo yamukelwe: {{amount}}",
-    "tab": "Ithebhu"
+    "tab": "Ithebhu",
+    "keepAwake": "Gcina isikrini sikhanyile"
   },
   "status": {
     "created": "Iqalile",
@@ -319,7 +320,14 @@
     "banner": "Imodi yokubonisa · imali yokuhlola kuphela"
   },
   "offline": {
-    "banner": "Awuxhumekile ku-inthanethi. I-AnyPay iyaqhubeka isebenza futhi izovumelanisa uma usubuyile."
+    "banner": "Awuxhumekile ku-inthanethi. I-AnyPay iyaqhubeka isebenza futhi izovumelanisa uma usubuyile.",
+    "unavailableTitle": "Amathebhu angaxhunyiwe awakwazi ukusebenza lapha"
+  },
+  "slow": {
+    "notice": "Sisasebenza… Uma i-AnyPay ibilele, ukuvuka kungathatha kuze kube umzuzu."
+  },
+  "clock": {
+    "warning": "Iwashi lale foni lingalungile ngemizuzu engaba ngu-{{minutes}}. I-AnyPay iyalilungisa, kodwa setha usuku nesikhathi kube okuzenzakalelayo."
   },
   "update": {
     "ready": "Kukhona inguqulo entsha",
@@ -367,11 +375,18 @@
       "invalid_amount": "Faka inani elingaphezu kuka-zero.",
       "unknown": "Kukhona okungahambanga kahle. Sicela uzame futhi.",
       "voucher_invalid": "Le vawusha ayisayinwanga yifoni yekhasimende.",
-      "tab_not_found": "Ithebhu ayitholakali."
+      "tab_not_found": "Ithebhu ayitholakali.",
+      "timeout": "I-AnyPay ithathe isikhathi eside ukuphendula. Hlola isiginali yakho bese uzama futhi.",
+      "unavailable": "I-AnyPay iyavuka noma iqala kabusha. Zama futhi ngemuva komzuzu."
     },
     "tabLabel": {
       "required": "Faka igama isitolo esizokwazi ngalo",
       "tooLong": "Sebenzisa izinhlamvu ezingeqile ku-30"
+    },
+    "offline": {
+      "insecure": "Amathebhu angaxhunyiwe ku-inthanethi adinga uxhumano oluvikelekile. Vula i-AnyPay ekhelini layo le-https://, njengesixhumanisi esisephosta yesitolo.",
+      "storage": "Lesi siphequluli asiyivumeli i-AnyPay ukuthi igcine ukuthengisa okungaxhunyiwe (ukuphequlula kwangasese, noma ukugcina kuvaliwe). Vula i-AnyPay kuthebhu evamile yesiphequluli.",
+      "full": "Le foni ayinayo indawo yokugcina, ngakho ukuthengisa akugcinwanga. Khulula indawo bese uzama futhi."
     }
   },
   "sale": {

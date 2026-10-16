@@ -22,6 +22,7 @@ import { useErrorText } from '@/hooks/useErrorText'
 import { useLiveFeed } from '@/hooks/useLiveFeed'
 import { useMerchantSession } from '@/hooks/useMerchantSession'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
+import { useKeepAwake } from '@/hooks/useKeepAwake'
 import { useVoiceConfirm } from '@/hooks/useVoiceConfirm'
 import { api } from '@/lib/api'
 import { errorMessageKey } from '@/lib/error-message'
@@ -38,6 +39,7 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
   const errorText = useErrorText()
   const online = useOnlineStatus()
   const voice = useVoiceConfirm()
+  const keepAwake = useKeepAwake()
   const [announcement, setAnnouncement] = useState('')
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState<string>()
@@ -139,13 +141,20 @@ function ShopFeed({ session }: Readonly<{ session: MerchantSession }>) {
         </p>
       )}
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-3">
         <Switch
           label={voice.supported ? t('merchant.voice.label') : t('merchant.voice.unsupported')}
           checked={voice.enabled && voice.supported}
           onChange={voice.setEnabled}
           disabled={!voice.supported}
         />
+        {keepAwake.supported && (
+          <Switch
+            label={t('merchant.keepAwake')}
+            checked={keepAwake.enabled}
+            onChange={keepAwake.setEnabled}
+          />
+        )}
       </div>
 
       {usesOfflineTabs() && <WaitingTabSales shopId={session.shopId} />}

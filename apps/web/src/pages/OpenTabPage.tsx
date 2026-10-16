@@ -20,6 +20,7 @@ import { useShop } from '@/hooks/useShop'
 import { api } from '@/lib/api'
 import { errorMessageKey } from '@/lib/error-message'
 import { loadOffline } from '@/lib/offline-flag'
+import { OfflineStoreError, offlineProblem } from '@/lib/offline-support'
 import { cn } from '@/lib/utils'
 import { uuid } from '@/lib/uuid'
 
@@ -43,6 +44,14 @@ type Step = 'details' | 'checking' | 'cap' | 'approving'
  * the phone; only its public half goes to AnyPay with the tab.
  */
 export function Component() {
+  // Before anything is asked of the customer: a tab needs a device key and storage this browser
+  // may not offer (the error screen says which).
+  const problem = offlineProblem()
+  if (problem) throw new OfflineStoreError(problem)
+  return <OpenTab />
+}
+
+function OpenTab() {
   const { t } = useTranslation()
   const errorText = useErrorText()
   const online = useOnlineStatus()

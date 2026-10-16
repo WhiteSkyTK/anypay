@@ -1,3 +1,5 @@
+import { keepOfflineData } from './offline-support'
+
 const STORAGE_KEY = 'anypay.offlineTabs'
 
 /**
@@ -13,7 +15,9 @@ export function usesOfflineTabs(): boolean {
   }
 }
 
+/** This phone now holds tab data (keys, vouchers): sync it from boot, and ask to keep it. */
 export function markOfflineTabsInUse(): void {
+  void keepOfflineData()
   try {
     localStorage.setItem(STORAGE_KEY, 'on')
   } catch {

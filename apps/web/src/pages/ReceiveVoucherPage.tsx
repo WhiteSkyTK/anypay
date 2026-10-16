@@ -10,12 +10,23 @@ import { Button } from '@/components/ui/button'
 import { useMerchantSession } from '@/hooks/useMerchantSession'
 import { type OfflineModule, useOffline, useOfflineQuery } from '@/hooks/useOffline'
 import type { MerchantSession } from '@/lib/merchant-session'
+import { type OfflineProblem, offlineProblemKey, offlineProblemOf } from '@/lib/offline-support'
 
-type CheckResult = Awaited<ReturnType<OfflineModule['checkVoucher']>>
+type CheckResult =
+  | Awaited<ReturnType<OfflineModule['checkVoucher']>>
+  // The voucher was fine but this phone couldn't save it: the shop must not think it's kept.
+  | { ok: false; reason: OfflineProblem }
 
 function failureOf(voucher: Voucher | null, check: CheckResult | undefined) {
   if (!voucher) return 'invalid'
   return check && !check.ok ? check.reason : undefined
+}
+
+function failureKey(failure: NonNullable<ReturnType<typeof failureOf>>) {
+  if (failure === 'insecure' || failure === 'storage' || failure === 'full') {
+    return offlineProblemKey(failure)
+  }
+  return `voucher.check.${failure}` as const
 }
 
 /**
@@ -41,10 +52,13 @@ function Receive({
   useEffect(() => {
     if (!offline || !voucher || started.current) return
     started.current = true // once, even if React runs effects twice
-    void offline.checkVoucher(voucher, session).then(async (result) => {
-      if (result.ok) await offline.acceptVoucher(voucher, result.tab)
-      setCheck(result)
-    })
+    offline
+      .checkVoucher(voucher, session)
+      .then(async (result) => {
+        if (result.ok) await offline.acceptVoucher(voucher, result.tab)
+        setCheck(result)
+      })
+      .catch((error: unknown) => setCheck({ ok: false, reason: offlineProblemOf(error) }))
   }, [offline, voucher, session])
 
   const row = useOfflineQuery(offline, voucher?.nonce ?? 'none', (store) =>
@@ -67,7 +81,7 @@ function Receive({
           <>
             <CircleX aria-hidden="true" className="size-16 text-destructive" />
             <p role="alert" className="text-lg">
-              {t(`voucher.check.${failure}`)}
+              {t(failureKey(failure))}
             </p>
           </>
         ) : (

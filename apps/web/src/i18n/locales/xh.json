@@ -177,7 +177,8 @@
     },
     "paidWith": "Umthengi uhlawule {{amount}}",
     "newPayment": "Intlawulo ifunyenwe: {{amount}}",
-    "tab": "Ithebhu"
+    "tab": "Ithebhu",
+    "keepAwake": "Gcina isikrini sikhanyile"
   },
   "status": {
     "created": "Iqalile",
@@ -319,7 +320,14 @@
     "banner": "Imowudi yokubonisa · imali yovavanyo kuphela"
   },
   "offline": {
-    "banner": "Awukho kwi-intanethi. I-AnyPay iyaqhubeka isebenza kwaye iza kuvumelanisa xa ubuyile."
+    "banner": "Awukho kwi-intanethi. I-AnyPay iyaqhubeka isebenza kwaye iza kuvumelanisa xa ubuyile.",
+    "unavailableTitle": "Iithebhu ezingaphandle kwe-intanethi azinakusebenza apha"
+  },
+  "slow": {
+    "notice": "Sisasebenza… Ukuba i-AnyPay ibilele, ukuvuka kungathatha ukuya kumzuzu."
+  },
+  "clock": {
+    "warning": "Iwotshi yale fowuni iphazamile ngemizuzu emalunga ne-{{minutes}}. I-AnyPay iyayilungisa, kodwa seta umhla nexesha zibe zizenzekelayo."
   },
   "update": {
     "ready": "Kukho uguqulelo olutsha",
@@ -367,11 +375,18 @@
       "invalid_amount": "Faka isixa esingaphezulu kweqanda.",
       "unknown": "Kukho into engahambanga kakuhle. Nceda uzame kwakhona.",
       "voucher_invalid": "Le vawutsha ayityikitywanga yifowuni yomthengi.",
-      "tab_not_found": "Ithebhu ayifumanekanga."
+      "tab_not_found": "Ithebhu ayifumanekanga.",
+      "timeout": "I-AnyPay ithathe ixesha elide ukuphendula. Jonga uqhagamshelwano lwakho uzame kwakhona.",
+      "unavailable": "I-AnyPay iyavuka okanye iqala kwakhona. Zama kwakhona emva komzuzu."
     },
     "tabLabel": {
       "required": "Faka igama ivenkile eya kukwazi ngalo",
       "tooLong": "Sebenzisa ubuninzi boonobumba abangama-30"
+    },
+    "offline": {
+      "insecure": "Iithebhu ezingaphandle kwe-intanethi zifuna uqhagamshelwano olukhuselekileyo. Vula i-AnyPay kwidilesi yayo ye-https://, njengekhonkco elikwiphowusta yevenkile.",
+      "storage": "Esi sikhangeli asiyivumeli i-AnyPay ukuba igcine iintengiso ezingaphandle kwe-intanethi (ukukhangela kwangasese, okanye ugcino lucinyiwe). Vula i-AnyPay kwithebhu eqhelekileyo yesikhangeli.",
+      "full": "Le fowuni ayinandawo yokugcina, ngoko intengiso ayigcinwanga. Khulula indawo uzame kwakhona."
     }
   },
   "sale": {

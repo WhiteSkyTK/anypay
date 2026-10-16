@@ -32,7 +32,14 @@ export async function openDatabase(options: OpenDatabaseOptions = {}): Promise<D
       import('drizzle-orm/postgres-js'),
     ])
     // prepare: false keeps it working behind transaction-mode poolers (Neon, Supabase).
-    const client = postgres(options.url, { max: 5, prepare: false })
+    // Neon closes connections when its compute pauses (5 idle minutes): closing ours after 20 s
+    // idle means the next query opens a fresh one instead of failing on a dead socket.
+    const client = postgres(options.url, {
+      max: 5,
+      prepare: false,
+      idle_timeout: 20,
+      connect_timeout: 15,
+    })
     return { db: drizzle(client, { schema }), kind: 'postgres', close: () => client.end() }
   }
   const [{ PGlite }, { drizzle }] = await Promise.all([

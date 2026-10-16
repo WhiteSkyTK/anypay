@@ -7,6 +7,7 @@ import {
 } from '@anypay/shared'
 import { api } from '@/lib/api'
 import { markOfflineTabsInUse } from '@/lib/offline-flag'
+import { serverNow } from '@/lib/server-clock'
 import { uuid } from '@/lib/uuid'
 import { flushOutbox, localRemaining } from './outbox'
 import { getDb, type MyTabRow } from './store'
@@ -39,7 +40,7 @@ export async function myTabAtShop(shopId: string): Promise<MyTabRow | undefined>
 }
 
 /** What is left on a tab right now, counting vouchers this phone signed since it last synced. */
-export async function remainingOn(tab: MyTabRow, at = Date.now()) {
+export async function remainingOn(tab: MyTabRow, at = serverNow()) {
   if (!tab.shopCap || !tab.remaining) return undefined
   const outbox = await getDb().outbox.where('tabId').equals(tab.id).toArray()
   return localRemaining(

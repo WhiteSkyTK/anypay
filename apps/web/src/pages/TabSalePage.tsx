@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate } from 'react-router'
 import { Amount } from '@/components/Amount'
+import { ClockWarning } from '@/components/ClockWarning'
 import { EmptyState } from '@/components/EmptyState'
 import { Keypad } from '@/components/Keypad'
 import { Page } from '@/components/Page'
@@ -21,6 +22,7 @@ import { useOffline, useOfflineQuery } from '@/hooks/useOffline'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { applyKey, isPayable } from '@/lib/keypad'
 import type { MerchantSession } from '@/lib/merchant-session'
+import { serverNow } from '@/lib/server-clock'
 
 /**
  * A sale to a customer with a tab, with or without signal: the shop types the amount and shows a
@@ -39,21 +41,27 @@ function TabSale({ session }: Readonly<{ session: MerchantSession }>) {
   const [typed, setTyped] = useState('')
   const [request, setRequest] = useState<SaleRequest | null>(null)
   const [syncFailed, setSyncFailed] = useState(false)
+  const [refreshed, setRefreshed] = useState(false)
 
   // With signal, download the shop's tabs (keys and caps) so later sales work with none.
   useEffect(() => {
     if (!offline || !online) return
-    offline.refreshShopTabs(session).then(
-      () => setSyncFailed(false),
-      () => setSyncFailed(true),
-    )
+    offline
+      .refreshShopTabs(session)
+      .then(
+        () => setSyncFailed(false),
+        () => setSyncFailed(true),
+      )
+      .finally(() => setRefreshed(true))
   }, [offline, online, session])
 
   const tabs = useOfflineQuery(offline, session.shopId, (store) =>
     store.listShopTabs(session.shopId),
   )
 
-  if (tabs?.length === 0)
+  // "No tabs yet" only once the download has had its chance (or there's no signal for one), not
+  // while it is still on its way; and a sale already on screen stays: it may be mid-scan.
+  if (tabs?.length === 0 && (refreshed || !online) && !request)
     return (
       <Page title={t('sale.title')} back="/merchant">
         <div className="mt-8">
@@ -101,13 +109,16 @@ function TabSale({ session }: Readonly<{ session: MerchantSession }>) {
       shopId: session.shopId,
       amount: value,
       nonce: newNonce(),
-      ts: Math.floor(Date.now() / 1000),
+      // Corrected to the server's clock: a phone with the wrong time would stamp vouchers the
+      // server then refuses as expired.
+      ts: Math.floor(serverNow() / 1000),
     })
   }
 
   return (
     <Page title={t('sale.title')} back="/merchant">
       <p className="mt-1 text-muted-foreground">{t('sale.hint')}</p>
+      <ClockWarning />
       {syncFailed && <p className="mt-4 rounded-card bg-muted px-5 py-4">{t('sale.syncFailed')}</p>}
       {tabs && (
         <p className="mt-2 text-sm text-muted-foreground">

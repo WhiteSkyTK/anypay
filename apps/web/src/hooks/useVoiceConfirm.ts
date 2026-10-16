@@ -1,33 +1,11 @@
 import { useCallback, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
+import { switchPreference } from '@/lib/switch-preference'
 
-const STORAGE_KEY = 'anypay.voice'
-const listeners = new Set<() => void>()
+const preference = switchPreference('anypay.voice')
 
 // Web Speech voices are named by BCP 47 tag; South African variants first.
 const SPEECH_LANG: Record<string, string> = { en: 'en-ZA', zu: 'zu-ZA', xh: 'xh-ZA', nso: 'nso-ZA' }
-
-function readEnabled(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === 'on'
-  } catch {
-    return false
-  }
-}
-
-function writeEnabled(enabled: boolean): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, enabled ? 'on' : 'off')
-  } catch {
-    // Not remembered; still works for this visit.
-  }
-  listeners.forEach((listener) => listener())
-}
-
-const subscribe = (listener: () => void) => {
-  listeners.add(listener)
-  return () => listeners.delete(listener)
-}
 
 const isSupported = () => typeof window !== 'undefined' && 'speechSynthesis' in window
 
@@ -38,7 +16,7 @@ const isSupported = () => typeof window !== 'undefined' && 'speechSynthesis' in 
  */
 export function useVoiceConfirm() {
   const { i18n } = useTranslation()
-  const enabled = useSyncExternalStore(subscribe, readEnabled, () => false)
+  const enabled = useSyncExternalStore(preference.subscribe, preference.read, () => false)
   const supported = isSupported()
 
   const announce = useCallback(
@@ -56,5 +34,5 @@ export function useVoiceConfirm() {
     [enabled, supported, i18n],
   )
 
-  return { enabled, supported, setEnabled: writeEnabled, announce }
+  return { enabled, supported, setEnabled: preference.write, announce }
 }

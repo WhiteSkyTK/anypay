@@ -5,6 +5,7 @@ import { cleanup, render } from '@testing-library/react'
 import type { ComponentType } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, beforeAll, beforeEach, vi } from 'vitest'
+import { RouteError } from '@/app/RouteError'
 import { initI18n } from '@/i18n'
 import { setMerchantSession } from '@/lib/merchant-session'
 
@@ -162,7 +163,8 @@ export function renderPage(
 ) {
   const router = createMemoryRouter(
     [
-      { path: pattern, Component: Page },
+      // The app's own error screen, as in router.tsx, so tests see what a phone would.
+      { path: pattern, Component: Page, ErrorBoundary: RouteError },
       ...stubs.map((stub) => ({ path: stub, element: <p>{`Stub page ${stub}`}</p> })),
     ],
     { initialEntries: [...before, state === undefined ? path : { pathname: path, state }] },
@@ -178,6 +180,8 @@ export function setUpPageTests() {
   })
   beforeEach(() => {
     vi.stubGlobal('EventSource', FakeEventSource)
+    // As on https or localhost (happy-dom leaves it unset): offline tabs need a secure context.
+    vi.stubGlobal('isSecureContext', true)
     // Screens render as with "reduce motion" on: the success tick appears still. happy-dom's Web
     // Animations reject when a test unmounts a screen mid-animation, and no test checks motion.
     const matchMedia = window.matchMedia.bind(window)

@@ -71,6 +71,20 @@ describe('CORS', () => {
     const res = await request(app).get('/health').set('Origin', 'https://evil.example')
     expect(res.headers['access-control-allow-origin']).toBeUndefined()
   })
+
+  it('lets the web app sign out other phones (PUT) from its own origin', async () => {
+    const res = await request(app)
+      .options('/api/shops/ABC/merchant-token')
+      .set('Origin', WEB_ORIGIN)
+      .set('Access-Control-Request-Method', 'PUT')
+      .set('Access-Control-Request-Headers', 'authorization,content-type')
+    expect(res.headers['access-control-allow-methods']).toContain('PUT')
+  })
+
+  it('lets the web app read the server time, to correct a phone with the wrong clock', async () => {
+    const res = await request(app).get('/health').set('Origin', WEB_ORIGIN)
+    expect(res.headers['access-control-expose-headers']).toContain('Date')
+  })
 })
 
 describe('errors', () => {

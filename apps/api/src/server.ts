@@ -22,6 +22,9 @@ async function main(): Promise<void> {
   await migrate(database.db)
   const container = createContainer(env, database.db)
   const { logger } = container
+  // Background work (watching payments, settling vouchers) runs outside any request. A rejection
+  // there is logged; crashing would drop every shop's live feed and payments in flight.
+  process.on('unhandledRejection', (reason) => logger.error({ err: reason }, 'Unhandled rejection'))
 
   const server = createApp(container).listen(env.PORT, (error) => {
     if (error) throw error

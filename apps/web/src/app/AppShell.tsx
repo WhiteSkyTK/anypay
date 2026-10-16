@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Outlet, ScrollRestoration, useMatches } from 'react-router'
 import { DemoBanner } from '@/components/DemoBanner'
 import { OfflineBanner } from '@/components/OfflineBanner'
+import { SlowNotice } from '@/components/SlowNotice'
 import { TabBar } from '@/components/TabBar'
 import { UpdatePrompt } from '@/components/UpdatePrompt'
 import { useRouteFocus } from '@/hooks/useRouteFocus'
@@ -39,6 +40,7 @@ export function AppShell() {
       <DemoBanner />
       <div className="print:hidden">
         <OfflineBanner />
+        <SlowNotice />
       </div>
       <main id="main" tabIndex={-1} className={cn('focus:outline-none', showTabBar && 'pb-36')}>
         <Outlet />
