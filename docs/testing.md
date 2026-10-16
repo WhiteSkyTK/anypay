@@ -199,6 +199,22 @@ in Safari, which doesn't have the tab's key): use the in-app scanner there.
 - [ ] Start page and **Settings → Privacy** open the privacy notice; it reads well in every
       language (drafts need the native-speaker review)
 
+**Real phones, bad networks (2026-10-16)**
+
+- [ ] With Render asleep (no visits for 15+ minutes), open a shop's pay screen: after a few seconds
+      a grey **Still working…** bar says AnyPay may be waking up, and the page then loads by
+      itself
+- [ ] Shop feed: switch on **Keep the screen on**, put the phone down for 5 minutes: the screen
+      stays on, and a test payment is still spoken
+- [ ] Set the shop phone's clock 2 hours wrong (turn off automatic time), open the app once with
+      signal, then **Tab sale**: a warning asks to fix the clock, and the tab sale still settles
+- [ ] Open a tab on the laptop's LAN address (`http://192.168.…`): the app says offline tabs need
+      a secure connection, instead of a blank screen (payments still work there)
+- [ ] Phone set to reduce motion (Android: Settings → Accessibility → Remove animations; iPhone:
+      Reduce Motion): the success tick and the price sheet appear without animating
+- [ ] Shop phone A shows its feed; phone B (signed in with the sign-in code) signs out other
+      phones: A says **This phone is signed out of the shop** within seconds
+
 ## Problems found
 
 <!-- Example: "Poster: QR too small to scan from 1 m on my phone (Samsung A05)" -->

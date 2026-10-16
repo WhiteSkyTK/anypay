@@ -94,8 +94,13 @@ spending limit, so it's a safer digital version of the credit book many shops al
 
 ## Our research
 
-**TODO (team):** add findings from spaza owner interviews here (or in `docs/research/`). For each
-interview, with consent, note:
+Desk research with sources, and what AnyPay does about each finding:
+[research/desk-research.md](research/desk-research.md). The kit for the team's field research
+(consent script, interview questions, usability-test tasks) and the as-built screen map and user
+flows are in [research/](research/README.md).
+
+**TODO (team):** add findings from spaza owner interviews in `docs/research/interviews/`, using the
+[interview guide](research/interview-guide.md). For each interview, with consent, note:
 
 - how customers pay today, and what card or QR options cost the shop
 - how credit for regular customers works (the "book")

@@ -114,36 +114,48 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 **Team:** usability test with 2–3 spaza owners; note what changed.
 
 ## Phase 4 — Polish & submission · target 1 Nov (freeze 2 Nov) · Status: In progress
-- [ ] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues (24 minor code smells on main, 2026-10-15)
+- [x] Fix axe/Lighthouse issues, contrast in both themes, 200% text, reduced motion, i18n coverage, bundle budget, Sonar issues (24 minor code smells on main, 2026-10-15)
   - [x] Lighthouse mobile on the production build (median of 3, 2026-10-15): start 93, Pay a shop 94, pay screen 92, set-up 94; accessibility, best practices and SEO 100 on all four (robots.txt, zod CSP probe, shop prefetch, launch mark, Motion only on the receipt)
-  - [ ] Sonar code smells, 200% text and reduced-motion pass
+  - [x] Sonar: all 37 open issues on main fixed or marked with the reason (2026-10-16)
+  - [x] 200% text: nine screens at phone width (375 px), none overflow or push text off-screen, with a long shop name (2026-10-16)
+  - [x] Reduced motion: the global CSS reset plus Motion's reducedMotion="user"; page tests run with reduce-motion on. Still to try on a real phone (docs/testing.md)
 - [x] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB (now 18.5 KB: shared schemas are zod/mini, 24 → 8 KB gz)
 - [ ] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
 - [ ] Test on a budget Android phone outdoors in sunlight, and on an iPhone
-- [ ] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
-- [ ] Summarise docs/decisions.md into slide-ready bullets
+- [x] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
+- [x] Summarise docs/decisions.md into slide-ready bullets: docs/slides.md (team slots marked for interview quotes and the usability-test change)
 - [x] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
 - [x] Privacy notice page (what is stored: shop name, wallet address, amounts; customer wallets only encrypted) and how long payments are kept (POPIA): `/privacy`, linked from the start page and Settings
 - [ ] Team: confirm the Neon project is in Europe (the privacy page says servers and database are in Europe)
 - [ ] Retention: payments are kept until the demo is reset; a real launch needs a schedule that deletes or anonymises old payments (then update the privacy page)
 - [x] "Use this shop on another phone" (show the sign-in link as a QR) and "sign out other phones" (rotate the merchant token): Settings → Use on another phone; the phone picks its new token, so a lost answer never locks it out, and open feeds on other phones end at once
-- [ ] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket
+- [x] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket. Now a one-minute ticket bought with the token in a header; "sign out other phones" revokes tickets
+- [x] Error handling for real phones and networks (2026-10-16):
+  - request timeouts with "Still working…", and the host's 502 read as "waking up"
+  - reload once after a deploy
+  - the phone's clock corrected for vouchers
+  - offline tabs explain plain http:// and blocked or full storage; persistent storage requested
+  - keep the screen on
+  - the API logs unhandled rejections; Neon idle connections handled
+  - fixed CORS for PUT (sign out other phones would have failed in production), a "No tabs yet" flash during refresh, and a retry loop in sign-out recovery
+- [ ] Team decision: add Afrikaans? The third most common home language (10.6%, Census 2022) isn't offered yet (docs/research/desk-research.md)
+- [ ] Consider precaching only the customer's screens on a customer's phone: today a first visit fetches the whole app (about 330 KB, about 5c of data) for offline use
 
 **Done when**
-- [ ] Lighthouse mobile Performance and Accessibility ≥ 90; Sonar quality gate passes
+- [x] Lighthouse mobile Performance and Accessibility ≥ 90; Sonar quality gate passes (production build: performance 92–94, accessibility 100 on four pages, 2026-10-15; gate OK on main and PR #8)
 - [ ] A teammate follows the README on a clean machine and runs the demo
 
 **Team:** slides, 10–15 min video, submission folder.
 
 ## Research & design track (team, alongside the phases)
 Worth 40% of the marks (problem understanding + design process). Keep notes in docs/challenge.md or docs/research/.
-- [ ] Interview 3–5 spaza owners, with consent: how customers pay, card/QR costs, credit for regulars, data costs and signal, what makes them trust a payment
-- [ ] Problem statement and key stats with sources (started in docs/challenge.md)
-- [ ] Personas: one merchant, one customer
-- [ ] User journeys and user flows for Features 1–4
+- [ ] Interview 3–5 spaza owners, with consent: how customers pay, card/QR costs, credit for regulars, data costs and signal, what makes them trust a payment. Kit: docs/research/interview-guide.md (consent script, questions, write-up template)
+- [x] Problem statement and key stats with sources (started in docs/challenge.md): docs/research/desk-research.md, 19 sources, each finding mapped to what AnyPay does; check a source before its number goes on a slide
+- [ ] Personas: one merchant, one customer (from the interviews; the assumptions to test are in the interview guide)
+- [ ] User journeys and user flows for Features 1–4: flows as built are in docs/research/flows.md; journeys with pain points come from the interviews
 - [ ] Wireframes, and each design change logged with its reason in docs/decisions.md
-- [ ] Information architecture and system architecture diagrams
-- [ ] Usability test with 2–3 owners (Phase 3) and what changed as a result
+- [x] Information architecture and system architecture diagrams: screen map in docs/research/flows.md, architecture and sequence diagrams in the README
+- [ ] Usability test with 2–3 owners (Phase 3) and what changed as a result. Kit: docs/research/usability-test.md (seven tasks, measures, findings → changes)
 
 ## Submission checklist (by 5 Nov; confirm the deadline in Slack)
 - [ ] Presentation (PDF or PowerPoint): problem and opportunity, research insights, user stories/journeys, user flows and architecture diagrams, design decisions and process, tech implementation and stack, key features, challenges and how we overcame them, impact and future improvements
@@ -168,3 +180,4 @@ Worth 40% of the marks (problem understanding + design process). Keep notes in d
 - 2026-10-14 · Phase 3 server done on `phase-3-offline-tab` (47e4a89): shared voucher protocol (P-256 sign/verify, links), tabs with weekly-capped grants, cap measured in shop currency (verified live), vouchers claimed by nonce and settled once with the stored grant, token rotation, routes and 11 flow tests. · Next: web side: Dexie outbox + SyncManager, device keys, open-tab / my tabs / approve-sale (/t/) / receive-voucher (/v/) screens, merchant tab-sale screen, in-app QR scanner, Simulate offline toggle, i18n x4. · Blockers: none.
 - 2026-10-15 · SonarCloud security C fixed (seed script SSRF) on `phase-2-wrap-up`, merged into Phase 3. Phase 3 web side built on `phase-3-offline-tab`: Dexie offline store (lazy), outbox SyncManager, Simulate offline, open tab / my tabs / tab detail / approve sale / tab sale / receive voucher / in-app scanner, feed integration, four languages. Real test wallet accepts the weekly-limit grant; device key stored non-extractable. 554+ tests; budget 195.6 KB. · Next: you push `phase-2-wrap-up` (Sonar, /start live), then test Phase 3 with two phones (docs/testing.md) for its "Done when"; then Phase 4. · Blockers: the wallet approval and two real phones are the team's.
 - 2026-10-15 · Phase 3 closed (two-phone airplane-mode sale settled once, tested by the team). Phase 4 on `phase-4-polish`: Lighthouse mobile ≥ 90 on the four main pages (92–94; a11y, best practices, SEO 100) via shop prefetch, launch mark, zod/mini (24 → 8 KB), Motion only on the receipt and robots.txt; CSP issue fixed (zod's eval probe); receipt tells "can't reach AnyPay" from "not found"; privacy page (POPIA); "Use on another phone" QR and "Sign out other phones" (token rotation that can't lock a shop out, open feeds ended). 593 tests; heaviest first load 191.5 KB. · Next: stream ticket instead of `?token=`, Sonar smells, 200% text / reduced-motion pass, slide bullets; team: native-speaker review, budget-phone and iPhone test, confirm the Neon region, the Phase 4 checklist in docs/testing.md. · Blockers: none.
+- 2026-10-16 · Phase 4 on `phase-4-finish` (from main after PR #8). Error handling for real phones and networks (timeouts and "Still working…", host 502 as "waking up", reload after deploy, phone clock correction for vouchers, offline-tab explanations, persistent storage, keep the screen on, API unhandled rejections, Neon idle connections); found and fixed: CORS blocked PUT (sign out other phones in production), "No tabs yet" flash during refresh, a sign-out recovery loop. All 37 Sonar issues on main addressed. Live feed opens with one-minute tickets. 200% text checked on nine screens. Desk research (19 sources) mapped to the solution, interview and usability-test kits, screen map and flows, slide bullets. 619 tests; heaviest first load 193.3 KB. · Next: team runs interviews and the usability test with the kits, native-speaker review, phone checks in docs/testing.md (incl. the new "real phones, bad networks" section), decides on Afrikaans; a teammate follows the README on a clean machine (last Phase 4 "Done when"). · Blockers: none in code.
