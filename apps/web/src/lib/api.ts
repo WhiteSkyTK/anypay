@@ -11,6 +11,7 @@ import {
   ShopPaymentsResponseSchema,
   ShopSchema,
   ShopTabsResponseSchema,
+  StreamTicketResponseSchema,
   TabSummarySchema,
   VoucherStatusSchema,
   type VoucherSubmission,
@@ -182,8 +183,15 @@ export const api = {
   getVoucher: (nonce: string) => request(`/api/vouchers/${enc(nonce)}`, VoucherStatusSchema),
 
   /** SSE: EventSource can't send headers, so the token rides in the query (never logged). */
-  shopEventsUrl: (shopId: string, token: string, since: Date) =>
-    `${BASE_URL}/api/shops/${enc(shopId)}/events?token=${enc(token)}&since=${enc(since.toISOString())}`,
+  /** A one-minute pass for the live feed: the merchant token goes in a header, not a URL. */
+  streamTicket: (shopId: string, token: string) =>
+    request(`/api/shops/${enc(shopId)}/stream-tickets`, StreamTicketResponseSchema, {
+      method: 'POST',
+      token,
+    }),
+
+  shopEventsUrl: (shopId: string, ticket: string, since: Date) =>
+    `${BASE_URL}/api/shops/${enc(shopId)}/events?ticket=${enc(ticket)}&since=${enc(since.toISOString())}`,
 
   paymentEventsUrl: (paymentId: string) => `${BASE_URL}/api/payments/${enc(paymentId)}/events`,
 }

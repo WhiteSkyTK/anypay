@@ -19,6 +19,7 @@ import { PaymentService } from './services/payment-service'
 import type { PaymentSession } from './services/payment-session'
 import { PaymentWatcher } from './services/payment-watcher'
 import { ShopService } from './services/shop-service'
+import { StreamTickets } from './services/stream-tickets'
 import { TabService } from './services/tab-service'
 import { WalletAddressResolver } from './services/wallet-address-resolver'
 import { randomBytes } from 'node:crypto'
@@ -50,6 +51,7 @@ export interface Container extends Core {
   paymentEvents: PaymentEvents
   idempotency: IdempotencyRepository
   tabService: TabService
+  streamTickets: StreamTickets
 }
 
 function createGateway(env: Env): OpenPaymentsGateway {
@@ -106,11 +108,14 @@ export function createContainer(env: Env, db: Database, options: CoreOptions = {
   const core = createCore(env, options)
   const cipher = createCipher(env, core.logger)
   const paymentEvents = new PaymentEvents()
-  const shopService = new ShopService(
-    new ShopRepository(db),
-    core.walletAddressResolver,
-    paymentEvents,
-  )
+  const streamTickets = new StreamTickets()
+  const shopService = new ShopService(new ShopRepository(db), core.walletAddressResolver, {
+    // Signing out other phones ends their open feeds and the feed tickets they were given.
+    signOutShop: (shopId) => {
+      streamTickets.revokeShop(shopId)
+      paymentEvents.signOutShop(shopId)
+    },
+  })
   const paymentService = new PaymentService({
     shops: shopService,
     payments: new PaymentRepository(db, cipher),
@@ -140,5 +145,6 @@ export function createContainer(env: Env, db: Database, options: CoreOptions = {
     paymentEvents,
     idempotency: new IdempotencyRepository(db, cipher),
     tabService,
+    streamTickets,
   }
 }

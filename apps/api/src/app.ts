@@ -65,6 +65,7 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       events: container.paymentEvents,
       idempotency: container.idempotency,
       tabs: container.tabService,
+      tickets: container.streamTickets,
       limit,
       streams,
     }),

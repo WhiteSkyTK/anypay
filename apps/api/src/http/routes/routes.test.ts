@@ -440,6 +440,46 @@ describe('live updates (SSE)', () => {
   })
 })
 
+describe('feed tickets (the merchant token stays out of URLs)', () => {
+  async function ticketFor(shopId: string, token: string) {
+    const res = await request(app)
+      .post(`/api/shops/${shopId}/stream-tickets`)
+      .set('Authorization', `Bearer ${token}`)
+    return { status: res.status, ...(res.body as { ticket?: string; expiresAt?: string }) }
+  }
+
+  it('opens the feed with a ticket bought with the token, in a header', async () => {
+    const { shop, merchantToken } = await createShop()
+    const { status, ticket, expiresAt } = await ticketFor(shop.id, merchantToken)
+    expect(status).toBe(201)
+    expect(Date.parse(expiresAt ?? '') - Date.now()).toBeLessThanOrEqual(60_000)
+    const events = await readEvents(`/api/shops/${shop.id}/events?ticket=${ticket}`, (received) =>
+      received.some((e) => e.event === 'snapshot'),
+    )
+    expect(events[0]?.event).toBe('snapshot')
+  })
+
+  it('needs the merchant token to get a ticket', async () => {
+    const { shop } = await createShop()
+    expect((await ticketFor(shop.id, 'not-the-token')).status).toBe(401)
+  })
+
+  it('refuses a made-up ticket, and another shop’s', async () => {
+    const mine = await createShop()
+    const other = await createShop('Other Spaza')
+    const { ticket } = await ticketFor(other.shop.id, other.merchantToken)
+    await request(app).get(`/api/shops/${mine.shop.id}/events?ticket=${ticket}`).expect(401)
+    await request(app).get(`/api/shops/${mine.shop.id}/events?ticket=made-up`).expect(401)
+  })
+
+  it('stops tickets working once other phones are signed out', async () => {
+    const { shop, merchantToken } = await createShop()
+    const { ticket } = await ticketFor(shop.id, merchantToken)
+    await replaceToken(shop.id, merchantToken, newToken())
+    await request(app).get(`/api/shops/${shop.id}/events?ticket=${ticket}`).expect(401)
+  })
+})
+
 describe('rate limits', () => {
   it('limits wallet lookups per client', async () => {
     const limited = createApp(createContainer(env, database.db, { openPayments }), {

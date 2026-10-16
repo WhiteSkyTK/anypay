@@ -54,9 +54,18 @@ export interface ApiCall {
 
 type Route = Reply | ((call: ApiCall) => Reply)
 
+const FEED_TICKET = /^POST \/api\/shops\/[^/]+\/stream-tickets$/
+// A new ticket every time, as the API gives: each (re)connection opens a different URL.
+let tickets = 0
+const ticketReply = (): Reply => ({
+  status: 201,
+  body: { ticket: 'feed-ticket-' + ++tickets, expiresAt: '2099-01-01T00:00:00.000Z' },
+})
+
 /**
  * Replaces fetch with scripted replies, keyed by "METHOD /path" (query string ignored). A route
- * given a list replies with each entry in turn, then repeats the last one.
+ * given a list replies with each entry in turn, then repeats the last one. The shop feed's tickets
+ * are granted unless a test scripts that route, so feed tests stay about the feed.
  */
 export function fakeApi(routes: Record<string, Route | Route[]>) {
   const calls: ApiCall[] = []
@@ -72,7 +81,7 @@ export function fakeApi(routes: Record<string, Route | Route[]>) {
     }
     calls.push(call)
     const key = `${call.method} ${pathname}`
-    const route = routes[key]
+    const route = routes[key] ?? (FEED_TICKET.test(key) ? ticketReply : undefined)
     if (!route) throw new Error(`Unexpected API call: ${key}`)
     const count = served.get(key) ?? 0
     served.set(key, count + 1)
@@ -187,6 +196,8 @@ export function setUpPageTests() {
     vi.stubGlobal('EventSource', FakeEventSource)
     // As on https or localhost (happy-dom leaves it unset): offline tabs need a secure context.
     vi.stubGlobal('isSecureContext', true)
+    // No real network in tests: an unscripted request fails loudly.
+    fakeApi({})
     // Screens render as with "reduce motion" on: the success tick appears still. happy-dom's Web
     // Animations reject when a test unmounts a screen mid-animation, and no test checks motion.
     const matchMedia = window.matchMedia.bind(window)

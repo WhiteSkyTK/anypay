@@ -17,7 +17,9 @@ export function signInLink(session: MerchantSession, origin = window.location.or
  */
 export async function signOutOtherPhones(session: MerchantSession): Promise<MerchantSession> {
   const next = session.nextToken ?? randomBase64url(32)
-  setMerchantSession({ ...session, nextToken: next })
+  // Only when new: re-saving would hand every screen a "changed" session, and the live feed
+  // reacts to a changed session by trying again, which would land here again.
+  if (session.nextToken !== next) setMerchantSession({ ...session, nextToken: next })
   try {
     await api.replaceMerchantToken(session.shopId, session.token, next)
   } catch (error) {
