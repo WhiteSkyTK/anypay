@@ -78,19 +78,25 @@ export async function migrate(
     applied_at timestamptz NOT NULL DEFAULT now()
   )`)
   const appliedNow: string[] = []
+  // In order, one at a time: each migration builds on the ones before it.
   for (const migration of migrations) {
-    const applied = await db.transaction(async (tx) => {
-      await tx.execute(sql`SELECT pg_advisory_xact_lock(${MIGRATION_LOCK_ID})`)
-      const done = await tx
-        .select()
-        .from(schema.schemaMigrations)
-        .where(sql`${schema.schemaMigrations.name} = ${migration.name}`)
-      if (done.length > 0) return false
-      for (const statement of migration.statements) await tx.execute(sql.raw(statement))
-      await tx.insert(schema.schemaMigrations).values({ name: migration.name })
-      return true
-    })
-    if (applied) appliedNow.push(migration.name)
+    if (await applyMigration(db, migration)) appliedNow.push(migration.name) // NOSONAR: in order
   }
   return appliedNow
+}
+
+/** One migration in its own transaction, unless it already ran. True if it ran now. */
+function applyMigration(db: Database, migration: Migration): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(${MIGRATION_LOCK_ID})`)
+    const done = await tx
+      .select()
+      .from(schema.schemaMigrations)
+      .where(sql`${schema.schemaMigrations.name} = ${migration.name}`)
+    if (done.length > 0) return false
+    // A migration's statements depend on each other, so they run in order.
+    for (const statement of migration.statements) await tx.execute(sql.raw(statement)) // NOSONAR
+    await tx.insert(schema.schemaMigrations).values({ name: migration.name })
+    return true
+  })
 }

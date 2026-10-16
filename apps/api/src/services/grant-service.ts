@@ -172,13 +172,14 @@ export class GrantService {
     let continuation = first
     for (let attempt = 1; attempt <= this.#maxContinueAttempts; attempt++) {
       try {
-        const result = await this.#openPayments.continueGrant(continuation, interactRef)
+        // Each attempt waits the auth server's wait time first, so attempts run in order.
+        const result = await this.#openPayments.continueGrant(continuation, interactRef) // NOSONAR
         if (result.status === 'granted') return result.access
         continuation = result.continuation
       } catch (error) {
         if (!isOpenPaymentsError(error, 'too_fast')) throw error
       }
-      await this.#sleep(Math.max(continuation.waitSeconds, 1) * 1000)
+      await this.#sleep(Math.max(continuation.waitSeconds, 1) * 1000) // NOSONAR
     }
     throw new OpenPaymentsError('consent_pending', 'The payment has not been approved yet')
   }

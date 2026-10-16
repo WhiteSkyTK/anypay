@@ -38,6 +38,25 @@ function upsert(list: PaymentSummary[], payment: PaymentSummary): PaymentSummary
   return [payment, ...rest].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
+/** The phone's token was refused (or the shop is gone), so the feed can stop trying. */
+async function isSignedOut(session: MerchantSession, since: Date): Promise<boolean> {
+  try {
+    await api.shopPayments(session.shopId, session.token, since)
+    return false
+  } catch (error) {
+    if (!(error instanceof ApiRequestError && [401, 404].includes(error.status))) return false
+    if (error.status === 404 || !session.nextToken) return true
+  }
+  // "Sign out other phones" went through but this phone never heard back: finish it with the
+  // token it chose (the new session reconnects the feed), rather than signing itself out.
+  try {
+    await signOutOtherPhones(session)
+    return false
+  } catch {
+    return true
+  }
+}
+
 /**
  * Today's payments for the shop on this phone, pushed live over SSE (the phone never polls).
  * After any reconnect the server sends a fresh snapshot, so nothing is missed while offline.
@@ -82,16 +101,10 @@ export function useLiveFeed(
   // or the shop no longer exists (e.g. a reset local database). Anything else: keep retrying.
   useEffect(() => {
     if (stream !== 'closed') return
-    api.shopPayments(session.shopId, session.token, since).catch((error: unknown) => {
-      if (!(error instanceof ApiRequestError && [401, 404].includes(error.status))) return
-      // "Sign out other phones" went through but this phone never heard back: finish it with the
-      // token it chose (the new session reconnects the feed), rather than signing itself out.
-      if (error.status === 401 && session.nextToken) {
-        signOutOtherPhones(session).catch(() => setUnauthorized(true))
-        return
-      }
-      setUnauthorized(true)
-    })
+    isSignedOut(session, since).then(
+      (signedOut) => signedOut && setUnauthorized(true),
+      () => undefined,
+    )
   }, [stream, session, since])
 
   // Totals change on completion, which arrives as a 'payment' event: recompute from the list.

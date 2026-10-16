@@ -70,7 +70,9 @@ async function main(): Promise<void> {
   console.log(`  ${web}/s/${shop.id}`)
 }
 
-main().catch((error: unknown) => {
+try {
+  await main()
+} catch (error) {
   console.error(error instanceof Error ? error.message : String(error))
   process.exit(1)
-})
+}

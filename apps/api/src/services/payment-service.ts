@@ -192,12 +192,14 @@ export class PaymentService {
   /** After a restart, keeps watching payments that were sent but not yet confirmed. */
   async resumeWatching(): Promise<number> {
     const sessions = await this.#deps.payments.findSessionsByStatus('sending')
-    for (const session of sessions) {
-      const stored = await this.#deps.payments.find(session.id)
-      if (!stored) continue
-      const shop = await this.#deps.shops.getShop(stored.record.shopId)
-      void this.#watch(session, shop)
-    }
+    await Promise.all(
+      sessions.map(async (session) => {
+        const stored = await this.#deps.payments.find(session.id)
+        if (!stored) return
+        const shop = await this.#deps.shops.getShop(stored.record.shopId)
+        void this.#watch(session, shop)
+      }),
+    )
     return sessions.length
   }
 

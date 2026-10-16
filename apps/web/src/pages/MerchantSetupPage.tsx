@@ -73,8 +73,8 @@ export function Component() {
       const found = await api.lookupWallet(parsed.data)
       setWallet(found)
       setName((current) => current || found.publicName || '')
-    } catch (caught) {
-      setError(errorMessageKey(caught))
+    } catch (error_) {
+      setError(errorMessageKey(error_))
     } finally {
       setBusy('idle')
     }
@@ -102,8 +102,8 @@ export function Component() {
         assetScale: shop.assetScale,
       })
       navigate('/merchant/poster', { replace: true })
-    } catch (caught) {
-      setError(errorMessageKey(caught))
+    } catch (error_) {
+      setError(errorMessageKey(error_))
       setBusy('idle')
     }
   }

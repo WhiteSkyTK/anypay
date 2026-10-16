@@ -18,7 +18,8 @@ interface KeypadProps {
 export function Keypad({ onKey, decimals, disabled = false }: Readonly<KeypadProps>) {
   const { t } = useTranslation()
   return (
-    <div role="group" aria-label={t('pay.keypad.label')} className="grid grid-cols-3 gap-2">
+    // A fieldset is a group to assistive tech everywhere (role="group" on a div is not always).
+    <fieldset aria-label={t('pay.keypad.label')} className="grid min-w-0 grid-cols-3 gap-2">
       {KEYS.map((key) => {
         if (key === ',' && decimals === 0) return <span key={key} aria-hidden="true" />
         const label = (() => {
@@ -39,6 +40,6 @@ export function Keypad({ onKey, decimals, disabled = false }: Readonly<KeypadPro
           </button>
         )
       })}
-    </div>
+    </fieldset>
   )
 }

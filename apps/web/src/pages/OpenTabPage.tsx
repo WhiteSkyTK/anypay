@@ -75,8 +75,8 @@ function OpenTab() {
     try {
       setCustomer(await api.lookupWallet(wallet.trim()))
       setStep('cap')
-    } catch (caught) {
-      setError(errorMessageKey(caught))
+    } catch (error_) {
+      setError(errorMessageKey(error_))
       setStep('details')
     }
   }
@@ -108,8 +108,8 @@ function OpenTab() {
       if (consentUrl && new URL(consentUrl).protocol === 'https:')
         window.location.assign(consentUrl)
       else setError('errors.api.unknown')
-    } catch (caught) {
-      setError(errorMessageKey(caught))
+    } catch (error_) {
+      setError(errorMessageKey(error_))
       setStep('cap')
     }
   }

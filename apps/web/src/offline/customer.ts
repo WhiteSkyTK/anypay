@@ -57,13 +57,9 @@ export async function remainingOn(tab: MyTabRow, at = serverNow()) {
 
 /** Brings this phone's tabs up to date when there is signal; offline, they stay as they were. */
 export async function refreshMyTabs(): Promise<void> {
-  for (const tab of await listMyTabs()) {
-    try {
-      await rememberTab(await api.getTab(tab.id))
-    } catch {
-      // No signal or the server is asleep: keep the last known figures.
-    }
-  }
+  const tabs = await listMyTabs()
+  // No signal or the server asleep: that tab keeps its last known figures.
+  await Promise.allSettled(tabs.map(async (tab) => rememberTab(await api.getTab(tab.id))))
 }
 
 export type ApproveResult =

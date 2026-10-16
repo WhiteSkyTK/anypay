@@ -62,9 +62,12 @@ async function main(): Promise<void> {
   process.once('SIGTERM', shutdown)
 }
 
-main().catch((error: unknown) => {
+try {
+  await main()
+} catch (error) {
+  // Known setup problems get one clear line; anything else is a bug and keeps its stack trace.
   const expected = [EnvError, PrivateKeyError, DataDirLockedError]
   if (!(error instanceof Error) || !expected.some((type) => error instanceof type)) throw error
   console.error(error.message)
   process.exit(1)
-})
+}

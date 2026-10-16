@@ -67,6 +67,7 @@ export function Component() {
           ref={video}
           muted
           playsInline
+          tabIndex={-1}
           aria-hidden="true"
           className="size-full object-cover"
         />

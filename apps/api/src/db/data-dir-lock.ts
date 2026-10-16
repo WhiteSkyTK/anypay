@@ -53,7 +53,7 @@ export async function lockDataDir(dataDir: string, waitMs = 5000): Promise<() =>
       continue
     }
     if (Date.now() >= deadline) throw new DataDirLockedError(dataDir, owner)
-    await sleep(250)
+    await sleep(250) // NOSONAR: polling until the other process lets go
   }
   return () => {
     if (readOwner(lockFile) === process.pid) rmSync(lockFile, { force: true })

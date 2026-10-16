@@ -61,13 +61,14 @@ type Route = Reply | ((call: ApiCall) => Reply)
 export function fakeApi(routes: Record<string, Route | Route[]>) {
   const calls: ApiCall[] = []
   const served = new Map<string, number>()
-  vi.stubGlobal('fetch', async (url: string, init: RequestInit = {}) => {
+  const answer = (url: string, init: RequestInit): Response => {
     const { pathname } = new URL(url, 'http://localhost')
     const call: ApiCall = {
       method: init.method ?? 'GET',
       path: pathname,
       headers: (init.headers ?? {}) as Record<string, string>,
-      body: init.body ? (JSON.parse(String(init.body)) as unknown) : undefined,
+      // The app only ever sends JSON text.
+      body: typeof init.body === 'string' ? (JSON.parse(init.body) as unknown) : undefined,
     }
     calls.push(call)
     const key = `${call.method} ${pathname}`
@@ -80,7 +81,11 @@ export function fakeApi(routes: Record<string, Route | Route[]>) {
     if (!reply || reply.networkError) throw new TypeError('Failed to fetch')
     const body = typeof reply.body === 'string' ? reply.body : JSON.stringify(reply.body ?? {})
     return new Response(body, { status: reply.status ?? 200 })
-  })
+  }
+  // Like the real fetch, anything thrown above becomes a rejected promise.
+  vi.stubGlobal('fetch', (url: string, init: RequestInit = {}) =>
+    Promise.resolve().then(() => answer(url, init)),
+  )
   return calls
 }
 
