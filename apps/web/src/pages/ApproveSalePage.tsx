@@ -11,15 +11,19 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { Amount } from '@/components/Amount'
+import { ClockWarning } from '@/components/ClockWarning'
 import { Page } from '@/components/Page'
 import { QrCode } from '@/components/QrCode'
 import { Button } from '@/components/ui/button'
 import { useOffline, useOfflineQuery } from '@/hooks/useOffline'
+import { type OfflineProblem, offlineProblemKey, offlineProblemOf } from '@/lib/offline-support'
+import { serverNow } from '@/lib/server-clock'
 
 type Outcome =
   | { kind: 'idle' }
   | { kind: 'signed'; voucher: Voucher }
   | { kind: 'refused'; reason: 'no_tab' | 'cap_reached' }
+  | { kind: 'failed'; problem: OfflineProblem }
 
 /**
  * The customer's side of an offline sale. The shop's QR opened this page (in the app, or from the
@@ -39,7 +43,7 @@ export function Component() {
   })
 
   if (!request) return <Refused message={t('approve.invalid')} />
-  if (!isFresh(request.ts)) return <Refused message={t('approve.expired')} />
+  if (!isFresh(request.ts, serverNow())) return <Refused message={t('approve.expired')} />
   if (view && !view.tab) return <Refused message={t('approve.noTab')} />
   if (!view?.tab?.shopCap) return null
 
@@ -47,9 +51,14 @@ export function Component() {
 
   async function approve() {
     if (!offline || !request) return
-    const result = await offline.approveSale(request)
-    if (result.ok) setOutcome({ kind: 'signed', voucher: result.voucher })
-    else setOutcome({ kind: 'refused', reason: result.reason })
+    try {
+      const result = await offline.approveSale(request)
+      if (result.ok) setOutcome({ kind: 'signed', voucher: result.voucher })
+      else setOutcome({ kind: 'refused', reason: result.reason })
+    } catch (error_) {
+      // Signing or saving failed: say so, rather than a button that seems to do nothing.
+      setOutcome({ kind: 'failed', problem: offlineProblemOf(error_) })
+    }
   }
 
   if (outcome.kind === 'signed') {
@@ -84,9 +93,15 @@ export function Component() {
           </p>
         )}
       </section>
+      <ClockWarning />
       {outcome.kind === 'refused' && (
         <p role="alert" className="mb-6 rounded-card bg-card px-5 py-4 text-destructive">
           {outcome.reason === 'cap_reached' ? t('approve.capReached') : t('approve.noTab')}
+        </p>
+      )}
+      {outcome.kind === 'failed' && (
+        <p role="alert" className="mb-6 rounded-card bg-card px-5 py-4 text-destructive">
+          {t(offlineProblemKey(outcome.problem))}
         </p>
       )}
       <div className="flex flex-col gap-3">

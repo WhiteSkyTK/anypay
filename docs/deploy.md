@@ -77,10 +77,12 @@ npm run seed -- --target deployed
 ## Notes
 
 - **Phones and HTTPS.** Render serves HTTPS, which the PWA (install, offline shell) and the
-  wallet redirects need. Plain `http://` on a LAN works for testing but not for installing.
+  wallet redirects need. Plain `http://` on a LAN works for testing payments but not for
+  installing, and not for offline tabs (signing vouchers needs a secure context; the app says so).
 - **Logs** contain request paths, never query strings, tokens or wallet addresses. The merchant
-  feed sends its token as `?token=` (EventSource can't set headers), so a hosting proxy that logs
-  full URLs could record it; only the team can read those logs.
+  feed opens with a one-minute ticket (`?ticket=`, bought with the token in a header), so even a
+  hosting proxy that logs full URLs only ever sees an expired ticket. App versions from before
+  tickets still send `?token=` until they update.
 - **Rate limits** count real client IPs because `TRUST_PROXY=1` tells Express about Render's proxy.
 
 ## Security checklist

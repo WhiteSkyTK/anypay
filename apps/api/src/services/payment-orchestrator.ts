@@ -3,8 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { AppError } from '../lib/errors'
 import { type OpenPaymentsErrorCode, isOpenPaymentsError } from '../open-payments/errors'
 import type { OpenPaymentsPort } from '../open-payments/port'
-import type { WalletAddressInfo } from '../open-payments/types'
-import type { GrantedAccess } from '../open-payments/types'
+import type { GrantedAccess, WalletAddressInfo } from '../open-payments/types'
 import type { ConsentCallback, GrantService } from './grant-service'
 import {
   advance,

@@ -12,9 +12,10 @@ import {
 } from '@anypay/shared'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { anypayPath } from '@/lib/scan'
 import { setMerchantSession } from '@/lib/merchant-session'
+import { noteServerDate } from '@/lib/server-clock'
 import { setSimulatedOffline } from '@/lib/simulated-offline'
 import { getDb, rememberTab, resetDb, saveTabKeys } from '@/offline'
 import { fakeApi, renderPage, SESSION, SHOP, setUpPageTests } from '@/testing/fakes'
@@ -70,8 +71,9 @@ async function customerWithTab(): Promise<DeviceKeys> {
   return keys
 }
 
-async function shopKnowsTab(keys: DeviceKeys) {
-  await getDb().shopTabs.put({
+/** The tab as the shop's phone keeps it. */
+async function shopTab(keys: DeviceKeys) {
+  return {
     id: TAB_ID,
     shopId: SHOP.id,
     label: 'Thabo',
@@ -80,7 +82,11 @@ async function shopKnowsTab(keys: DeviceKeys) {
     remaining: COP('3700000'),
     weekStartedAt: TAB.weekStartedAt,
     syncedAt: Date.now(),
-  })
+  }
+}
+
+async function shopKnowsTab(keys: DeviceKeys) {
+  await getDb().shopTabs.put(await shopTab(keys))
 }
 
 describe('opening a tab', () => {
@@ -198,7 +204,79 @@ describe('receiving a voucher (shop, offline)', () => {
     )
     expect(await getDb().outbox.count()).toBe(0)
   })
+
+  it('says the sale was not saved when the phone is out of space', async () => {
+    setSimulatedOffline(true)
+    setMerchantSession(SESSION)
+    const keys = await generateDeviceKeys()
+    await shopKnowsTab(keys)
+    vi.spyOn(getDb().outbox, 'put').mockRejectedValue(outOfSpace())
+    const voucher = await signVoucher(keys.privateKey, { ...request(), tabId: TAB_ID })
+    renderPage(ReceiveVoucherPage, {
+      pattern: '/v/:tabId/:shopId/:amount/:nonce/:ts/:signature',
+      path: voucherPath(voucher),
+    })
+    expect((await screen.findByRole('alert')).textContent).toContain("the sale wasn't saved")
+    expect(screen.queryByText('Saved – settles when online')).toBeNull()
+  })
 })
+
+describe('when the phone can’t keep tabs', () => {
+  it('explains, on a plain http:// address, why tabs can’t work here', async () => {
+    vi.stubGlobal('isSecureContext', false) // e.g. a laptop's IP on the shop's Wi-Fi
+    renderPage(OpenTabPage, { pattern: '/shop/:shopId/tab', path: `/shop/${SHOP.id}/tab` })
+    expect(
+      await screen.findByRole('heading', { level: 1, name: "Offline tabs can't work here" }),
+    ).toBeTruthy()
+    expect(screen.getByText(/need a secure connection/)).toBeTruthy()
+  })
+
+  it('tells the customer an approval wasn’t saved, instead of a button that does nothing', async () => {
+    setSimulatedOffline(true)
+    await customerWithTab()
+    vi.spyOn(getDb().outbox, 'put').mockRejectedValue(outOfSpace())
+    renderPage(ApproveSalePage, {
+      pattern: '/t/:shopId/:amount/:nonce/:ts',
+      path: saleRequestPath(request()),
+    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Approve' }))
+    expect((await screen.findByRole('alert')).textContent).toContain('out of storage space')
+  })
+})
+
+describe('a phone with the wrong clock', () => {
+  afterEach(() => noteServerDate(new Date().toUTCString(), Date.now(), Date.now()))
+
+  it('stamps the sale with the server’s time and asks for the clock to be fixed', async () => {
+    setMerchantSession(SESSION)
+    const keys = await generateDeviceKeys()
+    fakeApi({
+      [`GET /api/shops/${SHOP.id}/tabs`]: {
+        body: { tabs: [{ ...(await shopTab(keys)), syncedAt: undefined, shopId: undefined }] },
+      },
+    })
+    // The last answer from the server said it is two hours later than this phone thinks.
+    const now = Date.now()
+    noteServerDate(new Date(now + 2 * HOUR).toUTCString(), now, now)
+    // The same copy of the QR library the page loads (lazily), to read the link it encodes.
+    const qrCreate = vi.spyOn((await import('qrcode')).default, 'create')
+    renderPage(TabSalePage, { pattern: '/merchant/tab-sale', path: '/merchant/tab-sale' })
+
+    expect(await screen.findByText(/clock is about 120 minutes off/)).toBeTruthy()
+    expect(await screen.findByText('Customer tabs on this phone: 1')).toBeTruthy()
+    const keypad = screen.getByRole('group', { name: 'Amount keypad' })
+    await userEvent.click(keypad.querySelector('button[aria-label="5"]') as HTMLElement)
+    await userEvent.click(screen.getByRole('button', { name: 'Show QR to customer' }))
+    await screen.findByRole('img', { name: /Tab sale QR code/ })
+    const ts = Number(String(qrCreate.mock.calls.at(-1)?.[0]).split('/').at(-1))
+    // Stamped in the server's time (two hours on), so the server won't refuse the voucher.
+    expect(Math.abs(ts * 1000 - (now + 2 * HOUR))).toBeLessThan(60_000)
+  })
+})
+
+const HOUR = 3_600_000
+
+const outOfSpace = () => new DOMException('The quota has been exceeded.', 'QuotaExceededError')
 
 describe('tab sale (shop)', () => {
   it('downloads the shop’s tabs, then shows a QR for the typed amount', async () => {

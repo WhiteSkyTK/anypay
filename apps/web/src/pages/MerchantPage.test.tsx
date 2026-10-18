@@ -2,9 +2,10 @@
 import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { setMerchantSession } from '@/lib/merchant-session'
+import { getMerchantSession, setMerchantSession } from '@/lib/merchant-session'
 import { startOfToday } from '@/lib/format'
 import {
+  type ApiCall,
   apiError,
   FakeEventSource,
   fakeApi,
@@ -36,8 +37,9 @@ const openShop = () => {
   })
 }
 
-function stream() {
-  const source = FakeEventSource.latest()
+/** The feed's stream, once its ticket has come back and it opened. */
+async function stream() {
+  const source = await waitFor(() => FakeEventSource.latest())
   act(() => source.open())
   return source
 }
@@ -65,18 +67,23 @@ describe('MerchantPage', () => {
     expect(await screen.findByText('Stub page /merchant/new')).toBeTruthy()
   })
 
-  it('subscribes with the merchant token and shows a skeleton until the first snapshot', () => {
+  it('opens the feed with a short-lived ticket, never the merchant token in its URL', async () => {
+    const calls = fakeApi({})
     openShop()
-    const source = FakeEventSource.latest()
-    expect(source.url).toContain(`/api/shops/${SHOP.id}/events?token=merchant-token&since=`)
     expect(screen.getByRole('status').textContent).toContain('Connecting')
-    expect(screen.queryByText('No payments yet')).toBeNull()
+    const source = await waitFor(() => FakeEventSource.latest())
+    expect(source.url).toMatch(
+      new RegExp(`/api/shops/${SHOP.id}/events[?]ticket=feed-ticket-[0-9]+&since=`),
+    )
+    expect(source.url).not.toContain('merchant-token')
+    expect(calls[0]?.headers.Authorization).toBe('Bearer merchant-token') // in a header instead
+    expect(screen.queryByText('No payments yet')).toBeNull() // a skeleton until the snapshot
   })
 
   it('shows today’s payments and total, then each new one as it lands', async () => {
     const speak = fakeSpeech()
     openShop()
-    const source = stream()
+    const source = await stream()
     act(() =>
       source.emit('snapshot', {
         payments: [],
@@ -104,11 +111,11 @@ describe('MerchantPage', () => {
     expect(screen.getByRole('region', { name: 'Taken today' }).textContent).toMatch(/COP\s50,00/)
   })
 
-  it('does not announce payments that were already in the snapshot', () => {
+  it('does not announce payments that were already in the snapshot', async () => {
     const speak = fakeSpeech()
     localStorage.setItem('anypay.voice', 'on')
     openShop()
-    const source = stream()
+    const source = await stream()
     act(() =>
       source.emit('snapshot', {
         payments: [COMPLETED],
@@ -124,27 +131,47 @@ describe('MerchantPage', () => {
     [401, 'merchant_unauthorized'],
     [404, 'shop_not_found'],
   ])('signs the phone out when the shop answers %i %s', async (status, code) => {
-    fakeApi({ [`GET /api/shops/${SHOP.id}/payments`]: apiError(status, code) })
+    fakeApi({ [`POST /api/shops/${SHOP.id}/stream-tickets`]: apiError(status, code) })
     openShop()
-    act(() => FakeEventSource.latest().giveUp())
 
     expect(await screen.findByText('This phone is signed out of the shop')).toBeTruthy()
     await userEvent.click(screen.getByRole('button', { name: 'Set up again' }))
     expect(await screen.findByText('No shop on this phone yet')).toBeTruthy()
   })
 
+  it('finishes "sign out other phones" if it went through but the answer was lost', async () => {
+    const next = 'n'.repeat(43)
+    // The server already switched to the token this phone chose; the old one is refused.
+    const onlyNext = (ok: { status: number; body?: unknown }) => (call: ApiCall) =>
+      call.headers.Authorization === `Bearer ${next}` ? ok : apiError(401, 'merchant_unauthorized')
+    fakeApi({
+      [`POST /api/shops/${SHOP.id}/stream-tickets`]: onlyNext({
+        status: 201,
+        body: { ticket: 'after-switch', expiresAt: '2099-01-01T00:00:00.000Z' },
+      }),
+      [`PUT /api/shops/${SHOP.id}/merchant-token`]: onlyNext({ status: 200 }),
+    })
+    setMerchantSession({ ...SESSION, nextToken: next })
+    renderPage(MerchantPage, { pattern: '/merchant', path: '/merchant' })
+
+    const source = await waitFor(() => FakeEventSource.latest())
+    expect(source.url).toContain('ticket=after-switch')
+    expect(getMerchantSession()).toMatchObject({ token: next, nextToken: undefined })
+    expect(screen.queryByText('This phone is signed out of the shop')).toBeNull()
+  })
+
   it('keeps trying when the stream drops for another reason (API restarting, host waking)', async () => {
-    const calls = fakeApi({ [`GET /api/shops/${SHOP.id}/payments`]: { networkError: true } })
+    const calls = fakeApi({})
     openShop()
-    const first = FakeEventSource.latest()
+    const first = await waitFor(() => FakeEventSource.latest())
     act(() => first.giveUp())
-    await waitFor(() => expect(calls).toHaveLength(1))
     expect(screen.getByRole('status').textContent).toContain('Not connected')
     expect(screen.queryByText('No payments yet')).toBeNull()
 
-    // A new connection after a short wait; the server's snapshot brings the feed back.
+    // After a short wait, a new ticket and a new connection; the snapshot brings the feed back.
     await waitFor(() => expect(FakeEventSource.latest()).not.toBe(first), { timeout: 3000 })
-    const second = stream()
+    expect(calls.filter((call) => call.path.endsWith('/stream-tickets'))).toHaveLength(2)
+    const second = await stream()
     act(() => second.emit('snapshot', { payments: [COMPLETED], total: COMPLETED.amount }))
     expect(screen.getByRole('status').textContent).toContain('Live')
     expect(screen.getAllByRole('listitem')).toHaveLength(1)
@@ -160,7 +187,7 @@ describe('MerchantPage', () => {
     )
     const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined)
     openShop()
-    stream()
+    await stream()
 
     await userEvent.click(screen.getByRole('button', { name: 'Export CSV' }))
     await waitFor(() => expect(click).toHaveBeenCalledOnce())
@@ -172,7 +199,7 @@ describe('MerchantPage', () => {
   it('says when the export failed', async () => {
     fakeApi({ [`GET /api/shops/${SHOP.id}/export.csv`]: apiError(429, 'rate_limited') })
     openShop()
-    stream()
+    await stream()
     await userEvent.click(screen.getByRole('button', { name: 'Export CSV' }))
     expect((await screen.findByRole('alert')).textContent).toMatch(/Too many tries/)
   })
@@ -200,9 +227,9 @@ describe('MerchantPage, remembered feed', () => {
     expect(screen.queryByText('No payments yet')).toBeNull() // skeleton until the snapshot
   })
 
-  it('keeps the phone’s copy up to date', () => {
+  it('keeps the phone’s copy up to date', async () => {
     openShop()
-    const source = stream()
+    const source = await stream()
     act(() => source.emit('snapshot', { payments: [COMPLETED], total: COMPLETED.amount }))
     const saved = JSON.parse(localStorage.getItem(`anypay.cache.feed.${SHOP.id}`) ?? '{}')
     expect(saved.payments).toHaveLength(1)

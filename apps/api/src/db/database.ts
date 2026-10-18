@@ -32,7 +32,14 @@ export async function openDatabase(options: OpenDatabaseOptions = {}): Promise<D
       import('drizzle-orm/postgres-js'),
     ])
     // prepare: false keeps it working behind transaction-mode poolers (Neon, Supabase).
-    const client = postgres(options.url, { max: 5, prepare: false })
+    // Neon closes connections when its compute pauses (5 idle minutes): closing ours after 20 s
+    // idle means the next query opens a fresh one instead of failing on a dead socket.
+    const client = postgres(options.url, {
+      max: 5,
+      prepare: false,
+      idle_timeout: 20,
+      connect_timeout: 15,
+    })
     return { db: drizzle(client, { schema }), kind: 'postgres', close: () => client.end() }
   }
   const [{ PGlite }, { drizzle }] = await Promise.all([
@@ -71,19 +78,25 @@ export async function migrate(
     applied_at timestamptz NOT NULL DEFAULT now()
   )`)
   const appliedNow: string[] = []
+  // In order, one at a time: each migration builds on the ones before it.
   for (const migration of migrations) {
-    const applied = await db.transaction(async (tx) => {
-      await tx.execute(sql`SELECT pg_advisory_xact_lock(${MIGRATION_LOCK_ID})`)
-      const done = await tx
-        .select()
-        .from(schema.schemaMigrations)
-        .where(sql`${schema.schemaMigrations.name} = ${migration.name}`)
-      if (done.length > 0) return false
-      for (const statement of migration.statements) await tx.execute(sql.raw(statement))
-      await tx.insert(schema.schemaMigrations).values({ name: migration.name })
-      return true
-    })
-    if (applied) appliedNow.push(migration.name)
+    if (await applyMigration(db, migration)) appliedNow.push(migration.name) // NOSONAR: in order
   }
   return appliedNow
+}
+
+/** One migration in its own transaction, unless it already ran. True if it ran now. */
+function applyMigration(db: Database, migration: Migration): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(${MIGRATION_LOCK_ID})`)
+    const done = await tx
+      .select()
+      .from(schema.schemaMigrations)
+      .where(sql`${schema.schemaMigrations.name} = ${migration.name}`)
+    if (done.length > 0) return false
+    // A migration's statements depend on each other, so they run in order.
+    for (const statement of migration.statements) await tx.execute(sql.raw(statement)) // NOSONAR
+    await tx.insert(schema.schemaMigrations).values({ name: migration.name })
+    return true
+  })
 }

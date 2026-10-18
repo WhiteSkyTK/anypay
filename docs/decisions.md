@@ -201,3 +201,29 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **Adding a phone is a QR code, hidden until asked for.** It's the existing sign-in link (token in
   the URL fragment, never sent to a server); the screen warns that anyone who scans it sees the
   shop's sales.
+
+## Phase 4: what goes wrong on real phones (2026-10-16)
+
+- **Every request times out after 60 s, and says "Still working…" after 4 s.** Long enough for a
+  free server waking from sleep, short enough not to strand a customer on a dead connection.
+  Every money-moving request is idempotent, so trying again is always safe.
+- **The host's own error page is not our error.** A 502/503/504 that isn't AnyPay's JSON means
+  the server is waking or restarting: "Try again in a minute", not "Something went wrong".
+- **After a deploy, an open tab reloads once** (Vite's `vite:preloadError`), never in a loop.
+- **The phone's clock is corrected by the server's.** Budget phones often have the wrong time
+  (after a flat battery), and vouchers carry a time the server checks. Every API answer's `Date`
+  header teaches the phone its offset; voucher stamps and freshness checks use it, and the sale
+  screens ask the owner to fix the clock when it's ten minutes or more off.
+- **Offline tabs say why they can't work** on a plain `http://` address (no WebCrypto) or with
+  storage blocked, instead of a blank screen; a full phone gets "the sale wasn't saved". The app
+  asks the browser to keep offline data (`navigator.storage.persist`) once a phone holds any.
+- **"Keep the screen on" for the shop's feed** (Screen Wake Lock): a locked phone stops the live
+  feed and the spoken confirmation.
+- **The live feed opens with a one-minute ticket**, bought with the merchant token in a header,
+  so the token never sits in a URL that proxies or hosting logs might keep. Signing out other
+  phones revokes outstanding tickets too.
+- **Refreshing tabs no longer flashes "No tabs yet".** Dexie 4's live queries show changes at once,
+  so deleting all tabs before re-adding them blanked the screen, even over a sale QR.
+- **Desk research before interviews** (docs/research/): it showed Afrikaans is the third most
+  common home language and not yet offered, and that small data bundles cost about 14c per MB,
+  which keeps the 200 KB budget honest.

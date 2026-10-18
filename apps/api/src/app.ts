@@ -37,9 +37,10 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
   app.use(
     cors({
       origin: env.WEB_ORIGIN,
-      methods: ['GET', 'POST'],
+      methods: ['GET', 'POST', 'PUT'],
       allowedHeaders: ['Content-Type', 'Authorization', IDEMPOTENCY_HEADER, CORRELATION_HEADER],
-      exposedHeaders: [CORRELATION_HEADER, 'Idempotent-Replayed'],
+      // Date lets phones correct a wrong clock before stamping offline vouchers.
+      exposedHeaders: [CORRELATION_HEADER, 'Idempotent-Replayed', 'Date'],
       maxAge: 600,
     }),
   )
@@ -64,6 +65,7 @@ export function createApp(container: Container, options: AppOptions = {}): Expre
       events: container.paymentEvents,
       idempotency: container.idempotency,
       tabs: container.tabService,
+      tickets: container.streamTickets,
       limit,
       streams,
     }),

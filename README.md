@@ -211,6 +211,8 @@ docs/
   challenge.md   The brief and how AnyPay answers it
   decisions.md   Why things are built the way they are
   deploy.md      Render + Neon deployment, and the security checklist
+  research/      Desk research with sources, interview and usability-test kits, screen flows
+  slides.md      Slide-ready bullets for the presentation
   testing.md     What to test, and how
 ```
 
@@ -223,6 +225,11 @@ docs/
 - **Wallet addresses are untrusted input:** an allowlist of hosts, no IP literals or private
   ranges (no SSRF). Rate limits on every route, a Content-Security-Policy, and only `https`
   approval pages are ever opened. Details: [docs/deploy.md](docs/deploy.md#security-checklist).
+- **The shop's sign-in stays out of URLs:** the live feed opens with a one-minute ticket, and
+  "Sign out other phones" (Settings) ends every other phone's access at once.
+- **Built for bad networks and budget phones:** requests time out and say "Still working…",
+  the phone's clock is corrected by the server's (offline vouchers carry a time), the shop's
+  screen can stay on, and offline tabs explain when a browser can't keep them.
 - **Privacy (POPIA):** the app's `/privacy` page says in plain words what is stored, what is
   encrypted, what stays on the phone, and what is never collected (no ID or phone numbers, no
   trackers). Shops see amounts and times, never a customer's wallet address.
@@ -238,9 +245,9 @@ docs/
 - **Free hosting sleeps.** The first request after a quiet spell takes about a minute.
 - **No retention schedule yet.** Payments are kept until the demo database is reset; a real
   launch would delete or anonymise old payments on a schedule.
-- **One API instance.** The live feed and rate limits are held in memory, which is fine for a
-  pilot; more instances need a shared bus (e.g. Postgres LISTEN/NOTIFY) and a shared rate-limit
-  store.
+- **One API instance.** The live feed, its tickets and the rate limits are held in memory, which
+  is fine for a pilot; more instances need a shared bus (e.g. Postgres LISTEN/NOTIFY) and a
+  shared store for tickets and rate limits.
 - **Offline limit checks are close, not exact.** The weekly limit is converted to the shop's
   currency when the tab opens. If exchange rates move, the customer's wallet (which holds the
   real limit) can still refuse a voucher, and the sale shows as failed with that reason.

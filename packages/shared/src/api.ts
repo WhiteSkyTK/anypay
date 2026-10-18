@@ -105,6 +105,12 @@ export const ReplaceMerchantTokenRequestSchema = z.object({
   token: z.string().check(z.regex(/^[\w-]{43}$/)),
 })
 
+/** A one-minute pass that opens the shop's live feed, so the merchant token stays out of URLs. */
+export const StreamTicketResponseSchema = z.object({
+  ticket: z.string(),
+  expiresAt: z.iso.datetime({ offset: true }),
+})
+
 export const CreatePaymentRequestSchema = z.object({
   amount: DecimalAmountSchema,
   customerWallet: WalletAddressInputSchema,
@@ -142,6 +148,7 @@ export type WalletLookupResponse = z.infer<typeof WalletLookupResponseSchema>
 export type CreateShopRequest = z.infer<typeof CreateShopRequestSchema>
 export type CreateShopResponse = z.infer<typeof CreateShopResponseSchema>
 export type ReplaceMerchantTokenRequest = z.infer<typeof ReplaceMerchantTokenRequestSchema>
+export type StreamTicketResponse = z.infer<typeof StreamTicketResponseSchema>
 export type CreatePaymentRequest = z.infer<typeof CreatePaymentRequestSchema>
 export type CreatePaymentResponse = z.infer<typeof CreatePaymentResponseSchema>
 export type Quote = z.infer<typeof QuoteSchema>

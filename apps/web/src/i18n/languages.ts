@@ -11,10 +11,10 @@ export type LanguageCode = (typeof LANGUAGES)[number]['code']
 export const DEFAULT_LANGUAGE = 'en' satisfies LanguageCode
 export const LANGUAGE_STORAGE_KEY = 'anypay.language'
 
-const CODES: readonly string[] = LANGUAGES.map((language) => language.code)
+const CODES: ReadonlySet<string> = new Set(LANGUAGES.map((language) => language.code))
 
 export function isLanguageCode(value: unknown): value is LanguageCode {
-  return typeof value === 'string' && CODES.includes(value)
+  return typeof value === 'string' && CODES.has(value)
 }
 
 /**

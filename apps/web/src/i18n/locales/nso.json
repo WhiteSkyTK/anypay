@@ -177,7 +177,8 @@
     },
     "paidWith": "Moreki o lefile {{amount}}",
     "newPayment": "Tefelo e amogetšwe: {{amount}}",
-    "tab": "Akhaonte"
+    "tab": "Akhaonte",
+    "keepAwake": "Dira gore sekirini se dule se bonega"
   },
   "status": {
     "created": "E thomile",
@@ -319,7 +320,14 @@
     "banner": "Mokgwa wa pontšho · tšhelete ya teko fela"
   },
   "offline": {
-    "banner": "Ga o na inthanete. AnyPay e tšwela pele e šoma gomme e tla nyalanya ge o boile."
+    "banner": "Ga o na inthanete. AnyPay e tšwela pele e šoma gomme e tla nyalanya ge o boile.",
+    "unavailableTitle": "Diakhaonte tša ntle le inthanete di ka se šome mo"
+  },
+  "slow": {
+    "notice": "Re sa šoma… Ge AnyPay e be e robetše, go tsoga go ka tšea go fihla motsotso."
+  },
+  "clock": {
+    "warning": "Sešupanako sa mogala wo se fošagetše ka metsotso ye e ka bago {{minutes}}. AnyPay e a se lokiša, eupša beakanya letšatši le nako gore e be tša itiragalelo."
   },
   "update": {
     "ready": "Go na le phetolelo ye mpsha",
@@ -367,11 +375,18 @@
       "invalid_amount": "Tsenya palo ye e fetago lefela.",
       "unknown": "Go na le seo se sa šomego gabotse. Hle leka gape.",
       "voucher_invalid": "Vocha ye ga se ya saenwa ke mogala wa moreki.",
-      "tab_not_found": "Akhaonte ga e hwetšwe."
+      "tab_not_found": "Akhaonte ga e hwetšwe.",
+      "timeout": "AnyPay e tšere nako ye telele go araba. Lekola netweke ya gago o leke gape.",
+      "unavailable": "AnyPay e a tsoga goba e thoma lefsa. Leka gape ka morago ga motsotso."
     },
     "tabLabel": {
       "required": "Tsenya leina leo lebenkele le tla go tseba ka lona",
       "tooLong": "Šomiša ditlhaka tše di sa fetego 30"
+    },
+    "offline": {
+      "insecure": "Diakhaonte tša ntle le inthanete di nyaka kgokagano ye e bolokegilego. Bula AnyPay go aterese ya yona ya https://, go swana le linki yeo e lego go phousetara ya lebenkele.",
+      "storage": "Sebalankwa se ga se dumelele AnyPay go boloka dithekišo tša ntle le inthanete (go phenyekgo ya sephiri, goba polokelo e tšwaletšwe). Bula AnyPay go thepe ya kgonthe ya sebalankwa.",
+      "full": "Mogala wo ga o na sekgoba sa polokelo, ka gona thekišo ga se ya bolokwa. Hlakola tše dingwe o leke gape."
     }
   },
   "sale": {

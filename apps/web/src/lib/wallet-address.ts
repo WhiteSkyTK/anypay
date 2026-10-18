@@ -8,7 +8,8 @@ export const DEFAULT_WALLET_HOST: string =
 
 const escapeRegExp = (text: string) => text.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
 
-const onHost = (host: string) => new RegExp(`^(?:\\$|https?://)?${escapeRegExp(host)}/(.+)$`, 'i')
+const onHost = (host: string) =>
+  new RegExp(String.raw`^(?:\$|https?://)?${escapeRegExp(host)}/(.+)$`, 'i')
 
 /** The name part of an address on `host` ('' when empty), or null for another provider. */
 export function walletName(address: string, host = DEFAULT_WALLET_HOST): string | null {

@@ -58,7 +58,8 @@ export function flushOutbox(now = Date.now()): Promise<void> {
     const due = await waiting()
       .filter((row) => row.nextAttemptAt <= now)
       .toArray()
-    for (const row of due) await getDb().outbox.put(await syncOne(row, Date.now()))
+    // One at a time on purpose: on a weak connection, parallel uploads only compete.
+    for (const row of due) await getDb().outbox.put(await syncOne(row, Date.now())) // NOSONAR
     await afterFlush?.()
   })().finally(() => {
     running = undefined

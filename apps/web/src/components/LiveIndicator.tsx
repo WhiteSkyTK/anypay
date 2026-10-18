@@ -20,15 +20,13 @@ export function LiveIndicator({ state, online }: Readonly<{ state: FeedState; on
   const shown: FeedState = online ? state : 'closed'
   const label = online ? t(`merchant.live.${shown}`) : t('merchant.live.offline')
   return (
-    <span
-      role="status"
-      className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-1.5 text-sm font-medium text-card-foreground"
-    >
+    // <output> is a status live region that works across screen readers.
+    <output className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-1.5 text-sm font-medium text-card-foreground">
       <span
         aria-hidden="true"
         className={cn('size-2 rounded-full', DOT[shown], shown === 'live' && 'animate-pulse')}
       />
       {label}
-    </span>
+    </output>
   )
 }

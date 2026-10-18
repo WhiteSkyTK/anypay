@@ -4,6 +4,8 @@ import { ApiRequestError } from './api'
 // Error codes the app has its own message for; anything else gets the general one.
 const KNOWN_CODES = new Set([
   'network_error',
+  'timeout',
+  'unavailable',
   'wallet_host_not_allowed',
   'wallet_address_invalid',
   'wallet_not_found',

@@ -30,7 +30,7 @@ export async function checkPublicUrl(
     } catch {
       // Not reachable (yet): try again after the delay.
     }
-    if (attempt < attempts) await sleep(delayMs)
+    if (attempt < attempts) await sleep(delayMs) // NOSONAR: retries wait, one after another
   }
   logger.warn(
     { publicApiUrl },

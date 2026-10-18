@@ -192,11 +192,10 @@ async function main(): Promise<number> {
   return 1
 }
 
-main().then(
-  (code) => process.exit(code),
-  (error: unknown) => {
-    // Error messages are written to be safe: no tokens or keys ever reach them.
-    console.error(`\n${error instanceof Error ? error.message : String(error)}`)
-    process.exit(1)
-  },
-)
+try {
+  process.exit(await main())
+} catch (error) {
+  // Error messages are written to be safe: no tokens or keys ever reach them.
+  console.error(`\n${error instanceof Error ? error.message : String(error)}`)
+  process.exit(1)
+}

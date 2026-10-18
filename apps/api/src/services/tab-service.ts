@@ -184,20 +184,21 @@ export class TabService {
   /** The shop's active tabs, with what the shop's phone needs to check vouchers offline. */
   async listForShop(shop: ShopRecord): Promise<ShopTab[]> {
     const records = await this.#deps.tabs.listActiveForShop(shop.id)
-    const tabs: ShopTab[] = []
-    for (const record of records) {
-      const shopCap = record.shopCap ?? (await this.#fillMissingCap(record))
-      if (!shopCap) continue // not usable offline until its cap is known
-      tabs.push({
-        id: record.id,
-        label: record.label,
-        publicKey: record.publicKey as ShopTab['publicKey'],
-        shopCap,
-        remaining: await this.#remaining({ ...record, shopCap }, this.#now()),
-        weekStartedAt: weekOf(record.intervalStart, this.#now()).from.toISOString(),
-      })
-    }
-    return tabs
+    const tabs = await Promise.all(
+      records.map(async (record): Promise<ShopTab | null> => {
+        const shopCap = record.shopCap ?? (await this.#fillMissingCap(record))
+        if (!shopCap) return null // not usable offline until its cap is known
+        return {
+          id: record.id,
+          label: record.label,
+          publicKey: record.publicKey as ShopTab['publicKey'],
+          shopCap,
+          remaining: await this.#remaining({ ...record, shopCap }, this.#now()),
+          weekStartedAt: weekOf(record.intervalStart, this.#now()).from.toISOString(),
+        }
+      }),
+    )
+    return tabs.filter((tab) => tab !== null)
   }
 
   /**

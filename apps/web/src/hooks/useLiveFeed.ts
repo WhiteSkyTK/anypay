@@ -5,7 +5,7 @@ import {
   ShopPaymentsResponseSchema,
   zeroMoney,
 } from '@anypay/shared'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { z } from 'zod/mini'
 import { api, ApiRequestError } from '@/lib/api'
 import { readCache, writeCache } from '@/lib/cache'
@@ -38,6 +38,41 @@ function upsert(list: PaymentSummary[], payment: PaymentSummary): PaymentSummary
   return [payment, ...rest].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 }
 
+type FeedAccess =
+  | { kind: 'open'; url: string }
+  | { kind: 'signed-out' }
+  /** The API didn't answer (asleep, restarting, no signal): ask again later. */
+  | { kind: 'unreachable' }
+  /** The phone just finished switching tokens: the new session asks for its own ticket. */
+  | { kind: 'renewed' }
+
+const refused = (error: unknown, statuses: number[]) =>
+  error instanceof ApiRequestError && statuses.includes(error.status)
+
+/**
+ * A one-minute ticket to open the feed with: the merchant token travels in a header, never in the
+ * feed's URL. A refused token signs the phone out, unless "Sign out other phones" went through
+ * without this phone hearing back; then it finishes the change with the token it chose.
+ */
+async function feedAccess(session: MerchantSession, since: Date): Promise<FeedAccess> {
+  try {
+    const { ticket } = await api.streamTicket(session.shopId, session.token)
+    return { kind: 'open', url: api.shopEventsUrl(session.shopId, ticket, since) }
+  } catch (error) {
+    if (!refused(error, [401, 404])) return { kind: 'unreachable' }
+    if (refused(error, [404]) || !session.nextToken) return { kind: 'signed-out' }
+  }
+  try {
+    await signOutOtherPhones(session)
+    return { kind: 'renewed' }
+  } catch (error) {
+    return refused(error, [401]) ? { kind: 'signed-out' } : { kind: 'unreachable' }
+  }
+}
+
+const FIRST_RETRY_MS = 2000
+const MAX_RETRY_MS = 30_000
+
 /**
  * Today's payments for the shop on this phone, pushed live over SSE (the phone never polls).
  * After any reconnect the server sends a fresh snapshot, so nothing is missed while offline.
@@ -53,46 +88,55 @@ export function useLiveFeed(
   const [total, setTotal] = useState<Money>(
     cached?.total ?? zeroMoney(session.assetCode, session.assetScale),
   )
-  const [unauthorized, setUnauthorized] = useState(false)
+  const [access, setAccess] = useState<FeedAccess | null>(null)
+  // Bumped to ask for a new ticket (the stream gave up, or the API didn't answer).
+  const [round, setRound] = useState(0)
 
   useEffect(() => {
     if (payments) writeCache(`feed.${session.shopId}`, { day, payments, total })
   }, [session.shopId, day, payments, total])
 
-  const url = unauthorized ? null : api.shopEventsUrl(session.shopId, session.token, since)
-  // The shop's feed must survive API restarts and sleeping hosts, so it keeps trying.
-  const stream = useEventSource(
-    url,
-    {
-      snapshot: (data) => {
-        const snapshot = ShopPaymentsResponseSchema.parse(data)
-        setPayments(snapshot.payments)
-        setTotal(snapshot.total)
-      },
-      payment: (data) => {
-        const payment = PaymentSummarySchema.parse(data)
-        setPayments((list) => upsert(list ?? [], payment))
-        onNewPayment?.(payment)
-      },
-    },
-    { reconnectWhenClosed: true },
-  )
-
-  // EventSource hides HTTP statuses; when it gives up, ask once whether the token was refused
-  // or the shop no longer exists (e.g. a reset local database). Anything else: keep retrying.
   useEffect(() => {
-    if (stream !== 'closed') return
-    api.shopPayments(session.shopId, session.token, since).catch((error: unknown) => {
-      if (!(error instanceof ApiRequestError && [401, 404].includes(error.status))) return
-      // "Sign out other phones" went through but this phone never heard back: finish it with the
-      // token it chose (the new session reconnects the feed), rather than signing itself out.
-      if (error.status === 401 && session.nextToken) {
-        signOutOtherPhones(session).catch(() => setUnauthorized(true))
-        return
-      }
-      setUnauthorized(true)
-    })
-  }, [stream, session, since])
+    let active = true
+    feedAccess(session, since).then(
+      (next) => active && setAccess(next),
+      () => active && setAccess({ kind: 'unreachable' }),
+    )
+    return () => {
+      active = false
+    }
+  }, [session, since, round])
+
+  const url = access?.kind === 'open' ? access.url : null
+  const stream = useEventSource(url, {
+    snapshot: (data) => {
+      const snapshot = ShopPaymentsResponseSchema.parse(data)
+      setPayments(snapshot.payments)
+      setTotal(snapshot.total)
+    },
+    payment: (data) => {
+      const payment = PaymentSummarySchema.parse(data)
+      setPayments((list) => upsert(list ?? [], payment))
+      onNewPayment?.(payment)
+    },
+  })
+
+  // The shop's feed must survive API restarts and sleeping hosts: when the stream gives up (its
+  // ticket may have expired too) or the API didn't answer, ask again, waiting a little longer
+  // each time. A live stream resets the wait.
+  const failures = useRef(0)
+  useEffect(() => {
+    if (stream === 'live') failures.current = 0
+  }, [stream])
+  const unreachable = access?.kind === 'unreachable'
+  const stuck = unreachable || (url !== null && stream === 'closed')
+  useEffect(() => {
+    if (!stuck) return
+    const delay = Math.min(FIRST_RETRY_MS * 2 ** failures.current, MAX_RETRY_MS)
+    failures.current += 1
+    const timer = setTimeout(() => setRound((n) => n + 1), delay)
+    return () => clearTimeout(timer)
+  }, [stuck, access])
 
   // Totals change on completion, which arrives as a 'payment' event: recompute from the list.
   const liveTotal = useMemo(() => {
@@ -103,11 +147,12 @@ export function useLiveFeed(
   }, [payments, total])
 
   const loaded = payments !== null
-  if (unauthorized)
+  if (access?.kind === 'signed-out')
     return { state: 'unauthorized', loaded, payments: payments ?? [], total: liveTotal }
+  const state: StreamState = unreachable ? 'closed' : stream
   return {
     // A stream that gave up says so, even before the first snapshot.
-    state: loaded || stream === 'closed' ? stream : 'loading',
+    state: loaded || state === 'closed' ? state : 'loading',
     loaded,
     payments: payments ?? [],
     total: liveTotal,

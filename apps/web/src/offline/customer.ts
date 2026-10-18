@@ -7,6 +7,7 @@ import {
 } from '@anypay/shared'
 import { api } from '@/lib/api'
 import { markOfflineTabsInUse } from '@/lib/offline-flag'
+import { serverNow } from '@/lib/server-clock'
 import { uuid } from '@/lib/uuid'
 import { flushOutbox, localRemaining } from './outbox'
 import { getDb, type MyTabRow } from './store'
@@ -39,7 +40,7 @@ export async function myTabAtShop(shopId: string): Promise<MyTabRow | undefined>
 }
 
 /** What is left on a tab right now, counting vouchers this phone signed since it last synced. */
-export async function remainingOn(tab: MyTabRow, at = Date.now()) {
+export async function remainingOn(tab: MyTabRow, at = serverNow()) {
   if (!tab.shopCap || !tab.remaining) return undefined
   const outbox = await getDb().outbox.where('tabId').equals(tab.id).toArray()
   return localRemaining(
@@ -56,13 +57,9 @@ export async function remainingOn(tab: MyTabRow, at = Date.now()) {
 
 /** Brings this phone's tabs up to date when there is signal; offline, they stay as they were. */
 export async function refreshMyTabs(): Promise<void> {
-  for (const tab of await listMyTabs()) {
-    try {
-      await rememberTab(await api.getTab(tab.id))
-    } catch {
-      // No signal or the server is asleep: keep the last known figures.
-    }
-  }
+  const tabs = await listMyTabs()
+  // No signal or the server asleep: that tab keeps its last known figures.
+  await Promise.allSettled(tabs.map(async (tab) => rememberTab(await api.getTab(tab.id))))
 }
 
 export type ApproveResult =

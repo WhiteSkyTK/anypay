@@ -7,10 +7,12 @@ import {
 import { type RequestHandler, Router } from 'express'
 import { z } from 'zod'
 import type { IdempotencyRepository } from '../../repositories/idempotency-repository'
+import { AppError } from '../../lib/errors'
 import type { ShopRecord } from '../../repositories/shop-repository'
 import type { PaymentEvents } from '../../services/payment-events'
 import type { PaymentService } from '../../services/payment-service'
 import { type ShopService, toShop } from '../../services/shop-service'
+import type { StreamTickets } from '../../services/stream-tickets'
 import type { TabService } from '../../services/tab-service'
 import { idempotent } from '../idempotency'
 import { openEventStream } from '../sse'
@@ -22,6 +24,7 @@ export interface ShopRouteDeps {
   events: PaymentEvents
   idempotency: IdempotencyRepository
   tabs: TabService
+  tickets: StreamTickets
   /** Rate limit for routes that create things or call out to wallets. */
   limit: RequestHandler
   /** Caps open live streams (see limitStreams). */
@@ -39,10 +42,14 @@ const sinceOf = (query: unknown) => {
 
 function bearerToken(header: string | undefined, query: unknown): string | undefined {
   if (header?.startsWith('Bearer ')) return header.slice('Bearer '.length)
-  // EventSource can't send headers, so the live feed passes the token in the query instead
-  // (request logs strip query strings, so it is never written to a log).
+  // Only app versions from before feed tickets still put the token in the feed's URL.
   const token = (query as { token?: unknown }).token
   return typeof token === 'string' ? token : undefined
+}
+
+const queryTicket = (query: unknown) => {
+  const ticket = (query as { ticket?: unknown }).ticket
+  return typeof ticket === 'string' ? ticket : undefined
 }
 
 export function shopRoutes({
@@ -51,6 +58,7 @@ export function shopRoutes({
   events,
   idempotency,
   tabs,
+  tickets,
   limit,
   streams,
 }: ShopRouteDeps): Router {
@@ -90,6 +98,27 @@ export function shopRoutes({
   }
 
   /** Active tabs at this shop, with keys and caps: the shop's phone keeps them to work offline. */
+  /**
+   * The live feed opens with a ticket from here, so the merchant token (sent in a header) never
+   * goes into a URL. A ticket works for one minute; the phone asks again when its feed has to.
+   */
+  router.post('/shops/:shopId/stream-tickets', limit, merchant, (_req, res) => {
+    const { ticket, expiresAt } = tickets.issue((res.locals.shop as ShopRecord).id)
+    res.status(201).json({ ticket, expiresAt: expiresAt.toISOString() })
+  })
+
+  // The feed itself: a ticket, or (older app versions) the merchant token in the query.
+  const feedAccess: RequestHandler = async (req, res, next) => {
+    const ticket = queryTicket(req.query)
+    if (ticket === undefined) return merchant(req, res, next)
+    const shop = await shops.getShop(String(req.params.shopId))
+    if (tickets.shopFor(ticket) !== shop.id) {
+      throw new AppError('merchant_unauthorized', 'This feed ticket has expired', 401)
+    }
+    res.locals.shop = shop
+    next()
+  }
+
   router.get('/shops/:shopId/tabs', merchant, async (_req, res) => {
     res.json({ tabs: await tabs.listForShop(res.locals.shop as ShopRecord) })
   })
@@ -119,7 +148,7 @@ export function shopRoutes({
   })
 
   /** Live feed: a snapshot first (also after every reconnect), then each change as it happens. */
-  router.get('/shops/:shopId/events', streams, merchant, async (req, res) => {
+  router.get('/shops/:shopId/events', streams, feedAccess, async (req, res) => {
     const shop = res.locals.shop as ShopRecord
     const since = sinceOf(req.query)
     let unsubscribe = () => undefined as void

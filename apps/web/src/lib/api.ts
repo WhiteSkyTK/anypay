@@ -11,16 +11,23 @@ import {
   ShopPaymentsResponseSchema,
   ShopSchema,
   ShopTabsResponseSchema,
+  StreamTicketResponseSchema,
   TabSummarySchema,
   VoucherStatusSchema,
   type VoucherSubmission,
   WalletLookupResponseSchema,
 } from '@anypay/shared'
 import type { z } from 'zod/mini'
+import { trackRequest } from './pending-requests'
+import { noteServerDate } from './server-clock'
 import { isSimulatedOffline } from './simulated-offline'
 
 // Empty in development: Vite proxies /api to the API, so the browser stays same-origin.
 const BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+
+// Long enough for a free server waking from sleep (up to a minute), short enough not to leave a
+// customer staring at a spinner on a dead connection.
+const REQUEST_TIMEOUT_MS = 60_000
 
 /** A failed API call, with the API's error code ('network_error' when there was no response). */
 export class ApiRequestError extends Error {
@@ -51,22 +58,44 @@ async function send(path: string, options: RequestOptions = {}): Promise<Respons
   if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey
   // Demo mode's "Simulate offline" fails every request exactly like a dead connection.
   if (isSimulatedOffline()) throw new ApiRequestError('network_error', 'No connection', 0)
+  const sentAt = Date.now()
+  const done = trackRequest(sentAt)
   let response: Response
   try {
     response = await fetch(`${BASE_URL}${path}`, {
       method: options.method ?? 'GET',
       headers,
       body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      // A stalled connection (weak signal) would otherwise spin forever. Every request that moves
+      // money carries an Idempotency-Key, so trying again after a timeout is always safe.
+      signal: AbortSignal.timeout?.(REQUEST_TIMEOUT_MS),
     })
-  } catch {
-    throw new ApiRequestError('network_error', 'No connection', 0)
+  } catch (error) {
+    const timedOut = error instanceof DOMException && error.name === 'TimeoutError'
+    throw timedOut
+      ? new ApiRequestError('timeout', 'No answer in time', 0)
+      : new ApiRequestError('network_error', 'No connection', 0)
+  } finally {
+    done()
   }
+  noteServerDate(response.headers.get('Date'), sentAt, Date.now())
   if (response.ok) return response
+  throw await toRequestError(response)
+}
+
+async function toRequestError(response: Response): Promise<ApiRequestError> {
   const error = ApiErrorSchema.safeParse(await response.json().catch(() => undefined))
-  const { code, message } = error.success
-    ? error.data.error
-    : { code: 'unknown', message: response.statusText }
-  throw new ApiRequestError(code, message, response.status)
+  if (error.success) {
+    const { code, message } = error.data.error
+    return new ApiRequestError(code, message, response.status)
+  }
+  // Not our API answering: the host's own page while the server sleeps, restarts or deploys.
+  const gateway = response.status >= 502 && response.status <= 504
+  return new ApiRequestError(
+    gateway ? 'unavailable' : 'unknown',
+    response.statusText,
+    response.status,
+  )
 }
 
 /** Every response is checked against the shared contract, so a mismatch fails loudly. */
@@ -154,8 +183,15 @@ export const api = {
   getVoucher: (nonce: string) => request(`/api/vouchers/${enc(nonce)}`, VoucherStatusSchema),
 
   /** SSE: EventSource can't send headers, so the token rides in the query (never logged). */
-  shopEventsUrl: (shopId: string, token: string, since: Date) =>
-    `${BASE_URL}/api/shops/${enc(shopId)}/events?token=${enc(token)}&since=${enc(since.toISOString())}`,
+  /** A one-minute pass for the live feed: the merchant token goes in a header, not a URL. */
+  streamTicket: (shopId: string, token: string) =>
+    request(`/api/shops/${enc(shopId)}/stream-tickets`, StreamTicketResponseSchema, {
+      method: 'POST',
+      token,
+    }),
+
+  shopEventsUrl: (shopId: string, ticket: string, since: Date) =>
+    `${BASE_URL}/api/shops/${enc(shopId)}/events?ticket=${enc(ticket)}&since=${enc(since.toISOString())}`,
 
   paymentEventsUrl: (paymentId: string) => `${BASE_URL}/api/payments/${enc(paymentId)}/events`,
 }

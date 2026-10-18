@@ -5,6 +5,7 @@ import { cleanup, render } from '@testing-library/react'
 import type { ComponentType } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, beforeAll, beforeEach, vi } from 'vitest'
+import { RouteError } from '@/app/RouteError'
 import { initI18n } from '@/i18n'
 import { setMerchantSession } from '@/lib/merchant-session'
 
@@ -53,24 +54,34 @@ export interface ApiCall {
 
 type Route = Reply | ((call: ApiCall) => Reply)
 
+const FEED_TICKET = /^POST \/api\/shops\/[^/]+\/stream-tickets$/
+// A new ticket every time, as the API gives: each (re)connection opens a different URL.
+let tickets = 0
+const ticketReply = (): Reply => ({
+  status: 201,
+  body: { ticket: 'feed-ticket-' + ++tickets, expiresAt: '2099-01-01T00:00:00.000Z' },
+})
+
 /**
  * Replaces fetch with scripted replies, keyed by "METHOD /path" (query string ignored). A route
- * given a list replies with each entry in turn, then repeats the last one.
+ * given a list replies with each entry in turn, then repeats the last one. The shop feed's tickets
+ * are granted unless a test scripts that route, so feed tests stay about the feed.
  */
 export function fakeApi(routes: Record<string, Route | Route[]>) {
   const calls: ApiCall[] = []
   const served = new Map<string, number>()
-  vi.stubGlobal('fetch', async (url: string, init: RequestInit = {}) => {
+  const answer = (url: string, init: RequestInit): Response => {
     const { pathname } = new URL(url, 'http://localhost')
     const call: ApiCall = {
       method: init.method ?? 'GET',
       path: pathname,
       headers: (init.headers ?? {}) as Record<string, string>,
-      body: init.body ? (JSON.parse(String(init.body)) as unknown) : undefined,
+      // The app only ever sends JSON text.
+      body: typeof init.body === 'string' ? (JSON.parse(init.body) as unknown) : undefined,
     }
     calls.push(call)
     const key = `${call.method} ${pathname}`
-    const route = routes[key]
+    const route = routes[key] ?? (FEED_TICKET.test(key) ? ticketReply : undefined)
     if (!route) throw new Error(`Unexpected API call: ${key}`)
     const count = served.get(key) ?? 0
     served.set(key, count + 1)
@@ -79,7 +90,11 @@ export function fakeApi(routes: Record<string, Route | Route[]>) {
     if (!reply || reply.networkError) throw new TypeError('Failed to fetch')
     const body = typeof reply.body === 'string' ? reply.body : JSON.stringify(reply.body ?? {})
     return new Response(body, { status: reply.status ?? 200 })
-  })
+  }
+  // Like the real fetch, anything thrown above becomes a rejected promise.
+  vi.stubGlobal('fetch', (url: string, init: RequestInit = {}) =>
+    Promise.resolve().then(() => answer(url, init)),
+  )
   return calls
 }
 
@@ -162,7 +177,8 @@ export function renderPage(
 ) {
   const router = createMemoryRouter(
     [
-      { path: pattern, Component: Page },
+      // The app's own error screen, as in router.tsx, so tests see what a phone would.
+      { path: pattern, Component: Page, ErrorBoundary: RouteError },
       ...stubs.map((stub) => ({ path: stub, element: <p>{`Stub page ${stub}`}</p> })),
     ],
     { initialEntries: [...before, state === undefined ? path : { pathname: path, state }] },
@@ -178,6 +194,10 @@ export function setUpPageTests() {
   })
   beforeEach(() => {
     vi.stubGlobal('EventSource', FakeEventSource)
+    // As on https or localhost (happy-dom leaves it unset): offline tabs need a secure context.
+    vi.stubGlobal('isSecureContext', true)
+    // No real network in tests: an unscripted request fails loudly.
+    fakeApi({})
     // Screens render as with "reduce motion" on: the success tick appears still. happy-dom's Web
     // Animations reject when a test unmounts a screen mid-animation, and no test checks motion.
     const matchMedia = window.matchMedia.bind(window)

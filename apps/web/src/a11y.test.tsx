@@ -4,7 +4,7 @@
 // checked separately: tokens.test.ts verifies every text/background pair in both themes.
 import 'fake-indexeddb/auto'
 import { exportPublicKey, generateDeviceKeys, newNonce, saleRequestPath } from '@anypay/shared'
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 import type { ComponentType } from 'react'
@@ -145,7 +145,7 @@ describe('accessibility (axe)', () => {
   it('shop feed with payments', async () => {
     setMerchantSession(SESSION)
     renderScreen(MerchantPage, '/merchant', '/merchant')
-    const source = FakeEventSource.latest()
+    const source = await waitFor(() => FakeEventSource.latest()) // once its ticket is back
     act(() => source.open())
     act(() =>
       source.emit('snapshot', {

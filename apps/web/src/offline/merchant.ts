@@ -2,6 +2,7 @@ import { isFresh, verifyVoucher, type Voucher } from '@anypay/shared'
 import { api } from '@/lib/api'
 import type { MerchantSession } from '@/lib/merchant-session'
 import { markOfflineTabsInUse } from '@/lib/offline-flag'
+import { serverNow } from '@/lib/server-clock'
 import { uuid } from '@/lib/uuid'
 import { flushOutbox, localRemaining } from './outbox'
 import { getDb, type ShopTabRow } from './store'
@@ -15,7 +16,11 @@ export async function refreshShopTabs(session: MerchantSession): Promise<number>
   const syncedAt = Date.now()
   const db = getDb()
   await db.transaction('rw', db.shopTabs, async () => {
-    await db.shopTabs.where('shopId').equals(session.shopId).delete()
+    // Only drop tabs the server no longer lists: Dexie's live queries show changes at once, so
+    // clearing everything first would flash "No tabs yet" on screen during every refresh.
+    const known = await db.shopTabs.where('shopId').equals(session.shopId).primaryKeys()
+    const listed = new Set(tabs.map((tab) => tab.id))
+    await db.shopTabs.bulkDelete(known.filter((id) => !listed.has(id)))
     await db.shopTabs.bulkPut(tabs.map((tab) => ({ ...tab, shopId: session.shopId, syncedAt })))
   })
   if (tabs.length > 0) markOfflineTabsInUse()
@@ -26,7 +31,7 @@ export const listShopTabs = (shopId: string) =>
   getDb().shopTabs.where('shopId').equals(shopId).toArray()
 
 /** What is left on a tab right now, counting vouchers this phone took since it last synced. */
-export async function remainingOnShopTab(tab: ShopTabRow, at = Date.now()) {
+export async function remainingOnShopTab(tab: ShopTabRow, at = serverNow()) {
   const outbox = await getDb().outbox.where('tabId').equals(tab.id).toArray()
   return localRemaining(tab, outbox, at)
 }
@@ -45,7 +50,7 @@ export type VoucherCheck =
 export async function checkVoucher(
   voucher: Voucher,
   session: MerchantSession,
-  now = Date.now(),
+  now = serverNow(),
 ): Promise<VoucherCheck> {
   if (voucher.shopId !== session.shopId) return { ok: false, reason: 'other_shop' }
   const tab = await getDb().shopTabs.get(voucher.tabId)

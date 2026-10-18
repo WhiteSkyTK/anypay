@@ -9,8 +9,11 @@ import { OutboxChip } from './OutboxChip'
  */
 export function WaitingTabSales({ shopId }: Readonly<{ shopId: string }>) {
   const { t } = useTranslation()
-  const offline = useOffline()
-  const rows = useOfflineQuery(offline, shopId, (store) => store.listShopOutbox(shopId))
+  // Tabs are an extra on the feed: if this phone can't keep them, the feed works without.
+  const offline = useOffline({ quiet: true })
+  const rows = useOfflineQuery(offline, shopId, (store) => store.listShopOutbox(shopId), {
+    quiet: true,
+  })
   const waiting = rows?.filter((row) => row.state !== 'settled') ?? []
   if (waiting.length === 0) return null
   return (
