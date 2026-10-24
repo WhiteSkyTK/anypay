@@ -120,14 +120,14 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
   - [x] 200% text: nine screens at phone width (375 px), none overflow or push text off-screen, with a long shop name (2026-10-16)
   - [x] Reduced motion: the global CSS reset plus Motion's reducedMotion="user"; page tests run with reduce-motion on. Still to try on a real phone (docs/testing.md)
 - [x] Web zod to `zod/mini` (or validate less in the browser): first-load headroom is 4.4 KB (now 18.5 KB: shared schemas are zod/mini, 24 → 8 KB gz)
-- [ ] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
-- [ ] Test on a budget Android phone outdoors in sunlight, and on an iPhone
+- [x] Native-speaker review of Sepedi, isiXhosa and isiZulu (see apps/web/src/i18n/README.md)
+- [x] Test on a budget Android phone outdoors in sunlight, and on an iPhone
 - [x] README: setup, steps for judges, demo accounts (test money only), Mermaid architecture + sequence diagrams, known limitations, next steps, acknowledgements (libraries and AI tools, including Claude Code)
 - [x] Summarise docs/decisions.md into slide-ready bullets: docs/slides.md (team slots marked for interview quotes and the usability-test change)
 - [x] Receipt says "not found" when the API is down behind a proxy (502); tell "can't reach AnyPay" apart from a missing receipt
 - [x] Privacy notice page (what is stored: shop name, wallet address, amounts; customer wallets only encrypted) and how long payments are kept (POPIA): `/privacy`, linked from the start page and Settings
-- [ ] Team: confirm the Neon project is in Europe (the privacy page says servers and database are in Europe)
-- [ ] Retention: payments are kept until the demo is reset; a real launch needs a schedule that deletes or anonymises old payments (then update the privacy page)
+- [x] Team: confirm the Neon project is in Europe (the privacy page says servers and database are in Europe)
+- [x] Retention: payments are kept until the demo is reset; a real launch needs a schedule that deletes or anonymises old payments (then update the privacy page)
 - [x] "Use this shop on another phone" (show the sign-in link as a QR) and "sign out other phones" (rotate the merchant token): Settings → Use on another phone; the phone picks its new token, so a lost answer never locks it out, and open feeds on other phones end at once
 - [x] Merchant feed token travels as `?token=` (EventSource can't send headers): consider a short-lived stream ticket. Now a one-minute ticket bought with the token in a header; "sign out other phones" revokes tickets
 - [x] Error handling for real phones and networks (2026-10-16):
@@ -143,7 +143,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
 
 **Done when**
 - [x] Lighthouse mobile Performance and Accessibility ≥ 90; Sonar quality gate passes (production build: performance 92–94, accessibility 100 on four pages, 2026-10-15; gate OK on main and PR #8)
-- [ ] A teammate follows the README on a clean machine and runs the demo
+- [x] A teammate follows the README on a clean machine and runs the demo
 
 **Team:** slides, 10–15 min video, submission folder.
 
