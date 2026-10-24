@@ -148,7 +148,7 @@ Plan (2026-10-09): Postgres via Drizzle (PGlite locally, Neon in production; han
   - the approve screen shows roughly what leaves their wallet in their own currency, and refuses an over-limit sale before the tap, with the reset date and a way to a higher limit
   - clearer failure reasons with what to do next
   - an end-to-end test of the whole tab journey on two phones
-- [ ] First-load budget is tight after the library updates: heaviest page (receipt) 198.0 of 200 KB. Check before adding anything to the app shell
+- [ ] First-load budget is tight after the library updates: heaviest page (receipt) 198.8 of 200 KB after Dependabot #12. Check before adding anything to the app shell
 
 **Done when**
 - [x] Lighthouse mobile Performance and Accessibility ≥ 90; Sonar quality gate passes (production build: performance 92–94, accessibility 100 on four pages, 2026-10-15; gate OK on main and PR #8)
