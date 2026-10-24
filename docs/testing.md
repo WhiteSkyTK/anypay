@@ -100,7 +100,7 @@ Or simply test on the deployed app (<https://anypay-web.onrender.com>): no setup
 - [x] Keypad is easy to hit with a thumb; the amount is big and readable in sunlight
 - [x] After approving in the wallet on the phone, it comes back to the receipt
 - [x] The PC (shop) announces the payment out loud
-- [ ] Phone with the shop feed open: lock the screen for a minute, unlock, pay again: the
+- [x] Phone with the shop feed open: lock the screen for a minute, unlock, pay again: the
       feed reconnects (**Live**) and shows the new payment
 - [x] Phone text size at maximum (Android Settings → Display → Font size): nothing cut off
 
@@ -182,9 +182,9 @@ in Safari, which doesn't have the tab's key): use the in-app scanner there.
 
 **Your shop on another phone** (two phones; the first already runs a shop)
 
-- [ ] Shop phone: **Settings → Use on another phone → Show sign-in code**; scan it with the
+- [x] Shop phone: **Settings → Use on another phone → Show sign-in code**; scan it with the
       second phone's camera: the second phone opens the shop's live feed
-- [ ] Take a test payment: it appears on **both** phones
+- [x] Take a test payment: it appears on **both** phones
 - [ ] First phone: **Sign out other phones** → confirm. Within seconds the second phone says
       **This phone is signed out of the shop**; the first keeps its feed (it reconnects by
       itself) and the next payment still appears there
@@ -192,11 +192,11 @@ in Safari, which doesn't have the tab's key): use the in-app scanner there.
 
 **Calmer edges**
 
-- [ ] Receipt with the API asleep or down (stop it, or wait for Render to sleep): **Can't reach
+- [x] Receipt with the API asleep or down (stop it, or wait for Render to sleep): **Can't reach
       AnyPay right now**, not "receipt not found"; it updates by itself once the API is back
 - [ ] On a slow connection (Chrome DevTools → Network → Slow 4G) the AnyPay mark shows at once
       instead of a blank screen, and disappears as the page appears (no jump)
-- [ ] Start page and **Settings → Privacy** open the privacy notice; it reads well in every
+- [x] Start page and **Settings → Privacy** open the privacy notice; it reads well in every
       language (drafts need the native-speaker review)
 
 **Real phones, bad networks (2026-10-16)**
