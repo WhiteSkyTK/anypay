@@ -126,7 +126,7 @@ sequenceDiagram
   C->>A: open tab: weekly limit + public key
   A->>CW: outgoing-payment grant, limit per week (R/start/P1W), interactive
   C->>CW: approve the weekly limit
-  A->>A: store the grant encrypted; measure the limit in the shop's currency
+  A->>A: store the grant encrypted, and measure the limit in the shop's currency
   S->>A: download the shop's tabs (keys and limits)
   Note over C,S: The sale, both phones offline
   S->>C: QR: shop, amount, nonce, time
