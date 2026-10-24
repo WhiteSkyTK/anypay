@@ -238,8 +238,11 @@
       "howToPay": "To pay, ask the shop for a tab sale and scan the QR code they show you.",
       "scan": "Scan the shop's QR",
       "payments": "Tab payments",
-      "noPayments": "No payments on this tab yet."
-    }
+      "noPayments": "No payments on this tab yet.",
+      "usedUp": "This week's limit is used up. It starts again on {{date}}.",
+      "higherLimit": "Need more? Open a new tab with a higher limit"
+    },
+    "inShopCurrency": "That's about {{amount}} at {{shop}}, in the shop's currency."
   },
   "settings": {
     "title": "Settings",
@@ -414,7 +417,9 @@
     "noTab": "You don't have a tab at this shop on this phone. Open one while you have signal.",
     "capReached": "This is more than what's left on your tab this week.",
     "expired": "This request is too old. Ask the shop for a new one.",
-    "invalid": "This isn't a valid AnyPay sale."
+    "invalid": "This isn't a valid AnyPay sale.",
+    "fromWallet": "About {{amount}} from your wallet",
+    "capReachedNext": "Your tab starts again on {{date}}. Pay another way for now, or open a new tab with a higher limit."
   },
   "voucher": {
     "title": "Tab payment",
@@ -427,13 +432,13 @@
       "failed": "Failed"
     },
     "reasons": {
-      "expired": "Too old to settle (over 72 hours)",
-      "cap_reached": "Over the tab's weekly limit",
-      "tab_inactive": "The tab is no longer active",
-      "grant_limit": "The customer's wallet refused: over the weekly limit",
-      "insufficient_funds": "Not enough money in the customer's wallet",
-      "payment_failed": "The payment failed",
-      "timeout": "The payment took too long",
+      "expired": "Too old to settle (over 72 hours). Pay for this sale another way.",
+      "cap_reached": "Over this week's tab limit. Pay for this sale another way.",
+      "tab_inactive": "The tab is closed. Open a new tab to keep paying this way.",
+      "grant_limit": "The wallet's weekly limit is used up (fees and exchange count too). Tab sales start again next week.",
+      "insufficient_funds": "Not enough money in the customer's wallet. Pay for this sale another way.",
+      "payment_failed": "The payment didn't go through. Pay for this sale another way.",
+      "timeout": "The wallet didn't confirm in time. Check the wallet before asking for the money again.",
       "invalid": "Not signed by the customer's phone"
     },
     "check": {

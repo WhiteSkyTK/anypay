@@ -87,7 +87,7 @@ export class PaymentWatcher {
           incomingPayment: incoming,
         })
       }
-      await this.#sleep(delay)
+      await this.#sleep(delay) // NOSONAR: polling waits between checks, one after another
       delay = Math.min(Math.round(delay * 1.5), this.#maxIntervalMs)
     }
     return fail(session, 'timeout')

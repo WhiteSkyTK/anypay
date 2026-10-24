@@ -126,7 +126,7 @@ sequenceDiagram
   C->>A: open tab: weekly limit + public key
   A->>CW: outgoing-payment grant, limit per week (R/start/P1W), interactive
   C->>CW: approve the weekly limit
-  A->>A: store the grant encrypted; measure the limit in the shop's currency
+  A->>A: store the grant encrypted, and measure the limit in the shop's currency
   S->>A: download the shop's tabs (keys and limits)
   Note over C,S: The sale, both phones offline
   S->>C: QR: shop, amount, nonce, time
@@ -235,7 +235,7 @@ docs/
   trackers). Shops see amounts and times, never a customer's wallet address.
 - **Accessible:** semantic landmarks, labelled inputs, managed focus, status never shown by colour
   alone, usable at 200% text size, reduced motion respected, voice confirmation.
-- **Languages:** English, Sepedi, isiXhosa and isiZulu; every string exists in every language
+- **Languages:** English, Afrikaans, Sepedi, isiXhosa and isiZulu; every string exists in every language
   (tested). The non-English text still needs a native speaker's review.
 
 ## Known limitations

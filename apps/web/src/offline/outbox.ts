@@ -38,11 +38,16 @@ async function syncOne(row: OutboxRow, now: number): Promise<OutboxRow> {
         : await api.getVoucher(nonce)
     return applyStatus(row, status, now)
   } catch (error) {
+    const retry = { attempts: row.attempts + 1, nextAttemptAt: now + backoff(row.attempts) }
+    // The server took it earlier, then let it go because its payment never started (the wallet
+    // network was down): send it again rather than calling it invalid.
+    if (error instanceof ApiRequestError && error.status === 404 && row.ackedAt !== undefined)
+      return { ...row, ...retry, ackedAt: undefined }
     // The server says it can never take this voucher (bad signature, unknown tab).
     if (error instanceof ApiRequestError && (error.status === 400 || error.status === 404))
       return { ...row, state: 'failed', reason: 'invalid' }
-    // No signal, server busy or asleep: try again later.
-    return { ...row, attempts: row.attempts + 1, nextAttemptAt: now + backoff(row.attempts) }
+    // No signal, server busy or asleep, wallet network down (503): try again later.
+    return { ...row, ...retry }
   }
 }
 

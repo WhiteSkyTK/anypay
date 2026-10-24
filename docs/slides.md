@@ -19,7 +19,7 @@ Sources and detail: [research/desk-research.md](research/desk-research.md) and
 - Spazas give regulars credit before pay day: something big retailers don't do.
 - India's soundbox: hearing "payment received" is what makes QR payments feel real to a trader.
 - India's UPI Lite: small offline payments work when they are capped.
-- Four languages in the app cover about 59% of home languages; Afrikaans (10.6%) is next.
+- Five languages in the app (English, Afrikaans, Sepedi, isiXhosa, isiZulu) cover about 70% of home languages (Census 2022).
 
 ## 3. User stories and journeys
 

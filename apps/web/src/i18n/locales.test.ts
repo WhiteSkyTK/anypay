@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { LANGUAGES } from './languages'
+import af from './locales/af.json'
 import en from './locales/en.json'
 import nso from './locales/nso.json'
 import xh from './locales/xh.json'
@@ -20,7 +21,7 @@ function flatten(tree: Tree, prefix = ''): Record<string, string> {
 const placeholders = (text: string) => [...text.matchAll(/{{(\w+)}}/g)].map((m) => m[1]).sort()
 
 const english = flatten(en)
-const translations = { nso, xh, zu }
+const translations = { af, nso, xh, zu }
 
 it('has a locale file for every language in the picker', () => {
   const shipped = ['en', ...Object.keys(translations)].sort()

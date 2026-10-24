@@ -238,8 +238,11 @@
       "howToPay": "Ukukhokha, cela isitolo ukuthengisa ngethebhu bese uskena ikhodi ye-QR abakukhombisa yona.",
       "scan": "Skena i-QR yesitolo",
       "payments": "Izinkokhelo zethebhu",
-      "noPayments": "Azikabikho izinkokhelo kule thebhu."
-    }
+      "noPayments": "Azikabikho izinkokhelo kule thebhu.",
+      "usedUp": "Umkhawulo walesi sonto usetshenzisiwe. Uqala futhi ngo-{{date}}.",
+      "higherLimit": "Udinga okwengeziwe? Vula ithebhu entsha enomkhawulo ophezulu"
+    },
+    "inShopCurrency": "Lokho kucishe kube ngu-{{amount}} e-{{shop}}, ngemali yesitolo."
   },
   "settings": {
     "title": "Izilungiselelo",
@@ -414,7 +417,9 @@
     "noTab": "Awunayo ithebhu kulesi sitolo kule foni. Vula eyodwa uma unesiginali.",
     "capReached": "Lokhu kungaphezu kwalokho okusele kuthebhu yakho kuleli sonto.",
     "expired": "Lesi sicelo sesidala kakhulu. Cela isitolo esisha.",
-    "invalid": "Lokhu akukona ukuthengisa kwe-AnyPay okuvumelekile."
+    "invalid": "Lokhu akukona ukuthengisa kwe-AnyPay okuvumelekile.",
+    "fromWallet": "Cishe u-{{amount}} ovela ewalethini yakho",
+    "capReachedNext": "Ithebhu yakho iqala futhi ngo-{{date}}. Khokha ngenye indlela okwamanje, noma uvule ithebhu entsha enomkhawulo ophezulu."
   },
   "voucher": {
     "title": "Inkokhelo yethebhu",
@@ -427,13 +432,13 @@
       "failed": "Yehlulekile"
     },
     "reasons": {
-      "expired": "Indala kakhulu ukuthi ikhokhwe (ngaphezu kwamahora angu-72)",
-      "cap_reached": "Ingaphezu komkhawulo wesonto wethebhu",
-      "tab_inactive": "Ithebhu ayisasebenzi",
-      "grant_limit": "Iwalethi yekhasimende yenqabile: ingaphezu komkhawulo wesonto",
-      "insufficient_funds": "Ayikho imali eyanele ku-wallet yekhasimende",
-      "payment_failed": "Inkokhelo yehlulekile",
-      "timeout": "Inkokhelo ithathe isikhathi eside kakhulu",
+      "expired": "Indala kakhulu ukuthi ikhokhwe (ngaphezu kwamahora angu-72). Khokhela lokhu kuthenga ngenye indlela.",
+      "cap_reached": "Ingaphezu komkhawulo wesonto wethebhu. Khokhela lokhu kuthenga ngenye indlela.",
+      "tab_inactive": "Ithebhu ivaliwe. Vula ithebhu entsha ukuze uqhubeke ukhokha ngale ndlela.",
+      "grant_limit": "Umkhawulo wesonto wewalethi usetshenzisiwe (izimali ezengeziwe nokushintshaniswa kwemali nakho kuyabalwa). Ukuthengisa kwethebhu kuqala futhi ngesonto elizayo.",
+      "insufficient_funds": "Ayikho imali eyanele ewalethini yekhasimende. Khokhela lokhu kuthenga ngenye indlela.",
+      "payment_failed": "Inkokhelo ayiphumelelanga. Khokhela lokhu kuthenga ngenye indlela.",
+      "timeout": "Iwalethi ayiqinisekisanga ngesikhathi. Hlola iwalethi ngaphambi kokucela imali futhi.",
       "invalid": "Ayisayinwanga yifoni yekhasimende"
     },
     "check": {

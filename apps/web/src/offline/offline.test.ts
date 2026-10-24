@@ -272,6 +272,41 @@ describe('flushOutbox', () => {
     expect(await getDb().outbox.get(row.nonce)).toMatchObject({ state: 'settled' })
   })
 
+  it('waits and sends again while the wallet network is down (503), never giving up the sale', async () => {
+    const row = outboxRow()
+    await getDb().outbox.put(row)
+    fakeApi({
+      [`POST /api/tabs/${TAB_ID}/vouchers`]: [
+        apiError(503, 'open_payments_unavailable'),
+        { body: { ...settled, nonce: row.nonce } },
+      ],
+    })
+    await flushOutbox()
+    expect(await getDb().outbox.get(row.nonce)).toMatchObject({ state: 'saved', attempts: 1 })
+    await flushOutbox(Date.now() + backoff(0) + 1)
+    expect(await getDb().outbox.get(row.nonce)).toMatchObject({ state: 'settled' })
+  })
+
+  it('sends a voucher again when the server gave it back (its payment never started)', async () => {
+    const row = outboxRow()
+    await getDb().outbox.put(row)
+    fakeApi({
+      [`POST /api/tabs/${TAB_ID}/vouchers`]: [
+        { body: { ...settled, nonce: row.nonce, status: 'settling' } },
+        { body: { ...settled, nonce: row.nonce } },
+      ],
+      // The server let go of it: asked for its outcome, it no longer knows the voucher.
+      [`GET /api/vouchers/${row.nonce}`]: apiError(404, 'voucher_not_found'),
+    })
+    await flushOutbox()
+    await flushOutbox(Date.now() + backoff(0) + 1)
+    const resent = await getDb().outbox.get(row.nonce)
+    expect(resent).toMatchObject({ state: 'sending' })
+    expect(resent?.ackedAt).toBeUndefined()
+    await flushOutbox(Date.now() + backoff(5) + 1)
+    expect(await getDb().outbox.get(row.nonce)).toMatchObject({ state: 'settled' })
+  })
+
   it('gives up on a voucher the server can never take', async () => {
     const row = outboxRow()
     await getDb().outbox.put(row)

@@ -91,4 +91,9 @@ export const MIGRATIONS: readonly Migration[] = [
       'ALTER TABLE payments ADD COLUMN tab_id text REFERENCES tabs(id)',
     ],
   },
+  {
+    // The wallet refused a tab payment for its weekly limit: that week counts as full.
+    name: '0004_tab_limit_reached',
+    statements: ['ALTER TABLE tabs ADD COLUMN limit_reached_at timestamptz'],
+  },
 ]

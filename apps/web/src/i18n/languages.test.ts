@@ -6,7 +6,7 @@ describe('initialLanguage', () => {
     expect(initialLanguage(null)).toBe('en')
   })
 
-  it.each(['nso', 'xh', 'zu', 'en'])('remembers a chosen language: %s', (code) => {
+  it.each(['af', 'nso', 'xh', 'zu', 'en'])('remembers a chosen language: %s', (code) => {
     expect(initialLanguage(code)).toBe(code)
   })
 
@@ -16,11 +16,11 @@ describe('initialLanguage', () => {
 })
 
 describe('isLanguageCode', () => {
-  it.each(['en', 'nso', 'xh', 'zu'])('accepts %s', (code) => {
+  it.each(['en', 'af', 'nso', 'xh', 'zu'])('accepts %s', (code) => {
     expect(isLanguageCode(code)).toBe(true)
   })
 
-  it.each(['', 'EN', 'zu-ZA', 'af', null])('rejects %s', (code) => {
+  it.each(['', 'EN', 'zu-ZA', 'st', null])('rejects %s', (code) => {
     expect(isLanguageCode(code)).toBe(false)
   })
 })

@@ -6,12 +6,14 @@ import { OfflineBanner } from '@/components/OfflineBanner'
 import { SlowNotice } from '@/components/SlowNotice'
 import { TabBar } from '@/components/TabBar'
 import { UpdatePrompt } from '@/components/UpdatePrompt'
+import { useMerchantSession } from '@/hooks/useMerchantSession'
 import { useRouteFocus } from '@/hooks/useRouteFocus'
 import { useTheme } from '@/hooks/useTheme'
 import { loadOffline, usesOfflineTabs } from '@/lib/offline-flag'
 import { cn } from '@/lib/utils'
 import type { RouteHandle } from './route-handle'
 import { useHideSplash } from './useHideSplash'
+import { warmScreens } from './warm-screens'
 
 export function AppShell() {
   const { t } = useTranslation()
@@ -28,6 +30,13 @@ export function AppShell() {
   useEffect(() => {
     if (usesOfflineTabs()) void loadOffline().then((offline) => offline.startOfflineSync())
   }, [])
+
+  // Offline needs its screens cached first: fetch them while there is signal (warm-screens.ts).
+  const runsShop = useMerchantSession() !== null
+  useEffect(() => {
+    if (runsShop) warmScreens('shop')
+    if (usesOfflineTabs()) warmScreens('tab')
+  }, [runsShop])
 
   return (
     <>

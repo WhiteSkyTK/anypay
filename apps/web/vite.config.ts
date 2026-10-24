@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { cspPlugin } from './csp.ts'
+import { customerPrecache } from './pwa-precache.ts'
 
 const fromHere = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 const { version } = JSON.parse(readFileSync(fromHere('./package.json'), 'utf8')) as {
@@ -67,8 +68,19 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          // Precache the whole shell, including every lazy route, so the app opens offline.
+          // Precache the shell and the customer's screens, so the app opens offline; the shop's
+          // screens and the offline store are cached when a phone first needs them.
           globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+          manifestTransforms: [customerPrecache(fromHere('./dist'))],
+          runtimeCaching: [
+            {
+              // Hashed file names: a cached copy is never out of date.
+              urlPattern: ({ url, sameOrigin }) =>
+                sameOrigin && url.pathname.startsWith('/assets/'),
+              handler: 'CacheFirst',
+              options: { cacheName: 'anypay-assets', expiration: { maxEntries: 150 } },
+            },
+          ],
           navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/api\//, /^\/health$/],
           cleanupOutdatedCaches: true,

@@ -238,8 +238,11 @@
       "howToPay": "Ukuhlawula, cela ivenkile intengiso yethebhu uze uskene ikhowudi ye-QR abakubonisa yona.",
       "scan": "Skena i-QR yevenkile",
       "payments": "Iintlawulo zethebhu",
-      "noPayments": "Akukabikho ntlawulo kule thebhu."
-    }
+      "noPayments": "Akukabikho ntlawulo kule thebhu.",
+      "usedUp": "Umda waleveki usetyenzisiwe. Uqala kwakhona ngo-{{date}}.",
+      "higherLimit": "Ufuna ngaphezulu? Vula ithebhu entsha enomda ophezulu"
+    },
+    "inShopCurrency": "Oko kumalunga ne-{{amount}} e-{{shop}}, ngemali yevenkile."
   },
   "settings": {
     "title": "Iisetingi",
@@ -414,7 +417,9 @@
     "noTab": "Akunathebhu kule venkile kule fowuni. Vula enye xa unenethiwekhi.",
     "capReached": "Oku kungaphezulu koko kuseleyo kwithebhu yakho kule veki.",
     "expired": "Esi sicelo sindala kakhulu. Cela ivenkile esitsha.",
-    "invalid": "Le ayisiyontengiso ye-AnyPay esebenzayo."
+    "invalid": "Le ayisiyontengiso ye-AnyPay esebenzayo.",
+    "fromWallet": "Malunga ne-{{amount}} esuka kwiwalethi yakho",
+    "capReachedNext": "Ithebhu yakho iqala kwakhona ngo-{{date}}. Hlawula ngenye indlela okwangoku, okanye vula ithebhu entsha enomda ophezulu."
   },
   "voucher": {
     "title": "Intlawulo yethebhu",
@@ -427,13 +432,13 @@
       "failed": "Ayiphumelelanga"
     },
     "reasons": {
-      "expired": "Indala kakhulu ukuba ihlawulwe (ngaphezu kweeyure ezingama-72)",
-      "cap_reached": "Ingaphezulu komda weveki wethebhu",
-      "tab_inactive": "Ithebhu ayisasebenzi",
-      "grant_limit": "Iwalethi yomthengi yalile: ingaphezulu komda weveki",
-      "insufficient_funds": "Akukho mali yaneleyo kwiwalethi yomthengi",
-      "payment_failed": "Intlawulo ayiphumelelanga",
-      "timeout": "Intlawulo ithathe ixesha elide kakhulu",
+      "expired": "Indala kakhulu ukuba ihlawulwe (ngaphezu kweeyure ezingama-72). Hlawulela le ntengiso ngenye indlela.",
+      "cap_reached": "Ingaphezu komda weveki wethebhu. Hlawulela le ntengiso ngenye indlela.",
+      "tab_inactive": "Ithebhu ivaliwe. Vula ithebhu entsha ukuze uqhubeke uhlawula ngale ndlela.",
+      "grant_limit": "Umda weveki wewalethi usetyenzisiwe (iifizi nokutshintshiselana nazo ziyabalwa). Iintengiso zethebhu ziqala kwakhona kwiveki ezayo.",
+      "insufficient_funds": "Akukho mali yaneleyo kwiwalethi yomthengi. Hlawulela le ntengiso ngenye indlela.",
+      "payment_failed": "Intlawulo ayiphumelelanga. Hlawulela le ntengiso ngenye indlela.",
+      "timeout": "Iwalethi ayiqinisekisanga ngexesha. Jonga iwalethi phambi kokuba ucele imali kwakhona.",
       "invalid": "Ayityikitywanga yifowuni yomthengi"
     },
     "check": {

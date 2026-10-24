@@ -15,6 +15,7 @@ type Translations = typeof en
 // chunks: a phone downloads only its own language, and the service worker precaches all of them.
 // Typing the loaders as `typeof en` makes a locale missing a key fail the build.
 const loaders: Record<Exclude<LanguageCode, 'en'>, () => Promise<{ default: Translations }>> = {
+  af: () => import('./locales/af.json'),
   nso: () => import('./locales/nso.json'),
   xh: () => import('./locales/xh.json'),
   zu: () => import('./locales/zu.json'),

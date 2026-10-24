@@ -66,6 +66,17 @@ export function weekOf(intervalStart: Date, at: Date): { from: Date; to: Date } 
 /** Whole seconds: the interval goes to the customer's wallet as ISO 8601 ('…T10:00:00Z'). */
 const toTheSecond = (date: Date) => new Date(Math.floor(date.getTime() / 1000) * 1000)
 
+/**
+ * Settling a voucher failed before any money moved (the wallet network or our database didn't
+ * answer). Unlike a refused payment, this is worth trying again: the voucher is given back.
+ */
+class SettlementNotStarted extends Error {
+  constructor(cause: unknown) {
+    super('Settling the voucher could not start', { cause })
+    this.name = 'SettlementNotStarted'
+  }
+}
+
 /** A voucher counts against the cap unless it was rejected or its payment failed. */
 const counts = (voucher: VoucherRecord) =>
   voucher.status === 'settling' && voucher.paymentStatus !== 'failed'
@@ -238,6 +249,18 @@ export class TabService {
     try {
       await this.#settle(stored, claim)
     } catch (error) {
+      if (error instanceof SettlementNotStarted) {
+        // Nothing moved: give the voucher back, so the phones send it again later (and the
+        // shop doesn't lose the sale because the wallet network was down for a moment).
+        await this.#deps.vouchers.release(claim.nonce)
+        this.#deps.logger.warn({ err: error.cause, tabId }, 'Settling a voucher could not start')
+        throw new AppError(
+          'open_payments_unavailable',
+          'The wallet network is not answering; this sale will be sent again',
+          503,
+        )
+      }
+      // After a payment was sent, its outcome is unknown: trying again could pay twice.
       this.#deps.logger.error({ err: error, tabId }, 'Settling a voucher failed')
       await this.#deps.vouchers.reject(claim.nonce, 'payment_failed')
     }
@@ -268,18 +291,34 @@ export class TabService {
   async #settle(stored: { record: TabRecord; session: TabSession }, voucher: VoucherRecord) {
     const { record, session } = stored
     if (!session.access) throw new AppError('tab_inactive', 'The tab has no grant yet', 409)
-    const shop = await this.#deps.shops.getShop(record.shopId)
-    const merchant = await this.#deps.wallets.resolve(shop.walletAddress)
-    let payment = await this.#deps.orchestrator.prepareSettlement({
-      id: randomUUID(),
-      customer: session.customer,
-      merchant,
-      amount: voucher.amount,
-      description: `AnyPay tab: ${shop.name}`,
-    })
-    if (payment.step === 'quoted') payment = await this.#send(record.id, session, payment)
+    const { shop, payment: quoted } = await this.#prepare(record, session, voucher)
+    const payment = quoted.step === 'quoted' ? await this.#send(record.id, session, quoted) : quoted
+    if (payment.step === 'failed' && payment.failure === 'grant_limit') {
+      // The wallet's own weekly limit is spent, though the phones thought there was room (fees
+      // and exchange count too). Mark the week full, so both phones stop taking sales that would
+      // only be refused, until it resets.
+      await this.#deps.tabs.update(record.id, { limitReachedAt: this.#now() })
+    }
     await this.#deps.payments.trackPreAuthorised(shop, payment, record.id)
     await this.#deps.vouchers.attachPayment(voucher.nonce, payment.id)
+  }
+
+  /** The shop's incoming payment and the customer's quote: nothing has moved yet. */
+  async #prepare(record: TabRecord, session: TabSession, voucher: VoucherRecord) {
+    try {
+      const shop = await this.#deps.shops.getShop(record.shopId)
+      const merchant = await this.#deps.wallets.resolve(shop.walletAddress)
+      const payment = await this.#deps.orchestrator.prepareSettlement({
+        id: randomUUID(),
+        customer: session.customer,
+        merchant,
+        amount: voucher.amount,
+        description: `AnyPay tab: ${shop.name}`,
+      })
+      return { shop, payment }
+    } catch (error) {
+      throw new SettlementNotStarted(error)
+    }
   }
 
   /** Pays with the tab's grant; a token that expired since is rotated (and stored) once. */
@@ -320,6 +359,9 @@ export class TabService {
   /** What is left of the week's cap (in the shop's currency) that `at` falls in. */
   async #remaining(record: TabRecord & { shopCap: Money }, at: Date): Promise<Money> {
     const { from, to } = weekOf(record.intervalStart, at)
+    // The customer's wallet said the limit is spent this week: nothing left, whatever we count.
+    const refused = record.limitReachedAt
+    if (refused && refused >= from && refused < to) return { ...record.shopCap, value: '0' }
     const vouchers = await this.#deps.vouchers.listForTab(record.id, from, to)
     const used = vouchers.filter(counts).reduce((sum, v) => sum + BigInt(v.amount.value), 0n)
     const left = BigInt(record.shopCap.value) - used

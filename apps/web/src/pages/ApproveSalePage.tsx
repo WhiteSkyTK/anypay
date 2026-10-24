@@ -7,7 +7,7 @@ import {
   voucherPath,
 } from '@anypay/shared'
 import { CircleX } from 'lucide-react'
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { Amount } from '@/components/Amount'
@@ -17,7 +17,9 @@ import { QrCode } from '@/components/QrCode'
 import { Button } from '@/components/ui/button'
 import { useOffline, useOfflineQuery } from '@/hooks/useOffline'
 import { type OfflineProblem, offlineProblemKey, offlineProblemOf } from '@/lib/offline-support'
+import { formatDay } from '@/lib/format'
 import { serverNow } from '@/lib/server-clock'
+import { inCustomerCurrency, resetsOn } from '@/lib/tabs'
 
 type Outcome =
   | { kind: 'idle' }
@@ -31,7 +33,7 @@ type Outcome =
  * all on this phone. Approving signs a voucher and shows it as a QR for the shop to scan.
  */
 export function Component() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { pathname } = useLocation()
   const request = parseSaleRequest(pathname)
   const offline = useOffline()
@@ -44,10 +46,22 @@ export function Component() {
 
   if (!request) return <Refused message={t('approve.invalid')} />
   if (!isFresh(request.ts, serverNow())) return <Refused message={t('approve.expired')} />
-  if (view && !view.tab) return <Refused message={t('approve.noTab')} />
+  if (view && !view.tab)
+    return (
+      <Refused message={t('approve.noTab')}>
+        <Button asChild size="lg" variant="secondary" className="w-full">
+          <Link to={`/shop/${request.shopId}/tab`}>{t('tab.openHere')}</Link>
+        </Button>
+      </Refused>
+    )
   if (!view?.tab?.shopCap) return null
 
+  const tab = view.tab
   const amount: Money = { ...view.tab.shopCap, value: request.amount }
+  const fromWallet = inCustomerCurrency(amount, tab)
+  // Over what's left: say so before the customer taps, with when it resets and what else to do.
+  const overLimit = view.remaining && BigInt(request.amount) > BigInt(view.remaining.value)
+  const resets = formatDay(resetsOn(tab), i18n.resolvedLanguage)
 
   async function approve() {
     if (!offline || !request) return
@@ -87,6 +101,11 @@ export function Component() {
           {t('approve.asks', { shop: view.tab.shopName })}
         </h2>
         <Amount money={amount} className="mt-2 block text-amount" />
+        {fromWallet && (
+          <p className="mt-1 text-muted-foreground">
+            {t('approve.fromWallet', { amount: formatMoney(fromWallet) })}
+          </p>
+        )}
         {view.remaining && (
           <p className="mt-3 text-muted-foreground">
             {t('approve.left', { amount: formatMoney(view.remaining) })}
@@ -94,9 +113,21 @@ export function Component() {
         )}
       </section>
       <ClockWarning />
-      {outcome.kind === 'refused' && (
+      {(overLimit || (outcome.kind === 'refused' && outcome.reason === 'cap_reached')) && (
+        <div role="alert" className="mb-6 flex flex-col gap-3 rounded-card bg-card px-5 py-4">
+          <p className="text-destructive">{t('approve.capReached')}</p>
+          <p className="text-card-foreground">{t('approve.capReachedNext', { date: resets })}</p>
+          <Link
+            to={`/shop/${tab.shopId}/tab`}
+            className="inline-flex min-h-12 items-center font-semibold text-primary underline underline-offset-4"
+          >
+            {t('tab.detail.higherLimit')}
+          </Link>
+        </div>
+      )}
+      {outcome.kind === 'refused' && outcome.reason === 'no_tab' && (
         <p role="alert" className="mb-6 rounded-card bg-card px-5 py-4 text-destructive">
-          {outcome.reason === 'cap_reached' ? t('approve.capReached') : t('approve.noTab')}
+          {t('approve.noTab')}
         </p>
       )}
       {outcome.kind === 'failed' && (
@@ -105,7 +136,7 @@ export function Component() {
         </p>
       )}
       <div className="flex flex-col gap-3">
-        <Button size="lg" onClick={() => void approve()}>
+        <Button size="lg" disabled={Boolean(overLimit)} onClick={() => void approve()}>
           {t('approve.approve')}
         </Button>
         <Button asChild size="lg" variant="ghost">
@@ -116,7 +147,7 @@ export function Component() {
   )
 }
 
-function Refused({ message }: Readonly<{ message: string }>) {
+function Refused({ message, children }: Readonly<{ message: string; children?: ReactNode }>) {
   const { t } = useTranslation()
   return (
     <Page title={t('approve.title')} back="/tab">
@@ -125,6 +156,7 @@ function Refused({ message }: Readonly<{ message: string }>) {
         <p role="alert" className="text-lg">
           {message}
         </p>
+        {children}
       </div>
     </Page>
   )

@@ -83,7 +83,7 @@ flowchart LR
   e -- "Declined" --> f["Receipt: not paid, why,<br/>Pay again"]
   e -- "Approved" --> g["Receipt: Sending…"]
   g --> h["Receipt: Paid ✓<br/>shop hears 'Payment received'"]
-  b -. "no signal" .-> i["Says paying needs signal;<br/>suggests a tab"]
+  b -. "no signal" .-> i["Says paying needs signal,<br/>suggests a tab"]
 ```
 
 ## Feature 3: the shop's live feed
