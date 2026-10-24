@@ -19,21 +19,22 @@ export function useKeepAwake() {
     if (!enabled || !supported) return
     let lock: WakeLockSentinel | undefined
     let stopped = false
-    const acquire = () => {
+    const acquire = async () => {
       if (document.visibilityState !== 'visible') return
-      navigator.wakeLock.request('screen').then(
-        (sentinel) => {
-          if (stopped) sentinel.release().catch(() => undefined)
-          else lock = sentinel
-        },
-        () => undefined, // refused (battery saver): the screen just behaves as usual
-      )
+      try {
+        const sentinel = await navigator.wakeLock.request('screen')
+        if (stopped) await sentinel.release()
+        else lock = sentinel
+      } catch {
+        // Refused (battery saver): the screen just behaves as usual.
+      }
     }
-    acquire()
-    document.addEventListener('visibilitychange', acquire)
+    const onVisibility = () => void acquire()
+    onVisibility()
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       stopped = true
-      document.removeEventListener('visibilitychange', acquire)
+      document.removeEventListener('visibilitychange', onVisibility)
       lock?.release().catch(() => undefined)
     }
   }, [enabled, supported])

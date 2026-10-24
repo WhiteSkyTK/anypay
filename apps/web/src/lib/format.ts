@@ -17,3 +17,12 @@ export function downloadBlob(blob: Blob, filename: string): void {
   link.click()
   URL.revokeObjectURL(url)
 }
+
+/**
+ * A day in the reader's language, e.g. "Tuesday, 27 October" or "ULwesibili, Okthoba 27" (amounts
+ * and times stay en-ZA, so both phones show the same figures). Falls back to English.
+ */
+export function formatDay(date: Date, language = 'en'): string {
+  const options = { weekday: 'long', day: 'numeric', month: 'long' } as const
+  return new Intl.DateTimeFormat([`${language}-ZA`, 'en-ZA'], options).format(date)
+}

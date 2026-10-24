@@ -3,6 +3,7 @@
 | Language                  | Code  | File               | Status                             |
 | ------------------------- | ----- | ------------------ | ---------------------------------- |
 | English                   | `en`  | `locales/en.json`  | Source of truth                    |
+| Afrikaans                 | `af`  | `locales/af.json`  | Draft, needs native-speaker review |
 | Sepedi (Sesotho sa Leboa) | `nso` | `locales/nso.json` | Draft, needs native-speaker review |
 | isiXhosa                  | `xh`  | `locales/xh.json`  | Draft, needs native-speaker review |
 | isiZulu                   | `zu`  | `locales/zu.json`  | Draft, needs native-speaker review |

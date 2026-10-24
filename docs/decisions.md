@@ -227,3 +227,23 @@ Why AnyPay is built the way it is, one to three lines each. Feeds the "design pr
 - **Desk research before interviews** (docs/research/): it showed Afrikaans is the third most
   common home language and not yet offered, and that small data bundles cost about 14c per MB,
   which keeps the 200 KB budget honest.
+
+## Phase 4: the tab under real use (2026-10-24)
+
+- **The wallet's "limit reached" closes the week on both phones.** The phones check sales against
+  the weekly limit converted to the shop's currency once, but each payment's fees and exchange
+  rate can spend the wallet's limit sooner. Refused payments didn't count as used, so the phones
+  kept taking sales that the wallet then refused: the tab looked stuck. Now the first refusal
+  marks the week full (`limit_reached_at`) until it resets, and both phones say so.
+- **A sale is never lost to a wallet-network outage.** If settling fails before any money moves,
+  the voucher is given back and the phones send it again later. After a payment was sent, a
+  failure stays final: trying again then could charge the customer twice.
+- **The customer sees their own currency.** The shop asks in its currency; the approve screen
+  adds "about R20,00 from your wallet", at the rate the tab was opened with.
+- **Afrikaans added** because the desk research showed it is the third most common home
+  language; the five languages cover about 70% of home languages.
+- **Customers precache only the paying screens** (231 KB instead of 340 KB). The shop's and tab
+  screens are cached on first use, and a phone that runs a shop or a tab fetches its own screens
+  once in the background, so offline sales still open with no signal.
+- **happy-dom lives at the root, next to Vitest.** A Dependabot update installed it inside the web
+  app's folder, where Vitest couldn't find it, and CI failed before running a test.

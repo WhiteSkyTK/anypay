@@ -1,5 +1,5 @@
 import type { Money, PaymentFailure, PaymentStatus, VoucherRejection } from '@anypay/shared'
-import { and, eq, gte, lt } from 'drizzle-orm'
+import { and, eq, gte, isNull, lt } from 'drizzle-orm'
 import type { Database } from '../db/database'
 import { payments, shops, tabs, vouchers } from '../db/schema'
 
@@ -59,6 +59,13 @@ export class VoucherRepository {
 
   async attachPayment(nonce: string, paymentId: string): Promise<void> {
     await this.#db.update(vouchers).set({ paymentId }).where(eq(vouchers.nonce, nonce))
+  }
+
+  /** Forgets a claim whose payment never started, so the voucher can be sent again later. */
+  async release(nonce: string): Promise<void> {
+    await this.#db
+      .delete(vouchers)
+      .where(and(eq(vouchers.nonce, nonce), isNull(vouchers.paymentId)))
   }
 
   async reject(nonce: string, reason: VoucherRejection): Promise<void> {

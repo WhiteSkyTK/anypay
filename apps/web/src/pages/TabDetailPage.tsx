@@ -10,15 +10,9 @@ import { Button } from '@/components/ui/button'
 import { useOffline, useOfflineQuery } from '@/hooks/useOffline'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { api } from '@/lib/api'
-import { formatTime } from '@/lib/format'
+import { formatDay, formatTime } from '@/lib/format'
+import { resetsOn } from '@/lib/tabs'
 import type { MyTabRow, OutboxRow } from '@/offline/store'
-
-const dateFormat = new Intl.DateTimeFormat('en-ZA', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-})
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000
 
 /** One tab: what's left this week, how to pay, and its payments as they settle. */
 export function Component() {
@@ -69,7 +63,7 @@ function TabState({
   hasKey,
   remaining,
 }: Readonly<{ tab: MyTabRow; hasKey: boolean; remaining?: MyTabRow['remaining'] }>) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   if (tab.status === 'awaiting-consent')
     return <p className="mt-6 rounded-card bg-muted px-5 py-4">{t('tab.detail.waiting')}</p>
   if (tab.status === 'failed')
@@ -81,7 +75,10 @@ function TabState({
         </Button>
       </div>
     )
-  const resets = new Date(Date.parse(tab.weekStartedAt) + WEEK_MS)
+  const resets = formatDay(resetsOn(tab), i18n.resolvedLanguage)
+  const usedUp = remaining?.value === '0'
+  // The limit is approved in the customer's currency; the shop counts it in its own.
+  const otherCurrency = tab.shopCap && tab.shopCap.assetCode !== tab.cap.assetCode
   return (
     <div className="mt-6 flex flex-col gap-6">
       <section aria-labelledby="left-label" className="text-center">
@@ -90,10 +87,22 @@ function TabState({
         </h2>
         {remaining && <Amount money={remaining} className="mt-2 block text-amount" />}
         <p className="mt-2 text-muted-foreground">
-          {t('tab.upTo', { amount: formatMoney(tab.cap) })} ·{' '}
-          {t('tab.resets', { date: dateFormat.format(resets) })}
+          {t('tab.upTo', { amount: formatMoney(tab.cap) })} · {t('tab.resets', { date: resets })}
         </p>
+        {otherCurrency && tab.shopCap && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t('tab.inShopCurrency', { amount: formatMoney(tab.shopCap), shop: tab.shopName })}
+          </p>
+        )}
       </section>
+      {usedUp && (
+        <div className="flex flex-col gap-4 rounded-card bg-card px-5 py-4 text-card-foreground">
+          <p>{t('tab.detail.usedUp', { date: resets })}</p>
+          <Button asChild size="lg" variant="secondary">
+            <Link to={`/shop/${tab.shopId}/tab`}>{t('tab.detail.higherLimit')}</Link>
+          </Button>
+        </div>
+      )}
       {hasKey ? (
         <>
           <p className="rounded-card bg-card px-5 py-4 text-card-foreground">

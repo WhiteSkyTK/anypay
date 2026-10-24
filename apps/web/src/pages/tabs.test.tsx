@@ -10,20 +10,21 @@ import {
   type TabSummary,
   voucherPath,
 } from '@anypay/shared'
-import { screen, waitFor } from '@testing-library/react'
+import { cleanup, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { anypayPath } from '@/lib/scan'
 import { setMerchantSession } from '@/lib/merchant-session'
 import { noteServerDate } from '@/lib/server-clock'
 import { setSimulatedOffline } from '@/lib/simulated-offline'
-import { getDb, rememberTab, resetDb, saveTabKeys } from '@/offline'
+import { flushOutbox, getDb, rememberTab, resetDb, saveTabKeys } from '@/offline'
 import { fakeApi, renderPage, SESSION, SHOP, setUpPageTests } from '@/testing/fakes'
 import { Component as ApproveSalePage } from './ApproveSalePage'
 import { Component as OpenTabPage } from './OpenTabPage'
 import { Component as ReceiveVoucherPage } from './ReceiveVoucherPage'
 import { Component as ScanPage } from './ScanPage'
 import { Component as SettingsPage } from './SettingsPage'
+import { Component as TabDetailPage } from './TabDetailPage'
 import { Component as TabSalePage } from './TabSalePage'
 
 setUpPageTests()
@@ -218,6 +219,105 @@ describe('receiving a voucher (shop, offline)', () => {
     })
     expect((await screen.findByRole('alert')).textContent).toContain("the sale wasn't saved")
     expect(screen.queryByText('Saved – settles when online')).toBeNull()
+  })
+})
+
+describe('the weekly limit, made clear', () => {
+  const approvePage = (sale = request()) =>
+    renderPage(ApproveSalePage, {
+      pattern: '/t/:shopId/:amount/:nonce/:ts',
+      path: saleRequestPath(sale),
+    })
+
+  it('shows roughly what leaves the customer’s wallet, in their own currency', async () => {
+    setSimulatedOffline(true)
+    await customerWithTab()
+    approvePage(request('370000')) // COP 3 700,00 = 1/10 of the COP 37 000 limit (R200)
+    expect(await screen.findByText(/About R\s20,00 from your wallet/)).toBeTruthy()
+  })
+
+  it('refuses a sale over what is left before the tap, with when it resets and what to do', async () => {
+    setSimulatedOffline(true)
+    await customerWithTab()
+    await rememberTab({ ...TAB, remaining: COP('1000') })
+    approvePage(request('2500'))
+    const alert = await screen.findByRole('alert')
+    expect(alert.textContent).toContain("This is more than what's left on your tab this week.")
+    expect(alert.textContent).toMatch(/starts again on/)
+    expect(screen.getByRole('link', { name: /higher limit/ }).getAttribute('href')).toBe(
+      `/shop/${SHOP.id}/tab`,
+    )
+    expect(screen.getByRole('button', { name: 'Approve' })).toHaveProperty('disabled', true)
+  })
+
+  it('sells on the tab with room when an older tab at the shop is used up', async () => {
+    setSimulatedOffline(true)
+    await customerWithTab() // the old tab
+    await rememberTab({ ...TAB, remaining: COP('0') })
+    const newKeys = await generateDeviceKeys()
+    await saveTabKeys('tabNewOne123', newKeys)
+    await rememberTab({ ...TAB, id: 'tabNewOne123' })
+    approvePage()
+    await userEvent.click(await screen.findByRole('button', { name: 'Approve' }))
+    await screen.findByRole('heading', { name: 'Show this to the shop' })
+    expect((await getDb().outbox.toArray())[0]?.tabId).toBe('tabNewOne123')
+  })
+
+  it('explains a used-up week on the tab, in both currencies, with a way to a higher limit', async () => {
+    setSimulatedOffline(true)
+    await customerWithTab()
+    await rememberTab({ ...TAB, remaining: COP('0') })
+    renderPage(TabDetailPage, { pattern: '/tab/:tabId', path: `/tab/${TAB_ID}` })
+    expect(await screen.findByText(/This week's limit is used up/)).toBeTruthy()
+    expect(screen.getByText(/about COP\s37\s000,00 at/)).toBeTruthy()
+    expect(screen.getByRole('link', { name: /higher limit/ })).toBeTruthy()
+  })
+})
+
+describe('the whole journey, on two phones', () => {
+  it('opens a tab online, sells with both phones offline, and settles once when back', async () => {
+    // Customer's phone, once, with signal: the tab is open and approved in the wallet.
+    const keys = await customerWithTab()
+    setSimulatedOffline(true)
+
+    // The shop's phone made a sale request; the customer approves it with no signal.
+    const sale = request('2500')
+    renderPage(ApproveSalePage, {
+      pattern: '/t/:shopId/:amount/:nonce/:ts',
+      path: saleRequestPath(sale),
+    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Approve' }))
+    await screen.findByRole('heading', { name: 'Show this to the shop' })
+    const signed = await getDb().outbox.get(sale.nonce)
+    if (!signed) throw new Error('no voucher was signed')
+    cleanup() // the customer's phone is done
+
+    // The shop's phone (its own storage) scans the customer's QR, still with no signal.
+    await resetDb()
+    setMerchantSession(SESSION)
+    await shopKnowsTab(keys)
+    renderPage(ReceiveVoucherPage, {
+      pattern: '/v/:tabId/:shopId/:amount/:nonce/:ts/:signature',
+      path: voucherPath({ ...sale, tabId: TAB_ID, signature: signed.signature }),
+    })
+    expect(await screen.findByText('Saved – settles when online')).toBeTruthy()
+
+    // Signal returns: the voucher goes to the server once and both sides see it settled.
+    const calls = fakeApi({
+      [`POST /api/tabs/${TAB_ID}/vouchers`]: {
+        body: {
+          nonce: sale.nonce,
+          tabId: TAB_ID,
+          amount: COP('2500'),
+          status: 'settled',
+          paymentId: '70125f46-5c8b-48f5-afea-0b345a6468ad',
+        },
+      },
+    })
+    setSimulatedOffline(false)
+    await flushOutbox()
+    expect(await getDb().outbox.get(sale.nonce)).toMatchObject({ state: 'settled' })
+    expect(calls.filter((call) => call.method === 'POST')).toHaveLength(1)
   })
 })
 

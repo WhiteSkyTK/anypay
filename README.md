@@ -235,7 +235,7 @@ docs/
   trackers). Shops see amounts and times, never a customer's wallet address.
 - **Accessible:** semantic landmarks, labelled inputs, managed focus, status never shown by colour
   alone, usable at 200% text size, reduced motion respected, voice confirmation.
-- **Languages:** English, Sepedi, isiXhosa and isiZulu; every string exists in every language
+- **Languages:** English, Afrikaans, Sepedi, isiXhosa and isiZulu; every string exists in every language
   (tested). The non-English text still needs a native speaker's review.
 
 ## Known limitations

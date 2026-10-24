@@ -1,0 +1,465 @@
+{
+  "app": {
+    "name": "AnyPay",
+    "skipToContent": "Gaan na die inhoud"
+  },
+  "common": {
+    "back": "Terug",
+    "cancel": "Kanselleer",
+    "retry": "Probeer weer",
+    "done": "Klaar",
+    "offline": "Jy is vanlyn. Dit het 'n verbinding nodig; dit werk weer sodra jy terug is."
+  },
+  "nav": {
+    "label": "Hoof",
+    "shop": "Winkel",
+    "tab": "Rekening",
+    "settings": "Instellings"
+  },
+  "onboarding": {
+    "documentTitle": "Betaal enige spaza uit enige beursie",
+    "headlineLine1": "Betaal enige spaza.",
+    "headlineLine2": "Uit enige beursie.",
+    "body": "Neem betalings met net 'n QR-kode. Geen kaartmasjien nie, baie min data, en dit werk aan wanneer die sein wegval.",
+    "setUpShop": "Stel my winkel op",
+    "imCustomer": "Ek is 'n klant",
+    "features": {
+      "qr": "Net 'n QR-kode",
+      "anyWallet": "Enige beursie",
+      "offline": "Werk vanlyn"
+    },
+    "openShop": "Maak {{shop}} oop"
+  },
+  "language": {
+    "label": "Taal"
+  },
+  "setup": {
+    "title": "Stel jou winkel op",
+    "step": "Stap {{current}} van {{total}}",
+    "walletLabel": "Jou beursie-adres",
+    "check": "Kontroleer beursie",
+    "checking": "Kontroleer…",
+    "walletFound": "Beursie gevind",
+    "receivesIn": "Betalings kom in {{currency}}",
+    "change": "Verander",
+    "nameLabel": "Winkelnaam",
+    "nameHint": "Klante sien dit wanneer hulle betaal.",
+    "create": "Skep my winkel",
+    "creating": "Skep…",
+    "existing": {
+      "title": "Hierdie foon bestuur reeds {{shop}}",
+      "description": "'n Nuwe winkel vervang dit op hierdie foon, en hierdie foon kan die ou een nie weer oopmaak nie.",
+      "open": "Maak {{shop}} oop",
+      "replace": "Stel eerder 'n nuwe winkel op"
+    }
+  },
+  "wallet": {
+    "nameHint": "Net jou beursienaam: die deel ná die skuinsstreep.",
+    "namePlaceholder": "jounaam",
+    "otherProvider": "Beursie van 'n ander verskaffer?",
+    "useDefault": "Gebruik 'n {{host}}-beursie",
+    "fullHint": "Dit begin met $ of https://. Kry dit in jou beursie-toep."
+  },
+  "poster": {
+    "title": "Jou QR-plakkaat",
+    "hint": "Druk dit op A5 en sit dit waar klante dit kan skandeer.",
+    "scanToPay": "Skandeer om te betaal",
+    "anyWallet": "Met enige Open Payments-beursie",
+    "orOpen": "Of maak oop",
+    "qrLabel": "QR-kode om {{shop}} te betaal",
+    "print": "Druk plakkaat",
+    "done": "Gaan na my winkel",
+    "code": "Winkelkode"
+  },
+  "connect": {
+    "title": "Koppel jou winkel",
+    "failed": "Hierdie skakel het nie gewerk nie. Stel die winkel weer op of vra vir 'n nuwe skakel."
+  },
+  "pay": {
+    "subtitle": "Betaal met enige beursie",
+    "amountLabel": "Bedrag",
+    "keypad": {
+      "label": "Bedrag-sleutelbord",
+      "delete": "Vee uit",
+      "decimal": "Desimale komma"
+    },
+    "walletLabel": "Jou beursie-adres",
+    "walletHint": "Op hierdie foon gestoor vir volgende keer.",
+    "continue": "Gaan voort",
+    "gettingQuote": "Kry die prys…",
+    "notFound": {
+      "title": "Winkel nie gevind nie",
+      "description": "Kontroleer die QR-kode, of vra die winkel vir hul skakel."
+    },
+    "quote": {
+      "title": "Bevestig betaling",
+      "youPay": "Jy betaal",
+      "shopGets": "{{shop}} kry",
+      "includes": "Sluit alle fooie en die wisselkoers in.",
+      "validUntil": "Prys gehou tot {{time}}",
+      "approve": "Keur goed in my beursie",
+      "redirecting": "Maak jou beursie oop…"
+    }
+  },
+  "customer": {
+    "title": "Betaal 'n winkel",
+    "scan": "Rig jou foon se kamera op die winkel se QR-kode. Dit maak die betaalskerm oop, geen toep nodig nie.",
+    "or": "of",
+    "codeLabel": "Winkelkode",
+    "codeHint": "Dit is op die winkel se plakkaat gedruk, onder die QR-kode.",
+    "go": "Gaan na die winkel",
+    "scanHere": "Skandeer met AnyPay"
+  },
+  "receipt": {
+    "title": "Betaling",
+    "loading": "Kontroleer die betaling…",
+    "waiting": {
+      "title": "Wag vir goedkeuring",
+      "description": "Keur die betaling in jou beursie goed om klaar te maak."
+    },
+    "sending": {
+      "title": "Bevestig betaling…",
+      "description": "Dit neem 'n paar sekondes."
+    },
+    "completed": {
+      "title": "Betaal",
+      "description": "{{shop}} het {{amount}} ontvang.",
+      "youPaid": "Jy het {{amount}} betaal"
+    },
+    "failed": {
+      "title": "Betaling nie voltooi nie"
+    },
+    "callbackError": "Ons kon jou goedkeuring nog nie bevestig nie. Kontroleer jou beursie voor jy weer probeer.",
+    "payAgain": "Betaal weer",
+    "notFound": "Ons kon hierdie kwitansie nie vind nie.",
+    "unreachable": {
+      "title": "Kan AnyPay nou nie bereik nie",
+      "description": "Jou betaling is veilig in jou beursie. Ons probeer aan, en hierdie bladsy werk self by."
+    }
+  },
+  "merchant": {
+    "title": "Jou winkel",
+    "totalLabel": "Vandag ontvang",
+    "payments": "Vandag se betalings",
+    "empty": {
+      "title": "Nog geen betalings nie",
+      "description": "Betalings verskyn hier sodra hulle inkom, en jou foon kan dit hardop lees."
+    },
+    "setUp": {
+      "title": "Nog geen winkel op hierdie foon nie",
+      "description": "Opstel neem minder as twee minute: jou beursie-adres en 'n winkelnaam.",
+      "cta": "Stel my winkel op"
+    },
+    "live": {
+      "loading": "Koppel…",
+      "connecting": "Koppel…",
+      "live": "Lewendig",
+      "reconnecting": "Koppel weer…",
+      "closed": "Nie gekoppel nie",
+      "unauthorized": "Afgeteken",
+      "offline": "Vanlyn"
+    },
+    "voice": {
+      "label": "Lees betalings hardop",
+      "received": "Betaling ontvang, {{amount}}",
+      "unsupported": "Hierdie foon kan nie hardop lees nie."
+    },
+    "actions": {
+      "poster": "Plakkaat",
+      "export": "Voer CSV uit",
+      "exporting": "Voer uit…",
+      "tabSale": "Rekeningverkoop"
+    },
+    "unauthorized": {
+      "title": "Hierdie foon is uit die winkel afgeteken",
+      "description": "Maak jou winkel se skakel weer oop, of stel die winkel weer op.",
+      "reset": "Stel weer op"
+    },
+    "paidWith": "Klant het {{amount}} betaal",
+    "newPayment": "Betaling ontvang: {{amount}}",
+    "tab": "Rekening",
+    "keepAwake": "Hou die skerm aan"
+  },
+  "status": {
+    "created": "Begin",
+    "incoming-payment-created": "Begin",
+    "quoted": "Geprys",
+    "awaiting-consent": "Wag",
+    "sending": "Bevestig",
+    "completed": "Ontvang",
+    "failed": "Misluk"
+  },
+  "failures": {
+    "consent_declined": "Die betaling is in die beursie afgekeur. Geen geld is geneem nie.",
+    "consent_invalid": "Die goedkeuring kon nie geverifieer word nie, dus is geen geld geneem nie.",
+    "consent_timeout": "Die betaling is nie betyds goedgekeur nie. Geen geld is geneem nie.",
+    "quote_expired": "Die prys het verval voordat die betaling goedgekeur is. Probeer asseblief weer.",
+    "insufficient_funds": "Die beursie het nie genoeg geld vir hierdie betaling nie.",
+    "grant_limit": "Die betaling is meer as wat die beursie goedgekeur het.",
+    "payment_failed": "Die betaling het misluk. Geen geld is geneem nie.",
+    "timeout": "Die geld neem lank om aan te kom. Kontroleer die beursie voor jy weer betaal."
+  },
+  "tab": {
+    "title": "My rekeninge",
+    "empty": {
+      "title": "Geen oop rekeninge nie",
+      "description": "Maak een keer 'n rekening oop by jou plaaslike spaza, en betaal dan met 'n tik, selfs sonder sein."
+    },
+    "howToOpen": "Skandeer 'n winkel se QR-kode, kies dan Maak 'n rekening by hierdie winkel oop.",
+    "leftThisWeek": "Oor hierdie week",
+    "upTo": "Tot {{amount}} per week",
+    "resets": "Die limiet begin weer op {{date}}",
+    "status": {
+      "awaiting-consent": "Wag vir jou goedkeuring",
+      "active": "Aktief",
+      "failed": "Nie oopgemaak nie"
+    },
+    "openHere": "Maak 'n rekening by hierdie winkel oop",
+    "open": {
+      "title": "Maak 'n rekening oop",
+      "intro": "Betaal {{shop}} met 'n tik, selfs as geen foon sein het nie. Jy keur een keer 'n weeklikse limiet goed, in jou eie beursie.",
+      "labelLabel": "Jou naam vir die winkel",
+      "labelHint": "Die winkel sien dit langs jou rekening.",
+      "capLabel": "Weeklikse limiet",
+      "capHint": "Die meeste wat hierdie rekening in 'n week kan neem. Jou beursie hou dit daarby.",
+      "customLabel": "Ander bedrag",
+      "continue": "Gaan voort",
+      "approve": "Keur goed in my beursie",
+      "checking": "Kontroleer jou beursie…",
+      "redirecting": "Maak jou beursie oop…",
+      "offline": "Om 'n rekening oop te maak, het jy een keer sein nodig. Daarna werk dit vanlyn."
+    },
+    "detail": {
+      "waiting": "Keur die weeklikse limiet in jou beursie goed om hierdie rekening te begin gebruik.",
+      "failed": "Hierdie rekening is nie oopgemaak nie. Geen geld is geneem nie.",
+      "callbackError": "Ons kon jou goedkeuring nie bevestig nie. Kontroleer jou beursie en probeer dan weer om die rekening oop te maak.",
+      "openAgain": "Maak 'n nuwe rekening oop",
+      "otherPhone": "Hierdie rekening is op 'n ander foon oopgemaak, dus kan net daardie foon daarmee betaal.",
+      "howToPay": "Om te betaal, vra die winkel vir 'n rekeningverkoop en skandeer die QR-kode wat hulle jou wys.",
+      "scan": "Skandeer die winkel se QR",
+      "payments": "Rekeningbetalings",
+      "noPayments": "Nog geen betalings op hierdie rekening nie.",
+      "usedUp": "Hierdie week se limiet is opgebruik. Dit begin weer op {{date}}.",
+      "higherLimit": "Meer nodig? Maak 'n nuwe rekening met 'n hoër limiet oop"
+    },
+    "inShopCurrency": "Dit is sowat {{amount}} by {{shop}}, in die winkel se geldeenheid."
+  },
+  "settings": {
+    "title": "Instellings",
+    "appearance": "Voorkoms",
+    "theme": {
+      "system": "Outomaties",
+      "light": "Lig",
+      "dark": "Donker"
+    },
+    "about": "Oor",
+    "version": "Weergawe {{version}}",
+    "simulateOffline": "Simuleer vanlyn (demo)",
+    "simulateOfflineHint": "Wys die vanlyn-rekeningvloei sonder vliegtuigmodus. Niks bereik die bediener voordat jy dit afskakel nie.",
+    "shop": "Jou winkel",
+    "otherPhones": "Gebruik op 'n ander foon"
+  },
+  "privacy": {
+    "title": "Privaatheid",
+    "intro": "AnyPay stuur betalings tussen beursies. Dit hou so min as moontlik, en sien nooit jou beursie se wagwoord of saldo nie.",
+    "shop": {
+      "heading": "Wanneer jy 'n winkel opstel",
+      "details": "Jou winkel se naam, beursie-adres en geldeenheid.",
+      "key": "Jou winkel se aanmeldsleutel bly op jou foon. Ons hou net 'n vingerafdruk daarvan, wat nie terug in die sleutel verander kan word nie."
+    },
+    "payment": {
+      "heading": "Wanneer iemand betaal",
+      "amounts": "Die bedrag, wat die klant met fooie ingesluit betaal het, die status en die tyd.",
+      "encrypted": "Die klant se beursie-adres en die toestemming wat hulle goedgekeur het, geënkripteer gestoor (AES-256-GCM).",
+      "shopSees": "Die winkel sien bedrae en tye, nooit jou beursie-adres nie.",
+      "tab": "Vir 'n rekening: die naam wat jy dit gee (die winkel sien dit), die weeklikse limiet en jou foon se publieke sleutel, wat vanlyn verkope kontroleer."
+    },
+    "phone": {
+      "heading": "Net op jou foon",
+      "settings": "Jou taal-, tema- en steminstellings, en die laaste beursie-adres waarmee jy betaal het.",
+      "offline": "Winkels wat jy betaal het en vandag se verkope, sodat hulle sonder sein oopmaak.",
+      "tab": "Jou rekeningsleutel, wat nie van die foon afgekopieer kan word nie, en vanlyn verkope wat wag om gestuur te word."
+    },
+    "never": {
+      "heading": "Wat ons nooit versamel nie",
+      "items": "Jou ID-nommer, foonnommer, ligging of kontakte. Geen advertensies, geen volgers, geen analise-koekies nie."
+    },
+    "others": {
+      "heading": "Wie anders is betrokke",
+      "wallet": "Jou beursieverskaffer vra vir jou goedkeuring en skuif die geld. Sy eie privaatheidsvoorwaardes geld.",
+      "hosting": "Ons bedieners en databasis is in Europa (Render en Neon).",
+      "logs": "Ons logboeke teken net versoeke en foute aan: geen beursie-adresse, sleutels of IP-adresse nie."
+    },
+    "keep": {
+      "heading": "Hoe lank ons dit hou",
+      "demo": "Dit is 'n demo met net toetsgeld. Betalings word gehou totdat die demo teruggestel word. Rekords wat herprobeerslae veilig maak, word ná 'n dag uitgevee."
+    },
+    "rights": {
+      "heading": "Jou regte (POPIA)",
+      "body": "Jy kan vra wat ons oor jou hou, en vra dat ons dit regstel of uitvee.",
+      "contact": "Kontak die AnyPay-span op GitHub"
+    }
+  },
+  "phones": {
+    "title": "Jou winkel op ander fone",
+    "add": {
+      "heading": "Voeg 'n foon by",
+      "description": "Skandeer hierdie kode met die ander foon se kamera. Dit maak {{shop}} daar oop, met dieselfde lewendige voer.",
+      "warning": "Enigiemand wat dit skandeer, kan jou verkope sien. Wys dit net aan mense wat jy vertrou.",
+      "show": "Wys aanmeldkode",
+      "hide": "Versteek die kode",
+      "qrLabel": "Aanmeldkode vir {{shop}}"
+    },
+    "signOut": {
+      "heading": "'n Foon verloor?",
+      "description": "Teken elke ander foon af. Hierdie foon bly aangeteken; die ander het 'n nuwe aanmeldkode nodig.",
+      "action": "Teken ander fone af",
+      "confirmTitle": "Teken ander fone af?",
+      "confirmDescription": "Hulle sien dadelik nie meer jou verkope nie, en aanmeldkodes wat voorheen gewys is, werk nie meer nie.",
+      "done": "Ander fone is afgeteken. Net hierdie foon bestuur nou die winkel."
+    }
+  },
+  "demo": {
+    "banner": "Demomodus · net toetsgeld"
+  },
+  "offline": {
+    "banner": "Jy is vanlyn. AnyPay werk aan en sinkroniseer wanneer jy terug is.",
+    "unavailableTitle": "Vanlyn rekeninge kan nie hier werk nie"
+  },
+  "slow": {
+    "notice": "Werk nog… As AnyPay geslaap het, kan wakker word tot 'n minuut neem."
+  },
+  "clock": {
+    "warning": "Hierdie foon se horlosie is sowat {{minutes}} minute verkeerd. AnyPay maak daarvoor reg, maar stel die datum en tyd op outomaties."
+  },
+  "update": {
+    "ready": "'n Nuwe weergawe is gereed",
+    "reload": "Herlaai",
+    "dismiss": "Nie nou nie"
+  },
+  "notFound": {
+    "title": "Bladsy nie gevind nie",
+    "description": "Hierdie skakel gaan nêrens heen nie.",
+    "home": "Gaan huis toe"
+  },
+  "error": {
+    "title": "Iets het skeefgeloop",
+    "description": "Herlaai die bladsy om weer te probeer.",
+    "reload": "Herlaai"
+  },
+  "errors": {
+    "money": {
+      "minorUnits": "Voer 'n geldige bedrag in",
+      "invalid": "Voer 'n geldige bedrag in",
+      "tooLarge": "Daardie bedrag is te groot"
+    },
+    "walletAddress": {
+      "required": "Voer jou beursie-adres in",
+      "tooLong": "Daardie adres is te lank",
+      "format": "Beursie-adresse begin met $ of https://"
+    },
+    "shopName": {
+      "tooShort": "Gebruik ten minste 2 letters",
+      "tooLong": "Gebruik hoogstens 60 karakters",
+      "characters": "Verwyder die versteekte of spesiale karakters"
+    },
+    "idempotencyKey": "Iets het skeefgeloop. Probeer asseblief weer.",
+    "api": {
+      "network_error": "Geen verbinding nie. Kontroleer jou data en probeer weer.",
+      "wallet_host_not_allowed": "AnyPay kan nog nie beursies van daardie verskaffer gebruik nie.",
+      "wallet_address_invalid": "Dit is nie 'n geldige beursie-adres nie.",
+      "wallet_not_found": "Daar is geen beursie by daardie adres nie.",
+      "shop_not_found": "Winkel nie gevind nie.",
+      "payment_not_found": "Betaling nie gevind nie.",
+      "rate_limited": "Te veel pogings. Wag 'n minuut en probeer dan weer.",
+      "open_payments_unavailable": "Die beursieverskaffer antwoord nie. Probeer binnekort weer.",
+      "open_payments_not_configured": "Betalings is nog nie vir hierdie AnyPay-bediener aangeskakel nie.",
+      "merchant_unauthorized": "Hierdie foon is nie by die winkel aangeteken nie.",
+      "invalid_amount": "Voer 'n bedrag groter as nul in.",
+      "unknown": "Iets het skeefgeloop. Probeer asseblief weer.",
+      "voucher_invalid": "Hierdie koepon is nie deur die klant se foon onderteken nie.",
+      "tab_not_found": "Rekening nie gevind nie.",
+      "timeout": "AnyPay het te lank geneem om te antwoord. Kontroleer jou sein en probeer weer.",
+      "unavailable": "AnyPay word wakker of begin weer. Probeer oor 'n minuut weer."
+    },
+    "tabLabel": {
+      "required": "Voer 'n naam in waarmee die winkel jou sal ken",
+      "tooLong": "Gebruik hoogstens 30 karakters"
+    },
+    "offline": {
+      "insecure": "Vanlyn rekeninge het 'n veilige verbinding nodig. Maak AnyPay oop vanaf sy https://-adres, soos die skakel op die winkel se plakkaat.",
+      "storage": "Hierdie blaaier laat AnyPay nie toe om vanlyn verkope te hou nie (privaat blaai, of werfberging is afgeskakel). Maak AnyPay oop in 'n gewone blaaier-oortjie.",
+      "full": "Hierdie foon het nie meer bergingspasie nie, dus is die verkoop nie gestoor nie. Maak 'n bietjie plek en probeer weer."
+    }
+  },
+  "sale": {
+    "title": "Rekeningverkoop",
+    "hint": "Vir klante met 'n rekening by jou winkel. Werk sonder sein.",
+    "showQr": "Wys QR aan klant",
+    "qrLabel": "Rekeningverkoop-QR-kode vir {{amount}}",
+    "askCustomer": "Die klant skandeer dit, keur goed, en wys jou hul QR.",
+    "scanVoucher": "Skandeer die klant se QR",
+    "newSale": "Nuwe verkoop",
+    "tabsOnPhone": "Klantrekeninge op hierdie foon: {{count}}",
+    "syncFailed": "Kon nie jou klante se rekeninge bywerk nie. Gebruik dié op hierdie foon.",
+    "noTabs": {
+      "title": "Nog geen rekeninge nie",
+      "description": "Wanneer 'n klant 'n rekening by jou winkel oopmaak, kan jy hier aan hulle verkoop, selfs sonder sein."
+    }
+  },
+  "approve": {
+    "title": "Betaal met jou rekening",
+    "asks": "{{shop}} vra vir",
+    "left": "Oor hierdie week: {{amount}}",
+    "approve": "Keur goed",
+    "showShop": "Wys dit aan die winkel",
+    "voucherLabel": "Jou goedkeurings-QR-kode vir {{amount}}",
+    "noTab": "Jy het nie 'n rekening by hierdie winkel op hierdie foon nie. Maak een oop terwyl jy sein het.",
+    "capReached": "Dit is meer as wat hierdie week op jou rekening oor is.",
+    "expired": "Hierdie versoek is te oud. Vra die winkel vir 'n nuwe een.",
+    "invalid": "Dit is nie 'n geldige AnyPay-verkoop nie.",
+    "fromWallet": "Sowat {{amount}} uit jou beursie",
+    "capReachedNext": "Jou rekening begin weer op {{date}}. Betaal vir eers op 'n ander manier, of maak 'n nuwe rekening met 'n hoër limiet oop."
+  },
+  "voucher": {
+    "title": "Rekeningbetaling",
+    "saved": "Gestoor – betaal wanneer aanlyn",
+    "from": "Van {{label}} se rekening",
+    "states": {
+      "saved": "Vanlyn gestoor",
+      "sending": "Stuur",
+      "settled": "Betaal",
+      "failed": "Misluk"
+    },
+    "reasons": {
+      "expired": "Te oud om te betaal (meer as 72 uur). Betaal vir hierdie verkoop op 'n ander manier.",
+      "cap_reached": "Meer as hierdie week se rekeninglimiet. Betaal vir hierdie verkoop op 'n ander manier.",
+      "tab_inactive": "Die rekening is gesluit. Maak 'n nuwe rekening oop om so aan te hou betaal.",
+      "grant_limit": "Die beursie se weeklikse limiet is opgebruik (fooie en wisselkoers tel ook). Rekeningverkope begin weer volgende week.",
+      "insufficient_funds": "Nie genoeg geld in die klant se beursie nie. Betaal vir hierdie verkoop op 'n ander manier.",
+      "payment_failed": "Die betaling het nie deurgegaan nie. Betaal vir hierdie verkoop op 'n ander manier.",
+      "timeout": "Die beursie het nie betyds bevestig nie. Kontroleer die beursie voor jy weer vir die geld vra.",
+      "invalid": "Nie deur die klant se foon onderteken nie"
+    },
+    "check": {
+      "other_shop": "Hierdie QR is vir 'n ander winkel.",
+      "unknown_tab": "Hierdie klant se rekening is nog nie op hierdie foon nie. Koppel een keer om jou rekeninge by te werk, en skandeer dan weer.",
+      "invalid": "Hierdie QR is nie deur die klant se foon onderteken nie.",
+      "expired": "Hierdie goedkeuring is te oud (meer as 72 uur).",
+      "cap_reached": "Dit is meer as wat hierdie week op die klant se rekening oor is.",
+      "duplicate": "Reeds gestoor: hierdie verkoop sal nie twee keer betaal word nie."
+    },
+    "tryNow": "Probeer nou",
+    "waiting": "Rekeningverkope wat wag om te betaal",
+    "backToShop": "Terug na my winkel"
+  },
+  "scan": {
+    "title": "Skandeer 'n QR-kode",
+    "hint": "Rig die kamera op die QR-kode.",
+    "starting": "Begin die kamera…",
+    "noCamera": "Die kamera is nie beskikbaar nie. Plak eerder die skakel.",
+    "notAnyPay": "Dit is nie 'n AnyPay-kode nie.",
+    "pasteLabel": "Of plak die skakel",
+    "open": "Maak oop"
+  }
+}

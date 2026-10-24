@@ -70,9 +70,12 @@ async function main(): Promise<void> {
   console.log(`  ${web}/s/${shop.id}`)
 }
 
+// One line: the message can carry the API's reply, which must not be able to add fake log lines.
+const oneLine = (text: string) => text.replaceAll(/[\r\n]+/g, ' ')
+
 try {
   await main()
 } catch (error) {
-  console.error(error instanceof Error ? error.message : String(error))
+  console.error(oneLine(error instanceof Error ? error.message : String(error)))
   process.exit(1)
 }

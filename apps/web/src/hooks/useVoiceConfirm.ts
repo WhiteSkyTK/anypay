@@ -5,7 +5,13 @@ import { switchPreference } from '@/lib/switch-preference'
 const preference = switchPreference('anypay.voice')
 
 // Web Speech voices are named by BCP 47 tag; South African variants first.
-const SPEECH_LANG: Record<string, string> = { en: 'en-ZA', zu: 'zu-ZA', xh: 'xh-ZA', nso: 'nso-ZA' }
+const SPEECH_LANG: Record<string, string> = {
+  en: 'en-ZA',
+  af: 'af-ZA',
+  zu: 'zu-ZA',
+  xh: 'xh-ZA',
+  nso: 'nso-ZA',
+}
 
 const isSupported = () => typeof window !== 'undefined' && 'speechSynthesis' in window
 

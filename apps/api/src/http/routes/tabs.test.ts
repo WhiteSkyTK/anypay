@@ -281,6 +281,42 @@ describe('settling vouchers', () => {
     expect(openPayments.rotateToken.mock.calls.length - rotationsBefore).toBe(1)
   })
 
+  it('marks the week full when the wallet refuses for its limit, so phones stop taking sales', async () => {
+    const tab = await openApprovedTab()
+    // The phones think there's room, but fees and exchange have spent the wallet's weekly limit.
+    openPayments.createOutgoingPayment.mockRejectedValueOnce(
+      new OpenPaymentsError('grant_limit', 'Grant limit exceeded'),
+    )
+    const refused = await sync(await voucherFor(tab, '1000')).expect(200)
+    expect(refused.body).toMatchObject({ status: 'rejected', reason: 'grant_limit' })
+
+    const shopTabs = await request(app)
+      .get(`/api/shops/${tab.shopId}/tabs`)
+      .set('Authorization', `Bearer ${tab.merchantToken}`)
+    expect(ShopTabsResponseSchema.parse(shopTabs.body).tabs[0]?.remaining.value).toBe('0')
+    const summary = TabSummarySchema.parse((await request(app).get(`/api/tabs/${tab.tabId}`)).body)
+    expect(summary.remaining?.value).toBe('0')
+    // The next sale is refused up front, not sent to the wallet only to fail again.
+    const sentBefore = openPayments.createOutgoingPayment.mock.calls.length
+    const next = await sync(await voucherFor(tab, '1000')).expect(200)
+    expect(next.body).toMatchObject({ status: 'rejected', reason: 'cap_reached' })
+    expect(openPayments.createOutgoingPayment.mock.calls).toHaveLength(sentBefore)
+  })
+
+  it('gives a voucher back when the wallet network is down before anything moved', async () => {
+    const tab = await openApprovedTab()
+    openPayments.createIncomingPayment.mockRejectedValueOnce(
+      new OpenPaymentsError('open_payments_unavailable', 'Wallet not answering'),
+    )
+    const voucher = await voucherFor(tab, '1200')
+    const down = await sync(voucher).expect(503)
+    expect(down.body.error.code).toBe('open_payments_unavailable')
+    // Not rejected for good: the phones send it again later, and then it settles.
+    await request(app).get(`/api/vouchers/${voucher.nonce}`).expect(404)
+    await sync(voucher).expect(200)
+    await settled(voucher.nonce)
+  })
+
   it('answers "not found" for unknown tabs and vouchers', async () => {
     const tab = await openApprovedTab()
     const voucher = await voucherFor(tab, '1000')

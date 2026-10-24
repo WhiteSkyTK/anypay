@@ -26,6 +26,8 @@ export interface TabRecord {
   /** The same cap in the shop's currency, once known. */
   shopCap?: Money
   intervalStart: Date
+  /** When the customer's wallet last refused a payment for its weekly limit. */
+  limitReachedAt?: Date
   publicKey: PublicKeyJwk
   createdAt: Date
 }
@@ -51,6 +53,7 @@ function toRecord(row: TabRow, shop: ShopAsset): TabRecord {
         ? undefined
         : { value: row.shopCapValue, assetCode: shop.assetCode, assetScale: shop.assetScale },
     intervalStart: row.intervalStart,
+    limitReachedAt: row.limitReachedAt ?? undefined,
     publicKey: row.publicKey as PublicKeyJwk,
     createdAt: row.createdAt,
   }
@@ -85,7 +88,13 @@ export class TabRepository {
 
   async update(
     id: string,
-    changes: { status?: TabStatus; failure?: TabFailure; shopCap?: Money; session?: TabSession },
+    changes: {
+      status?: TabStatus
+      failure?: TabFailure
+      shopCap?: Money
+      session?: TabSession
+      limitReachedAt?: Date
+    },
   ): Promise<void> {
     await this.#db
       .update(tabs)
@@ -93,6 +102,7 @@ export class TabRepository {
         status: changes.status,
         failure: changes.failure,
         shopCapValue: changes.shopCap?.value,
+        limitReachedAt: changes.limitReachedAt,
         sessionCiphertext: changes.session && this.#seal(changes.session),
         updatedAt: this.#now(),
       })

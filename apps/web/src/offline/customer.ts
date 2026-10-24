@@ -33,10 +33,21 @@ export async function hasKeyFor(tabId: string): Promise<boolean> {
 /** This phone's usable tab at a shop: active, and its key is on this phone. */
 export async function myTabAtShop(shopId: string): Promise<MyTabRow | undefined> {
   const tabs = await getDb().myTabs.where('shopId').equals(shopId).toArray()
-  for (const tab of tabs) {
-    if (tab.status === 'active' && (await hasKeyFor(tab.id))) return tab
+  const usable = await Promise.all(
+    tabs
+      .filter((tab) => tab.status === 'active')
+      .map(async (tab) => ({
+        tab,
+        signable: await hasKeyFor(tab.id),
+        left: BigInt((await remainingOn(tab))?.value ?? '0'),
+      })),
+  )
+  // A customer who opened a new tab after using up the old one sells on the one with room.
+  let best: (typeof usable)[number] | undefined
+  for (const candidate of usable) {
+    if (candidate.signable && (!best || candidate.left > best.left)) best = candidate
   }
-  return undefined
+  return best?.tab
 }
 
 /** What is left on a tab right now, counting vouchers this phone signed since it last synced. */

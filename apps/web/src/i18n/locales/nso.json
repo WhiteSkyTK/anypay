@@ -238,8 +238,11 @@
       "howToPay": "Go lefela, kgopela lebenkele thekišo ya akhaonte gomme o sekene khoutu ya QR yeo ba go bontšhago yona.",
       "scan": "Sekena QR ya lebenkele",
       "payments": "Ditefelo tša akhaonte",
-      "noPayments": "Ga go sa na ditefelo akhaonteng ye."
-    }
+      "noPayments": "Ga go sa na ditefelo akhaonteng ye.",
+      "usedUp": "Moedi wa beke ye o fedile. O thoma gape ka {{date}}.",
+      "higherLimit": "O nyaka tše dintši? Bula akhaonte ye mpsha ka moedi wo mogolo"
+    },
+    "inShopCurrency": "Ke ka godimo ga {{amount}} go {{shop}}, ka tšhelete ya lebenkele."
   },
   "settings": {
     "title": "Dipeakanyo",
@@ -414,7 +417,9 @@
     "noTab": "Ga o na akhaonte lebenkeleng le mogaleng wo. Bula ye nngwe ge o na le netweke.",
     "capReached": "Se se feta seo se šetšego akhaonteng ya gago beke ye.",
     "expired": "Kgopelo ye ke ya kgale kudu. Kgopela lebenkele ye mpsha.",
-    "invalid": "Ye ga se thekišo ya AnyPay ye e nepagetšego."
+    "invalid": "Ye ga se thekišo ya AnyPay ye e nepagetšego.",
+    "fromWallet": "Ka godimo ga {{amount}} go tšwa woleteng ya gago",
+    "capReachedNext": "Akhaonte ya gago e thoma gape ka {{date}}. Lefa ka tsela ye nngwe bjale, goba bula akhaonte ye mpsha ka moedi wo mogolo."
   },
   "voucher": {
     "title": "Tefelo ya akhaonte",
@@ -427,13 +432,13 @@
       "failed": "E paletšwe"
     },
     "reasons": {
-      "expired": "Ke ya kgale kudu go lefelwa (go feta diiri tše 72)",
-      "cap_reached": "E feta moedi wa beke wa akhaonte",
-      "tab_inactive": "Akhaonte ga e sa šoma",
-      "grant_limit": "Wolete ya moreki e ganne: e feta moedi wa beke",
-      "insufficient_funds": "Ga go tšhelete ye e lekanego ka wolete ya moreki",
-      "payment_failed": "Tefelo e paletšwe",
-      "timeout": "Tefelo e tšere nako ye telele kudu",
+      "expired": "E tšofetše kudu go lefa (go feta diiri tše 72). Lefela thekišo ye ka tsela ye nngwe.",
+      "cap_reached": "E feta moedi wa beke wa akhaonte. Lefela thekišo ye ka tsela ye nngwe.",
+      "tab_inactive": "Akhaonte e tswaletšwe. Bula akhaonte ye mpsha go tšwela pele go lefa ka tsela ye.",
+      "grant_limit": "Moedi wa beke wa wolete o fedile (ditefelo le phetošo ya tšhelete le tšona di a balwa). Dithekišo tša akhaonte di thoma gape beke ye e tlago.",
+      "insufficient_funds": "Ga go na tšhelete ye e lekanego ka woleteng ya moreki. Lefela thekišo ye ka tsela ye nngwe.",
+      "payment_failed": "Tefo ga se ya atlega. Lefela thekišo ye ka tsela ye nngwe.",
+      "timeout": "Wolete ga se ya netefatša ka nako. Lekola wolete pele o kgopela tšhelete gape.",
       "invalid": "Ga se ya saenwa ke mogala wa moreki"
     },
     "check": {

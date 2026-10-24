@@ -215,6 +215,21 @@ in Safari, which doesn't have the tab's key): use the in-app scanner there.
 - [ ] Shop phone A shows its feed; phone B (signed in with the sign-in code) signs out other
       phones: A says **This phone is signed out of the shop** within seconds
 
+**The tab under real use (2026-10-24)**
+
+- [ ] Approve screen: under the shop's amount it says **About R… from your wallet** (the
+      customer's own currency)
+- [ ] Ask for more than what's left this week: the approve screen says so **before** tapping,
+      with the day the limit starts again and **Need more? Open a new tab with a higher limit**
+      (Approve is greyed out)
+- [ ] Sell on a tab until the wallet itself refuses (fees and exchange can use the limit up
+      before the phones expect): that sale fails with a clear reason, the tab then shows **This
+      week's limit is used up** with the reset day, and the shop's phone refuses further tab
+      sales up front, instead of every sale failing later
+- [ ] Open a second tab at the same shop with a higher limit: new sales use the tab with room
+- [ ] Language: **Afrikaans** appears in the picker; the start page, pay screen and tab screens
+      read in Afrikaans (draft: a native speaker should check it)
+
 ## Problems found
 
 <!-- Example: "Poster: QR too small to scan from 1 m on my phone (Samsung A05)" -->

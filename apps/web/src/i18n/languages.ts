@@ -1,6 +1,7 @@
 /** Languages AnyPay ships, each named in itself so people can find their own. */
 export const LANGUAGES = [
   { code: 'en', name: 'English' },
+  { code: 'af', name: 'Afrikaans' },
   { code: 'nso', name: 'Sepedi' },
   { code: 'xh', name: 'isiXhosa' },
   { code: 'zu', name: 'isiZulu' },

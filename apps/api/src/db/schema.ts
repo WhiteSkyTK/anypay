@@ -76,6 +76,8 @@ export const tabs = pgTable(
     /** The same cap in the shop's currency (a fixed-send quote), once the tab is active. */
     shopCapValue: text('shop_cap_value'),
     intervalStart: timestamp('interval_start', { withTimezone: true }).notNull(),
+    /** When the customer's wallet last refused a payment for its weekly limit (that week is full). */
+    limitReachedAt: timestamp('limit_reached_at', { withTimezone: true }),
     /** The public half of the customer's device key (JWK); vouchers are checked against it. */
     publicKey: jsonb('public_key').notNull(),
     /** Customer wallet, consent request and grant tokens, AES-256-GCM encrypted. */
